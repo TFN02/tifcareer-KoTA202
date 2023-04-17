@@ -13,9 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('role_user', function (Blueprint $table) {
-            $table->foreignId('role_id')->unsigned();
-            $table->foreignId('user_id')->unsigned();
+        Schema::create('educations', function (Blueprint $table) {
+            $table->id();
+            $table->string('level',100);
+            $table->string('major',255);
+            $table->string('educational_institution');
+            $table->integer('graduation_year');
+            $table->timestamps();
         });
     }
 
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('role_user');
+        Schema::dropIfExists('educations');
     }
 };

@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('role_user', function (Blueprint $table) {
-            $table->foreignId('role_id')->unsigned();
-            $table->foreignId('user_id')->unsigned();
+        Schema::create('super_admins', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id');
+            $table->string('name',100);
+            $table->string('phone_no',100);
+            $table->timestamps();
         });
     }
 
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('role_user');
+        Schema::dropIfExists('super_admins');
     }
 };

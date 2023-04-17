@@ -13,9 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('role_user', function (Blueprint $table) {
-            $table->foreignId('role_id')->unsigned();
-            $table->foreignId('user_id')->unsigned();
+        Schema::create('weighting_variables', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('job_id');
+            $table->foreignId('weighting_criteria_id');
+            $table->string('name',100);
+            $table->float('weight');
+            $table->timestamps();
         });
     }
 
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('role_user');
+        Schema::dropIfExists('weighting_variables');
     }
 };

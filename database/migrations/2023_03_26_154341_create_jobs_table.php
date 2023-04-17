@@ -15,10 +15,18 @@ return new class extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('posisiPekerjaan');
-            $table->string('jenisPekerjaan');
-            $table->string('lokasi');
-            $table->string('gajih');
+            $table->foreignId('company_id');
+            $table->foreignId('assignment_video_resume_id');
+            $table->foreignId('job_category_id');
+            $table->string('title',100);
+            $table->string('job_position');
+            $table->longText('qualification');
+            $table->longText('job_desc');
+            $table->string('location',150);
+            $table->double('salary');
+            $table->string('status',100);
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
     }

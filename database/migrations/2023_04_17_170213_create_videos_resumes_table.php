@@ -13,9 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('role_user', function (Blueprint $table) {
-            $table->foreignId('role_id')->unsigned();
-            $table->foreignId('user_id')->unsigned();
+        Schema::create('videos_resumes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('application_id');
+            $table->text('description');
+            $table->string('link_video',255);
+            $table->time('duration');
+            $table->timestamps();
         });
     }
 
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('role_user');
+        Schema::dropIfExists('videos_resumes');
     }
 };
