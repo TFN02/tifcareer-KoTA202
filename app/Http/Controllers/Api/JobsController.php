@@ -18,94 +18,83 @@ class JobsController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Jobs  $jobs
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Jobs $jobs)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Jobs  $jobs
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Jobs $jobs)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Jobs  $jobs
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $job = Jobs::findOrFail($id); 
-        
-        $company = Companies::firstWhere('name','PT Jayandra');
-
-        if($company != null){
-            $job->company_id = $company->id;
-            $job->title = $request->input('title');
-            $job->job_position = $request->input('job_position');
-            $job->qualification = $request->input('qualification');
-            $job->job_desc = $request->input('job_desc');
-            $job->location = $request->input('location');
-            $job->salary = $request->input('salary');
-            $job->status = $request->input('status');
-            $job->start_date = $request->input('start_date');
-            $job->end_date =  $request->input('end_date');
-            $job->save();
-        } 
-
+        $jobs = Jobs::paginate(10);
         return response()->json([
             'success' => true,
-            'data' => $job
+            'data' => $jobs
         ]);
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Jobs  $jobs
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Jobs $jobs)
+    public function store(Request $request)
     {
-        //
+        $company = Companies::firstWhere('name',$request->input('company_name'));
+
+        if($company != null){
+            $jobs = Jobs::create([
+                'company_id' => $company->id,
+                'title' => $request->input('title'),
+                'job_position' => $request->input('job_position'),
+                'qualification' => $request->input('qualification'),
+                'job_desc' => $request->input('job_desc'),
+                'location' => $request->input('location'),
+                'salary' => $request->input('salary'),
+                'status' => $request->input('status'),
+                'start_date' => $request->input('start_date'),
+                'end_date' =>  $request->input('end_date'),
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $jobs
+        ]);
+    }
+
+    public function show(Jobs $jobs)
+    {
+        return response()->json([
+            'success' => true,
+            'data' => $jobs
+        ]);
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $jobs = Jobs::findOrFail($id); 
+        
+        $company = Companies::firstWhere('name',$request->input('company_name'));
+
+        if($company != null){
+            $jobs->company_id = $company->id;
+            $jobs->title = $request->input('title');
+            $jobs->job_position = $request->input('job_position');
+            $jobs->qualification = $request->input('qualification');
+            $jobs->job_desc = $request->input('job_desc');
+            $jobs->location = $request->input('location');
+            $jobs->salary = $request->input('salary');
+            $jobs->status = $request->input('status');
+            $jobs->start_date = $request->input('start_date');
+            $jobs->end_date =  $request->input('end_date');
+            $jobs->save();
+        } 
+
+        return response()->json([
+            'success' => true,
+            'data' => $jobs
+        ]);
+
+    }
+
+    public function destroy(Jobs $jobs, $id)
+    {
+        $jobs = Jobs::find($id);
+        $jobs->delete();
+
+        return response()->json([
+            'message' => 'Jobs deleted',
+            'data' => $jobs
+        ]);
     }
 }

@@ -9,7 +9,7 @@ class Jobs extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['job_id','company_id','assignment_video_resume_id'];
+    protected $guarded = ['job_id'];
 
     public function companies(){
         return $this->belongsTo(Companies::class);
