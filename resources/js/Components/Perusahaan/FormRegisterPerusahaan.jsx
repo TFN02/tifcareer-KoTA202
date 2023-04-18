@@ -5,10 +5,11 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Link, useForm } from '@inertiajs/react';
 
-const FormRegisterPelamar = () => {
+const FormRegisterPerusahaan = () => {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
+        npwp: '',
         password: '',
         password_confirmation: '',
         role: 'perusahaan',
@@ -50,7 +51,7 @@ const FormRegisterPelamar = () => {
             </div>
 
             <div className="mt-4">
-                <InputLabel htmlFor="email" value="Email" className='font-bold' />
+                <InputLabel htmlFor="email" value="Email Company" className='font-bold' />
 
                 <TextInput
                     id="email"
@@ -64,6 +65,24 @@ const FormRegisterPelamar = () => {
                 />
 
                 <InputError message={errors.email} className="mt-2" />
+            </div>
+
+            <div className="mt-4">
+                <InputLabel htmlFor="npwp" value="NPWP" className='font-bold' />
+
+                <TextInput
+                    id="npwp"
+                    type="number"
+                    name="npwp"
+                    value={data.npwp}
+                    className="mt-1 block w-full bg-violet-50 shadow-black text-black  px-2"
+                    autoComplete="npwp"
+                    onChange={handleOnChange}
+                    required
+                />
+                
+
+                <InputError message={errors.npwp} className="mt-2" />
             </div>
 
             <div className="mt-4">
@@ -116,4 +135,4 @@ const FormRegisterPelamar = () => {
         </form>
     )
 }
-export default FormRegisterPelamar
+export default FormRegisterPerusahaan

@@ -20,13 +20,13 @@ use Inertia\Inertia;
 
 Route::get('/', function (){
     return Inertia::render('Auth/Login');
-})->middleware(['auth', 'verified']);
+})->middleware(['auth', 'verified'])->name('login');
 
 // ROUTE PEMISAH JUGA TAPI INI GATAU BEST PRACTICE GATAU ENGGA
 
 // Route Pelamar
 Route::middleware(['auth', 'verified', ])->group(function () {
-    Route::get('/lowonganKerja', [JobsController::class, 'index'])->name('dashboard');
+    Route::get('/lowonganKerja', [JobsController::class, 'index'])->name('lowonganKerja');
 });
 
 Route::get('/register-pelamar', function () {
@@ -41,6 +41,14 @@ Route::get('/dashboard-perusahaan', function() {
 Route::get('/register-perusahaan', function () {
     return Inertia::render('Auth/RegisterPerusahaan');
 });
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/jobs', [JobsController::class, 'store'])->name('jobs');
+    // Route::get('/jobs', [JobsController::class, 'show'])->name('jobs');
+    Route::get('/lowonganKerjaPerusahaan', [JobsController::class, 'show'])->name('LowonganKerjaPerusahaan');
+    Route::get('/lowonganKerjaPerusahaan/edit', [JobsController::class, 'edit'])->name('LowonganKerjaPerusahaan.edit');
+    Route::post('/lowonganKerjaPerusahaan/update', [JobsController::class, 'update'])->name('LowonganKerjaPerusahaan.update');
+});    
 
 // Route Profil
 Route::middleware('auth')->group(function () {

@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Link, useForm } from '@inertiajs/react';
 
-const FormRegisterPelamar = ({ onSubmit }) => {
+const FormRegisterPelamar = () => {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -13,6 +13,7 @@ const FormRegisterPelamar = ({ onSubmit }) => {
         password_confirmation: '',
         role: 'pelamar',
     });
+
 
     useEffect(() => {
         return () => {

@@ -17,7 +17,7 @@ class JobsController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->keyword;
-        $jobs = Jobs::where('jenisPekerjaan','LIKE', '%'.$keyword.'%')->paginate(8);
+        $jobs = Jobs::where('jenisPekerjaan','LIKE', '%'.$keyword.'%')->OrderByDesc('updated_at')->paginate(9);
         $jobs = new JobsCollection($jobs);
         return inertia::render('Pelamar/LowonganKerja', [
             'jobs' => $jobs,
@@ -42,7 +42,14 @@ class JobsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $jobs = new Jobs();
+        $jobs->posisiPekerjaan = $request->posisiPekerjaan;
+        $jobs->jenisPekerjaan = $request->jenisPekerjaan;
+        $jobs->lokasi = $request->lokasi;
+        $jobs->gajih = $request->gajih;
+        $jobs->author = auth()->user()->name;
+        $jobs->save();
+        return redirect()->back()->with('message', 'Lowongan Kerja Berhasil di Upload');
     }
 
     /**
@@ -53,7 +60,10 @@ class JobsController extends Controller
      */
     public function show(Jobs $jobs)
     {
-        //
+        $myJobs = $jobs::where('author',auth()->user()->name)->get();
+        return inertia::render('Perusahaan/LowonganKerjaPerusahaan', [
+            'myJobs' => $myJobs,
+        ]);
     }
 
     /**
@@ -62,9 +72,11 @@ class JobsController extends Controller
      * @param  \App\Models\Jobs  $jobs
      * @return \Illuminate\Http\Response
      */
-    public function edit(Jobs $jobs)
+    public function edit(Jobs $jobs, Request $request)
     {
-        //
+        return Inertia::render('Perusahaan/EditLoker', [
+            'myJobs' => $jobs->find($request->id)
+        ]);
     }
 
     /**
@@ -74,9 +86,15 @@ class JobsController extends Controller
      * @param  \App\Models\Jobs  $jobs
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Jobs $jobs)
+    public function update(Request $request)
     {
-        //
+        Jobs::where('id', $request->id)->update([
+            'posisiPekerjaan' => $request->posisiPekerjaan,
+            'jenisPekerjaan' => $request->jenisPekerjaan,
+            'lokasi' => $request->lokasi,
+            'gajih' => $request->gajih,
+        ]);
+        return to_route('LowonganKerjaPerusahaan');
     }
 
     /**

@@ -30,7 +30,7 @@ const Trigger = ({ children }) => {
     );
 };
 
-const Content = ({ align = 'left', width = '48', contentClasses = 'py-1 bg-white', children }) => {
+const Content = ({ align = 'left', width = 'full', contentClasses = 'py-1 bg-white', children }) => {
     const { open, setOpen } = useContext(DropDownContext);
 
     let alignmentClasses = 'origin-top';
@@ -43,8 +43,8 @@ const Content = ({ align = 'left', width = '48', contentClasses = 'py-1 bg-white
 
     let widthClasses = '';
 
-    if (width === '48') {
-        widthClasses = 'w-48';
+    if (width === 'full') {
+        widthClasses = 'w-full';
     }
 
     return (

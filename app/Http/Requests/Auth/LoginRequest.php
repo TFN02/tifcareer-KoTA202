@@ -28,6 +28,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'email'],
+            // 'npwp' => ['required', 'digits:15'],
             'password' => ['required', 'string'],
         ];
     }

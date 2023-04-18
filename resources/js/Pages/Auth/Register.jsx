@@ -87,14 +87,14 @@ export default function Register() {
                                 <p className='text-white text-xl'>SELAMAT DATANG DI</p>
                                 <p className='text-white text-4xl font-semibold pb-2 tracking-wide'>TIFCAREER</p>
                                 <hr />
-                                <p className='pt-2 leading-relaxed'>Lorem ipsum lorem ipsum Lorem ipsum dolor, <br /> sit amet consectetur adipisicing elit. <br />
+                                <p className='pt-2 leading-relaxed text-white'>Lorem ipsum lorem ipsum Lorem ipsum dolor, <br /> sit amet consectetur adipisicing elit. <br />
                                     Hic dolorem dolorum obcaecati eum impedit nostrum.
                                 </p>
                             </div>
                             <div>
                                 <p className='text-white text-lg text-center pb-2 font-bold'>REGISTER</p>
                                 <div className='flex-auto bg-white px-5 py-5 rounded-md'>
-                                    <DropdownForm children={'Pelamar'} children2={'Perusahaan'}  />
+                                    <DropdownForm children3={'Pelamar'} children={'Pelamar'} children2={'Perusahaan'}  />
                                     <FormRegisterPelamar />
                                 </div>
                             </div>
