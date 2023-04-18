@@ -1,0 +1,100 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\JobsRequest;
+use App\Models\Companies;
+use App\Models\Jobs;
+use Illuminate\Http\Request;
+
+
+class JobsController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $jobs = Jobs::paginate(10);
+        return response()->json([
+            'success' => true,
+            'data' => $jobs
+        ]);
+
+    }
+
+    public function store(Request $request)
+    {
+        $company = Companies::firstWhere('name',$request->input('company_name'));
+
+        if($company != null){
+            $jobs = Jobs::create([
+                'company_id' => $company->id,
+                'title' => $request->input('title'),
+                'job_position' => $request->input('job_position'),
+                'qualification' => $request->input('qualification'),
+                'job_desc' => $request->input('job_desc'),
+                'location' => $request->input('location'),
+                'salary' => $request->input('salary'),
+                'status' => $request->input('status'),
+                'start_date' => $request->input('start_date'),
+                'end_date' =>  $request->input('end_date'),
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $jobs
+        ]);
+    }
+
+    public function show(Jobs $jobs)
+    {
+        return response()->json([
+            'success' => true,
+            'data' => $jobs
+        ]);
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $jobs = Jobs::findOrFail($id); 
+        
+        $company = Companies::firstWhere('name',$request->input('company_name'));
+
+        if($company != null){
+            $jobs->company_id = $company->id;
+            $jobs->title = $request->input('title');
+            $jobs->job_position = $request->input('job_position');
+            $jobs->qualification = $request->input('qualification');
+            $jobs->job_desc = $request->input('job_desc');
+            $jobs->location = $request->input('location');
+            $jobs->salary = $request->input('salary');
+            $jobs->status = $request->input('status');
+            $jobs->start_date = $request->input('start_date');
+            $jobs->end_date =  $request->input('end_date');
+            $jobs->save();
+        } 
+
+        return response()->json([
+            'success' => true,
+            'data' => $jobs
+        ]);
+
+    }
+
+    public function destroy(Jobs $jobs, $id)
+    {
+        $jobs = Jobs::find($id);
+        $jobs->delete();
+
+        return response()->json([
+            'message' => 'Jobs deleted',
+            'data' => $jobs
+        ]);
+    }
+}

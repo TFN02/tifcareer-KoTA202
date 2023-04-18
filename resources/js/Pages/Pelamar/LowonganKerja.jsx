@@ -2,11 +2,12 @@ import CardJobs from '@/Components/Pelamar/CardJobs';
 import Paginator from '@/Components/Pelamar/Paginator';
 import SearchBar from '@/Components/Pelamar/SearchBar';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import LayoutPelamar from '@/Layouts/LayoutPelamar';
 import { Head } from '@inertiajs/react';
 
 export default function LowonganKerja(props) {
     return (
-        <AuthenticatedLayout
+        <LayoutPelamar
             auth={props.auth}
             errors={props.errors}
         // header={<SearchBar  />}
@@ -34,6 +35,6 @@ export default function LowonganKerja(props) {
             <div className="flex justify-center items-center pb-5">
                 <Paginator meta={props.jobs.meta} />
             </div>
-        </AuthenticatedLayout>
+        </LayoutPelamar>
     );
 }

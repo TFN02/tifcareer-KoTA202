@@ -111,7 +111,7 @@ export default function Login({ status, canResetPassword }) {
                                 <p className='text-white text-xl'>SELAMAT DATANG DI</p>
                                 <p className='text-white text-4xl font-semibold pb-2 tracking-wide'>TIFCAREER</p>
                                 <hr />
-                                <p className='pt-2 leading-relaxed'>
+                                <p className='pt-2 leading-relaxed text-white'>
                                     Lorem ipsum lorem ipsum Lorem ipsum dolor, <br /> sit amet consectetur adipisicing elit. <br />
                                     Hic dolorem dolorum obcaecati eum impedit nostrum.
                                 </p>

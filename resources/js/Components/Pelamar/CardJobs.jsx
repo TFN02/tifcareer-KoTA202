@@ -6,20 +6,20 @@ const isJobs = (jobs) => {
             <div key={i} className="card w-full lg:w-96 bg-white shadow-xl">
                 <div className="card-body">
 
-                    <h4 className="card-title text-black h-8">
-                        <div className="avatar shadow shadow-md shadow-black mr-2 mt-5">
-                            <div className="w-16 rounded">
+                    <h4 className="card-title text-black h-9">
+                        <div className="avatar shadow shadow-sm shadow-black mr-2 mt-8">
+                            <div className="w-16">
                                 <img src="/img/jayandraLogo.png" alt="Tailwind-CSS-Avatar-component" />
                             </div>
                         </div>
                         {data.posisiPekerjaan}
                     </h4>
-                    <p className="text-black ml-20 h-2">PT Mitra Harmoni Jayandra</p>
-                    <div className="pt-10">
+                    <p className="text-black ml-20 h-2 ">{data.author.length ? data.author : 'PT Tujuh Sembilan' }</p>
+                    <div className="pt-7">
 
-                        <p className="text-black">Lokasi: {data.lokasi}</p>
-                        <p className="text-black">Jenis Pekerjaan: {data.jenisPekerjaan}</p>
-                        <p className="text-black">Gajih: Rp. {data.gajih}/bln</p>
+                        <p className="text-black badge badge-outline mb-3 mr-2">{data.lokasi}</p>
+                        <p className="text-black badge badge-outline">{data.jenisPekerjaan}</p>
+                        <p className="text-black">Gajih: Rp. {data.gajih} /bln</p>
                         <div className="card-actions justify-end">
                             <PrimaryButton className="mt-5">Detail Pekerjaan</PrimaryButton>
                         </div>
