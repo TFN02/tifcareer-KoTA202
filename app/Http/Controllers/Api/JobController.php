@@ -52,7 +52,7 @@ class JobController extends Controller
 
     public function show($id)
     {
-        $jobs = Job::with('company')->findOrFail($id);
+        $jobs = Job::with('company','assignmentVideoResume')->findOrFail($id);
         return response()->json([
             'success' => true,
             'data' => $jobs

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('assignments_video_resumes', function (Blueprint $table) {
+        Schema::create('assignment_video_resumes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('job_id')->nullable();
             $table->date('start_date')->nullable();
