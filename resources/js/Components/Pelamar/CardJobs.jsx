@@ -12,14 +12,14 @@ const isJobs = (jobs) => {
                                 <img src="/img/jayandraLogo.png" alt="Tailwind-CSS-Avatar-component" />
                             </div>
                         </div>
-                        {data.posisiPekerjaan}
+                        {data.job_position}
                     </h4>
-                    <p className="text-black ml-20 h-2 ">{data.author.length ? data.author : 'PT Tujuh Sembilan' }</p>
+                    {/* <p className="text-black ml-20 h-2 ">{data.compeny.name.length ? data.compeny.name : 'PT Tujuh Sembilan' }</p> */}
                     <div className="pt-7">
 
-                        <p className="text-black badge badge-outline mb-3 mr-2">{data.lokasi}</p>
-                        <p className="text-black badge badge-outline">{data.jenisPekerjaan}</p>
-                        <p className="text-black">Gajih: Rp. {data.gajih} /bln</p>
+                        <p className="text-black badge badge-outline mb-3 mr-2">{data.location}</p>
+                        <p className="text-black badge badge-outline">{data.job_position}</p>
+                        <p className="text-black">Gajih: Rp. {data.salary} /bln</p>
                         <div className="card-actions justify-end">
                             <PrimaryButton className="mt-5">Detail Pekerjaan</PrimaryButton>
                         </div>

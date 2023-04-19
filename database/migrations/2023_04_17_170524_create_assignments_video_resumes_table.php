@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('assignments_video_resumes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_id');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->longText('technical_requirement');
+            $table->foreignId('job_id')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->longText('technical_requirement')->nullable();
             $table->timestamps();
         });
     }

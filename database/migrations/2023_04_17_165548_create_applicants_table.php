@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('applicants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
-            $table->string('name',100);
-            $table->string('phone_no',100);
-            $table->date('birth_of_date');
-            $table->text('domicile');
+            $table->foreignId('user_id')->nullable();
+            $table->string('name',100)->nullable();
+            $table->string('phone_no',100)->nullable();
+            $table->date('birth_of_date')->nullable();
+            $table->text('domicile')->nullable();
             $table->timestamps();
         });
     }

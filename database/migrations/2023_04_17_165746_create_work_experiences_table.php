@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('work_experiences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('applicant_id');
-            $table->string('work_institution',255);
-            $table->string('position',150);
-            $table->integer('start_year');
-            $table->integer('end_year');
-            $table->longText('description');
+            $table->foreignId('applicant_id')->nullable();
+            $table->string('work_institution',255)->nullable();
+            $table->string('position',150)->nullable();
+            $table->integer('start_year')->nullable();
+            $table->integer('end_year')->nullable();
+            $table->longText('description')->nullable();
             $table->timestamps();
         });
     }

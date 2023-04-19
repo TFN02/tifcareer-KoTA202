@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id');
-            $table->longText('message');
+            $table->foreignId('company_id')->nullable();
+            $table->longText('message')->nullable();
             $table->timestamps();
         });
     }

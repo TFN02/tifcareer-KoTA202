@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Applicant;
+use App\Models\Company;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -13,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+
 
 class RegisteredUserController extends Controller
 {
@@ -35,10 +38,12 @@ class RegisteredUserController extends Controller
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:'.User::class,
-                // 'npwp' => 'required|digits:15',
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
                 'role' => ['required', 'in:pelamar,perusahaan'],
             ]);
+
+            
+
         }else if($request->role == 'perusahaan') {
             $request->validate([
                 'name' => 'required|string|max:255',
@@ -49,11 +54,9 @@ class RegisteredUserController extends Controller
             ]);
         }
 
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'npwp' => $request->npwp,
             'password' => Hash::make($request->password),
         ]);
 
@@ -64,8 +67,21 @@ class RegisteredUserController extends Controller
 
         if ($request->role=="pelamar"){
 
+            $user->applicant()->create([
+                'user_id' => $user->id,
+                'name' => $request->name,
+            ]);
+
             return redirect('/lowonganKerja');
+
         }else if ($request->role=="perusahaan"){
+
+            $user->company()->create([
+                'user_id' => $user->id,
+                'name' => $request->name,
+                'npwp' => $request->npwp,
+            ]);
+
             return redirect('/dashboard-perusahaan');
         }
     }

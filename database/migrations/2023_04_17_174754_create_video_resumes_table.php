@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('video_resumes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('application_id');
-            $table->text('description');
-            $table->string('link_video',255);
-            $table->time('duration');
-            $table->integer('total_score');
-            $table->float('avg_score');
+            $table->foreignId('application_id')->nullable();
+            $table->text('description')->nullable();
+            $table->string('link_video',255)->nullable();
+            $table->time('duration')->nullable();
+            $table->integer('total_score')->nullable();
+            $table->float('avg_score')->nullable();
             $table->timestamps();
         });
     }
