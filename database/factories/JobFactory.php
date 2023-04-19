@@ -18,6 +18,10 @@ class JobFactory extends Factory
     {
         return [
             'title' => fake()->jobTitle(),
+            'company_id' => fake()->randomElement([
+                1,
+                2,
+            ]),
             'job_position' => fake()->randomElement([
                 "Software Developer",
                 "Mobile Developer",

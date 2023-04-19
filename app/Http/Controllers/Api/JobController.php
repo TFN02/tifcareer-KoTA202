@@ -17,7 +17,7 @@ class JobController extends Controller
      */
     public function index()
     {
-        $jobs = Job::paginate(10);
+        $jobs = Job::all();
         return response()->json([
             'success' => true,
             'data' => $jobs
@@ -50,8 +50,9 @@ class JobController extends Controller
         ]);
     }
 
-    public function show(Job $jobs)
+    public function show($id)
     {
+        $jobs = Job::with('company')->findOrFail($id);
         return response()->json([
             'success' => true,
             'data' => $jobs

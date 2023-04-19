@@ -17,8 +17,10 @@ class JobController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->keyword;
-        $jobs = Job::where('job_position','LIKE', '%'.$keyword.'%')->OrderByDesc('updated_at')->paginate(9);
+        $jobs = Job::with('company')->where('job_position','LIKE', '%'.$keyword.'%')->OrderByDesc('updated_at')->paginate(9);
+        
         $jobs = new JobsCollection($jobs);
+
         return inertia::render('Pelamar/LowonganKerja', [
             'jobs' => $jobs,
         ]);
