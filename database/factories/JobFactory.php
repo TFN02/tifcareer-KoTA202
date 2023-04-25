@@ -21,6 +21,16 @@ class JobFactory extends Factory
             'company_id' => fake()->randomElement([
                 1,
                 2,
+                3,
+            ]),
+            'job_category_id' => fake()->randomElement([
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
             ]),
             'job_position' => fake()->randomElement([
                 "Software Developer",

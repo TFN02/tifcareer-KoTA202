@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('assignment_video_resume_id')->nullable();
+            $table->bigInteger('assignment_video_resume_id')->unsigned()->nullable();
             $table->string('question')->nullable();
             $table->timestamps();
         });

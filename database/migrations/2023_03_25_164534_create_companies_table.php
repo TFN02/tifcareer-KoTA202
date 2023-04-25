@@ -15,15 +15,15 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable();
+            $table->bigInteger('user_id')->unsigned();
             $table->string('name',100)->nullable();
             $table->longText('description')->nullable();
             $table->integer('year_founded')->nullable();
             $table->string('phone_no',100)->nullable();
             $table->text('address')->nullable();
-            $table->string('npwp',15)->nullable();
-            $table->string('siup',100)->nullable();
-            $table->string('nrp',100)->nullable();
+            $table->string('npwp',15)->nullable()->unique();
+            $table->string('siup',100)->nullable()->unique();
+            $table->string('nrp',100)->nullable()->unique();
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('assignment_video_resumes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_id')->nullable();
+            $table->bigInteger('job_id')->unsigned()->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->longText('technical_requirement')->nullable();

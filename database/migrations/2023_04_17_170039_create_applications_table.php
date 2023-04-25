@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_id')->nullable();
-            $table->foreignId('applicant_id')->nullable();
-            $table->foreignId('video_resume_id')->nullable();
+            $table->bigInteger('job_id')->unsigned()->nullable();
+            $table->bigInteger('applicant_id')->unsigned()->nullable();
+            $table->bigInteger('video_resume_id')->unsigned()->nullable();
             $table->float('score')->nullable();
             $table->integer('rank')->nullable();
             $table->string('status',100)->nullable();

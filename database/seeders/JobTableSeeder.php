@@ -3,11 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Job;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 
-class JobSeeder extends Seeder
+class JobTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

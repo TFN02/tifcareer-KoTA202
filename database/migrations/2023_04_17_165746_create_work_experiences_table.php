@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('work_experiences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('applicant_id')->nullable();
+            $table->bigInteger('applicant_id')->unsigned()->nullable();
             $table->string('work_institution',255)->nullable();
             $table->string('position',150)->nullable();
             $table->integer('start_year')->nullable();

@@ -12,7 +12,7 @@ class Job extends Model
     protected $guarded = ['id'];
 
     public function assignmentVideoResume(){
-        return $this->hasOne(AssignmentVideoResume::class);
+        return $this->hasOne(AssignmentVideoResume::class,'job_id');
     }
 
     public function company(){
@@ -20,14 +20,14 @@ class Job extends Model
     }
 
     public function jobCategory(){
-        return $this->belongsTo(JobCategory::class);
+        return $this->belongsTo(JobCategory::class, 'job_category_id');
     }
 
     public function weightingCriteria(){
-        return $this->hasMany(WeightingCriteria::class);
+        return $this->hasMany(WeightingCriteria::class, 'job_id');
     }
 
     public function weightingVariable(){
-        return $this->hasMany(WeightingVariable::class);
+        return $this->hasMany(WeightingVariable::class, 'job_id');
     }
 }

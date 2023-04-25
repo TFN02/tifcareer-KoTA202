@@ -14,10 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('question_video_resume', function (Blueprint $table) {
-            $table->foreignId('video_resume_id')->unsigned();
-            $table->foreignId('question_id')->unsigned();
+            $table->id();
+            $table->bigInteger('video_resume_id')->unsigned();
+            $table->bigInteger('question_id')->unsigned();
             $table->integer('score')->nullable();
         });
+
+        
     }
 
     /**

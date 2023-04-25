@@ -14,8 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('applicant_interest_area', function (Blueprint $table) {
-            $table->foreignId('applicant_id')->unsigned();
-            $table->foreignId('interest_area_id')->unsigned();
+            $table->id();
+            $table->bigInteger('applicant_id')->unsigned();
+            $table->bigInteger('interest_area_id')->unsigned();
         });
     }
 

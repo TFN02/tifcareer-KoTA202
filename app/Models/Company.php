@@ -13,15 +13,15 @@ class Company extends Model
     protected $guarded = ['id'];
 
     public function user(){
-        return $this->hasOne(User::class);
+        return $this->hasOne(User::class, 'company_id');
     }
 
     public function job(){
-        return $this->hasMany(Job::class);
+        return $this->hasMany(Job::class,'company_id');
     }
 
     public function notification(){
-        return $this->hasMany(Notification::class);
+        return $this->hasMany(Notification::class, 'company_id');
     }
     
 }

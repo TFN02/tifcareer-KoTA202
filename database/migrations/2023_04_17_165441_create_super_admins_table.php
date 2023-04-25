@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('super_admins', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable();
+            $table->bigInteger('user_id')->unsigned()->nullable();
             $table->string('name',100)->nullable();
             $table->string('phone_no',100)->nullable();
             $table->timestamps();

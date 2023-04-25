@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->nullable();
-            $table->foreignId('assignment_video_resume_id')->nullable();
-            $table->foreignId('job_category_id')->nullable();
+            $table->bigInteger('company_id')->unsigned()->nullable();
+            $table->bigInteger('assignment_video_resume_id')->unsigned()->nullable();
+            $table->bigInteger('job_category_id')->unsigned()->nullable();
             $table->string('title',100)->nullable();
             $table->string('job_position')->nullable();
             $table->longText('qualification')->nullable();

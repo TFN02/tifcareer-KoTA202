@@ -9,7 +9,13 @@ class WeightingVariable extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+    
     public function job(){
-        return $this->belongsTo(Job::class);
+        return $this->belongsTo(Job::class, 'job_id');
+    }
+
+    public function weightingCriteria(){
+        return $this->belongsTo(WeightingCriteria::class, 'weighting_criteria_id');
     }
 }

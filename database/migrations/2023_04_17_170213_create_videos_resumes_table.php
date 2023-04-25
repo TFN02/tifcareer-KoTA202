@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('videos_resumes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('application_id')->nullable();
+            $table->bigInteger('application_id')->unsigned()->nullable();
             $table->text('description')->nullable();
             $table->string('link_video',255)->nullable();
             $table->time('duration')->nullable();
