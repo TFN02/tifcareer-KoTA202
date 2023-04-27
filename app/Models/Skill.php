@@ -9,8 +9,10 @@ class Skill extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+
     public function applicant(){
-        return $this->belongsToMany(Applicant::class, 'applicant_education');
+        return $this->belongsToMany(Applicant::class, 'applicant_skill');
     }
 
     public function skillCategory(){

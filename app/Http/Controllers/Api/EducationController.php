@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Education;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class EducationController extends Controller
 {
@@ -35,7 +36,18 @@ class EducationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $education = Education::create([
+            'level' => $request->level,
+            'major' => $request->major,
+            'educational_institution' => $request->educational_institution,
+            'graduation_year' => $request->graduation_year,
+
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' =>  $education,
+        ]);
     }
 
     /**

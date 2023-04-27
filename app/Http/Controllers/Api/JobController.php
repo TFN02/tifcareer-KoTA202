@@ -195,7 +195,7 @@ class JobController extends Controller
         if($request->company_id){
             $company = Company::find($request->company_id);
             if($company != null){
-                $jobs->job_category_id = $job_category_id;
+                $jobs->company_id = $company->id;
             }else{
 
             }
@@ -231,15 +231,15 @@ class JobController extends Controller
                                         ->where('job_id','=', $id)->get();
                 foreach($weighting_criterias as $c){
                     $criteria_id = $c->id;
-                }
-                $weighting_criteria = $jobs->weightingCriteria()->find($criteria_id);
-                if($criteria['name']!=null){
-                    $jobs->weightingCriteria->name = $criteria['name'];
-                }
-                if($criteria['weight']!=null){
-                    $jobs->weightingCriteria->weight = $criteria['weight'];
-                }
 
+                    $weighting_criteria = $jobs->weightingCriteria()->find($criteria_id);
+                    if($criteria['name']!=null){
+                        $weighting_criteria->name = $criteria['name'];
+                    }
+                    if($criteria['weight']!=null){
+                        $weighting_criteria->weight = $criteria['weight'];
+                    }
+                }
             }
         } 
         if($request->weighting_variable){
@@ -248,24 +248,23 @@ class JobController extends Controller
                                         ->where('job_id','=', $id)->get();
                 foreach($weighting_variables as $v){
                     $variable_id = $v->id;
-                }
-                $weighting_variable = $jobs->weightingVariable()->find($variable_id);
-                if($variable['name']!=null){
-                    $jobs->weightingVariable->name = $criteria['name'];
-                }
-                if($variable['weight']!=null){
-                    $jobs->weightingVariable->weight = $criteria['weight'];
-                }
-                if($variable['criteria']!=null){
-                    $w_criteria = WeightingCriteria::where('name','=', $variable['criteria'])
-                                    ->where('job_id', '=', $id)->get();
-                    foreach($w_criteria as $cr){
-                        $id_criteria = $cr->id;
 
+                    $weighting_variable = $jobs->weightingVariable()->find($variable_id);
+                    if($variable['name']!=null){
+                        $weighting_variable->name = $criteria['name'];
                     }
-                    $jobs->weightingVariable->criteria_id = $id_criteria;
+                    if($variable['weight']!=null){
+                        $weighting_variable->weight = $criteria['weight'];
+                    }
+                    if($variable['criteria']!=null){
+                        $w_criteria = WeightingCriteria::where('name','=', $variable['criteria'])
+                                        ->where('job_id', '=', $id)->get();
+                        foreach($w_criteria as $cr){
+                            $id_criteria = $cr->id;
+                        }
+                        $weighting_variable->criteria_id = $id_criteria;
+                    }
                 }
-
             }
         }       
                
