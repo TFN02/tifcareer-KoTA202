@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('videos_resumes', function (Blueprint $table) {
+        Schema::create('soft_skills', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('application_id')->unsigned()->nullable();
-            $table->text('description')->nullable();
-            $table->string('link_video',255)->nullable();
-            $table->time('duration')->nullable();
+            $table->bigInteger('applicant_id')->unsigned()->nullable();
+            $table->string('name',100)->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('videos_resumes');
+        Schema::dropIfExists('soft_skills');
     }
 };

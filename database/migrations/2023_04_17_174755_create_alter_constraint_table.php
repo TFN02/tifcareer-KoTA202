@@ -13,6 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
+        Schema::table('certificates', function (Blueprint $table) {
+            $table->foreign('applicant_id')->references('id')->on('applicants')->onDelete('cascade')->onUpdate('cascade');
+        });
+
+        Schema::table('soft_skills', function (Blueprint $table) {
+            $table->foreign('applicant_id')->references('id')->on('applicants')->onDelete('cascade')->onUpdate('cascade');
+        });
+
         Schema::table('role_user', function (Blueprint $table) {
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
@@ -72,7 +80,7 @@ return new class extends Migration
             $table->foreign('video_resume_id')->references('id')->on('video_resumes')->onDelete('cascade')->onUpdate('cascade');
         });
 
-        Schema::table('videos_resumes', function (Blueprint $table) {
+        Schema::table('video_resumes', function (Blueprint $table) {
             $table->foreign('application_id')->references('id')->on('applications')->onDelete('cascade')->onUpdate('cascade');
         });
 
@@ -111,9 +119,6 @@ return new class extends Migration
             $table->foreign('video_resume_id')->references('id')->on('video_resumes')->onDelete('cascade')->onUpdate('cascade');
         });
 
-        Schema::table('video_resumes', function (Blueprint $table) {
-            $table->foreign('application_id')->references('id')->on('applications')->onDelete('cascade')->onUpdate('cascade');
-        });
     }
 
     /**

@@ -9,6 +9,8 @@ class WorkExperience extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+
     public function applicant(){
         return $this->belongsTo(applicant::class);
     }

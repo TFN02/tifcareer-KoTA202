@@ -38,4 +38,12 @@ class Applicant extends Model
     public function application(){
         return $this->hasMany(Application::class);
     }
+
+    public function softSkill(){
+        return $this->hasMany(SoftSkill::class);
+    }
+
+    public function certificate(){
+        return $this->hasMany(Certificate::class);
+    }
 }
