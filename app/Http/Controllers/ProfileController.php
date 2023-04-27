@@ -16,6 +16,24 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
+    public function show(Request $request): Response
+    {
+        if (Auth::user()->roles()->first()->name =='pelamar') {
+
+            // return redirect(RouteServiceProvider::HOME);
+            return Inertia::render('Profile/DataAplicant', [
+                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+                'status' => session('status'),
+            ]);
+        }else if(Auth::user()->roles()->first()->name =='perusahaan'){
+            return Inertia::render('Profile/DataCompany', [
+                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+                'status' => session('status'),
+            ]);
+        }
+
+
+    }
     public function edit(Request $request): Response
     {
         if (Auth::user()->roles()->first()->name =='pelamar') {

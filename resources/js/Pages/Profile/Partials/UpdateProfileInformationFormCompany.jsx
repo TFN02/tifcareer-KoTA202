@@ -5,7 +5,7 @@ import TextInput from '@/Components/TextInput';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
 
-export default function UpdateProfileInformation({ mustVerifyEmail, status, className }) {
+export default function UpdateProfileInformationCompany({ mustVerifyEmail, status, className }) {
     const user = usePage().props.auth.user;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
@@ -21,12 +21,15 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
 
     return (
         <section className={className}>
-            {/* <header>
-                <h1 className="text-xl font-medium text-black">Data Pelamar</h1>
-                <p className='text-sm'>*Data Pelamar akan digunakan untuk melamar lowongan kerja yang tersedia pada website Tifcareer.</p>
-            </header> */}
+            <header>
+                <h2 className="text-lg font-medium text-black">Profile Information</h2>
 
-            <form onSubmit={submit} className="space-y-6">
+                <p className="mt-1 text-sm text-gray-600">
+                    Update your account's profile information and email address.
+                </p>
+            </header>
+
+            <form onSubmit={submit} className="mt-6 space-y-6">
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
 
