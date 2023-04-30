@@ -7,12 +7,13 @@ import { Link, useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
 import axios from 'axios';
 
-export default function UpdateProfileInformationForm(props, className, processing) {
-    // const user = usePage().props.auth.user;
-    const aplicant = usePage().props.auth.user.applicant;
+export default function UpdateProfileInformationForm(className, errors, processing, mustVerifyEmail, status) {
+    const user = usePage().props.auth.user;
+    const aplicant = usePage().props.auth.user.applicant_id;
     // console.log('data User:', user);
-    console.log('data Applicant:', aplicant);
+    // console.log('data Applicant:', aplicant);
 
+    // Data Diri
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone_no, setPhone] = useState('');
@@ -20,7 +21,16 @@ export default function UpdateProfileInformationForm(props, className, processin
     const [domicile, setDomicile] = useState('');
     const [birth_of_date, setBirthOfDate] = useState('');
     const [gender, setGender] = useState('');
-    const [work_experience, setWorkExperience] = useState('');
+
+    // work experience
+    // const [work_experience, setWorkExperience] =useState(['']);
+    const [position, setPosition] = useState('');
+    const [work_institution, setWorkInstitution] = useState('');
+    const [start_year, setStartYear] = useState('');
+    const [end_year, setEndYear] = useState('');
+    const [description, setDescription] = useState('');
+
+    const [show, setShow] = useState(false);
 
     // const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
     //     name: user.name,
@@ -33,20 +43,27 @@ export default function UpdateProfileInformationForm(props, className, processin
     // });
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/applicants/${aplicant.id}`)
+        axios.get(`http://localhost:8000/api/applicants/${aplicant}`)
             .then(res => {
+                const dataLuar = res.data.data.work_experience?.[aplicant];
                 const datas = res.data.data;
-                console.log('datas:', datas)
-                setName(datas.name);
-                setEmail(datas.email);
-                setPhone(datas.phone_no);
-                setAplicantDescription(datas.aplicantDescription);
-                setDomicile(datas.domicile);
-                setBirthOfDate(datas.birth_of_date);
-                setGender(datas.gender);
-                setWorkExperience(datas.work_experience);
-                // console.log('data berhasil di update');
-                console.log('data res', res);
+                // const work_experience = res.data.data.work_experience?.[aplicant];
+                console.log('dataLuar', dataLuar);
+                console.log('datas:', datas);
+                console.log(aplicant);
+                // console.log('pengalaman', work_experience);
+                setName(datas.name || '');
+                setEmail(datas.email || '');
+                setPhone(datas.phone_no || '');
+                setAplicantDescription(datas.aplicantDescription || '');
+                setDomicile(datas.domicile || '');
+                setBirthOfDate(datas.birth_of_date || '');
+                setGender(datas.gender || '');
+                setPosition(work_experience.position || '');
+                setWorkInstitution(work_experience.work_institution || '');
+                setStartYear(work_experience.start_year || '');
+                setEndYear(work_experience.end_year || '');
+                setDescription(work_experience.description || '');
             })
             .catch(err => console.log(err));
     }, []);
@@ -65,20 +82,23 @@ export default function UpdateProfileInformationForm(props, className, processin
             gender: gender,
             work_experience: [
                 {
-                    work_institution: work_experience,
-                    position: work_experience,
-                    start_year: 123,
-                    end_year: 123,
-                    description: work_experience,
+                    work_institution: work_institution,
+                    position: position,
+                    start_year: start_year,
+                    end_year: end_year,
+                    description: description,
                 }
             ]
-        })
-            .then(res => console.log('data res-2', res.data))
+        }).then(res => res.data.success ? setShow(true) && console.log('data res-2', res.data) : setShow(false))
             .catch(err => console.log(err));
+
     };
 
     return (
         <section className={className}>
+
+            {/* SECTION DATA DIRI PELAMAR */}
+
             <div className="card bg-white shadow sm:rounded-lg">
                 <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Data Diri</h1></figure>
                 <div className="card-body">
@@ -96,7 +116,7 @@ export default function UpdateProfileInformationForm(props, className, processin
                                 autoComplete="name"
                             />
 
-                            {/* <InputError className="mt-2" message={errors.user.name} /> */}
+                            <InputError className="mt-2" message={errors.name} />
                         </div>
 
                         <div className='grid grid-cols-2 gap-4'>
@@ -114,7 +134,7 @@ export default function UpdateProfileInformationForm(props, className, processin
                                     autoComplete="username"
                                 />
 
-                                {/* <InputError className="mt-2" message={errors.user.email} /> */}
+                                <InputError className="mt-2" message={errors.email} />
                             </div>
 
                             <div>
@@ -129,7 +149,7 @@ export default function UpdateProfileInformationForm(props, className, processin
                                     autoComplete="phone_no"
                                 />
 
-                                {/* <InputError className="mt-2" message={errors.aplicant.phone_no} /> */}
+                                <InputError className="mt-2" message={errors.phone_no} />
                             </div>
 
                         </div>
@@ -145,14 +165,8 @@ export default function UpdateProfileInformationForm(props, className, processin
                                 disabled
                                 autoComplete="aplicantDescription"
                             />
-                            {/* <TextInput
-                                
-                                className="mt-1 block w-full text-black"
-                                
-                                
-                            /> */}
 
-                            {/* <InputError className="mt-2" message={errors.aplicant.aplicantDescription} /> */}
+                            <InputError className="mt-2" message={errors.aplicantDescription} />
                         </div>
 
                         <div>
@@ -167,7 +181,7 @@ export default function UpdateProfileInformationForm(props, className, processin
                                 autoComplete="domicile"
                             />
 
-                            {/* <InputError className="mt-2" message={errors.aplicant.domicile} /> */}
+                            <InputError className="mt-2" message={errors.domicile} />
                         </div>
                         <div className='grid grid-cols-2 gap-4'>
 
@@ -184,7 +198,7 @@ export default function UpdateProfileInformationForm(props, className, processin
                                     autoComplete="birth_of_date"
                                 />
 
-                                {/* <InputError className="mt-2" message={errors.aplicant.birth_of_date} /> */}
+                                <InputError className="mt-2" message={errors.birth_of_date} />
                             </div>
 
                             <div>
@@ -202,31 +216,100 @@ export default function UpdateProfileInformationForm(props, className, processin
                                     <option>Perempuan</option>
                                 </select>
 
-                                {/* <InputError className="mt-2" message={errors.aplicant.gender} /> */}
+                                <InputError className="mt-2" message={errors.gender} />
                             </div>
 
                         </div>
+
+                        {/* SECTION PENGALAMAN KERJA */}
+
                         <div className="card bg-white shadow sm:rounded-lg">
                             <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Pengalaman Kerja</h1></figure>
                             <div className="card-body ">
                                 <div>
-                                    <InputLabel htmlFor="work_experience" value="Pengalaman Kerja" />
+                                    <InputLabel htmlFor="position" value="Posisi Kerja" />
 
                                     <TextInput
-                                        id="work_experience"
-                                        className="mt-1 block w-full text-black w-full max-w-xs"
-                                        value={work_experience}
-                                        onChange={(e) => setWorkExperience(e.target.value)}
+                                        id="position"
+                                        className="mt-1 block w-full text-black w-full max-w-xl"
+                                        value={position}
+                                        onChange={(e) => setPosition(e.target.value)}
                                         type="text"
                                         required
-                                        autoComplete="work_experience"
+                                        autoComplete="position"
                                     />
 
-                                    {/* <InputError className="mt-2" message={errors.aplicant.birth_of_date} /> */}
+                                    <InputError className="mt-2" message={errors.position} />
+                                </div>
+
+                                <div>
+                                    <InputLabel htmlFor="work_institution" value="Nama Perusahaan" />
+
+                                    <TextInput
+                                        id="work_institution"
+                                        className="mt-1 block w-full text-black w-full max-w-xl"
+                                        value={work_institution}
+                                        onChange={(e) => setWorkInstitution(e.target.value)}
+                                        type="text"
+                                        required
+                                        autoComplete="work_institution"
+                                    />
+
+                                    <InputError className="mt-2" message={errors.work_institution} />
+                                </div>
+
+                                <div className='grid grid-cols-2 gap-4'>
+
+                                    <div>
+                                        <InputLabel htmlFor="start_year" value="Tahun Masuk" />
+
+                                        <TextInput
+                                            id="start_year"
+                                            className="mt-1 block w-full text-black w-full max-w-xs"
+                                            value={start_year}
+                                            onChange={(e) => setStartYear(e.target.value)}
+                                            type="number"
+                                            required
+                                            autoComplete="start_year"
+                                        />
+
+                                        <InputError className="mt-2" message={errors.start_year} />
+                                    </div>
+
+                                    <div>
+                                        <InputLabel htmlFor="end_year" value="Tahun Keluar" />
+
+                                        <TextInput
+                                            id="end_year"
+                                            className="mt-1 block w-full text-black w-full max-w-xs"
+                                            value={end_year}
+                                            onChange={(e) => setEndYear(e.target.value)}
+                                            type="number"
+                                            required
+                                            autoComplete="end_year"
+                                        />
+
+                                        <InputError className="mt-2" message={errors.end_year} />
+                                    </div>
+                                </div>
+                                <div>
+                                    <InputLabel htmlFor="description" value="Deskripsi Kerja" />
+
+                                    <TextInput
+                                        id="description"
+                                        className="mt-1 block w-full text-black w-full max-w-xl"
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                        type="text"
+                                        required
+                                        autoComplete="description"
+                                    />
+
+                                    <InputError className="mt-2" message={errors.description} />
                                 </div>
                             </div>
                         </div>
-                        {/* {mustVerifyEmail && user.email_verified_at === null && (
+                        {mustVerifyEmail && user.email_verified_at === null && (
                             <div>
                                 <p className="text-sm mt-2 text-gray-800">
                                     Your email address is unverified.
@@ -246,19 +329,19 @@ export default function UpdateProfileInformationForm(props, className, processin
                                     </div>
                                 )}
                             </div>
-                        )} */}
+                        )}
 
                         <div className="flex items-center gap-4">
                             <PrimaryButton disabled={processing}>Save</PrimaryButton>
 
-                            {/* <Transition
-                                show={recentlySuccessful}
+                            <Transition
+                                show={show}
                                 enterFrom="opacity-0"
                                 leaveTo="opacity-0"
                                 className="transition ease-in-out"
                             >
                                 <p className="text-sm text-gray-600">Saved.</p>
-                            </Transition> */}
+                            </Transition>
                         </div>
                     </form>
                 </div>

@@ -30,9 +30,9 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
                         <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Edit Data Pelamar</h1></figure>
                         <div className="card-body ">
                             <UpdateProfileInformationForm
-                                // mustVerifyEmail={mustVerifyEmail}
-                                // status={status}
-                                // className="max-w-7xl"
+                                mustVerifyEmail={mustVerifyEmail}
+                                status={status}
+                                className="max-w-7xl"
                             />
                         </div>
                     </div>

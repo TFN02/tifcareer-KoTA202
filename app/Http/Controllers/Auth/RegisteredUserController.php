@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\User;
+use App\Models\Applicant;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,6 +19,7 @@ use Inertia\Response;
 class RegisteredUserController extends Controller
 {
 
+    
     public function create(): Response
     {
         return Inertia::render('Auth/Register');
@@ -44,34 +47,49 @@ class RegisteredUserController extends Controller
             ]);
         }
 
+        
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
-        event(new Registered($user));
-
-        Auth::login($user);
-        $user->roles()->attach(\App\Models\Role::where('name',$request->role)->first());
-
-        if ($request->role=="pelamar"){
-
-            $user->applicant()->create([
-                'user_id' => $user->id,
-                'name' => $request->name,
+    
+        $applicant = null;
+    
+        if ($request->role == 'pelamar') {
+            $existingApplicant = Applicant::where('user_id', $user->id)->first();
+    
+            if (!$existingApplicant) {
+                $applicant = $user->applicant()->create([
+                    'name' => $request->name,
+                    'user_id' => $user->id,
+                ]);
+            } else {
+                $applicant = $existingApplicant;
+            }
+    
+            $user->update([
+                'applicant_id' => $applicant->id,
+                
             ]);
-
-            return redirect('/lowonganKerja');
-
-        }else if ($request->role=="perusahaan"){
-
-            $user->company()->create([
-                'user_id' => $user->id,
+        } 
+        // BELOM DIUBAH KEK APLICANT 
+        else if ($request->role == 'perusahaan') {
+            $company = $user->company()->create([
                 'name' => $request->name,
                 'npwp' => $request->npwp,
             ]);
-
+        }
+    
+        event(new Registered($user));
+        
+        Auth::login($user);
+        $user->roles()->attach(\App\Models\Role::where('name', $request->role)->first());
+    
+        if ($request->role == "pelamar") {
+            return redirect('/lowonganKerja');
+        } else if ($request->role == "perusahaan") {
             return redirect('/dashboard-perusahaan');
         }
     }
