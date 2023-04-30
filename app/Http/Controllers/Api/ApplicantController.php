@@ -178,23 +178,22 @@ class ApplicantController extends Controller
     {
         $this->applicant_id = $id;
         $applicant = Applicant::findOrFail($id); 
-
-        $request->validate([
-            'user_id' => 'int',
-            'name' => 'string|max:100',
-            'phone_no' => 'string|max:100',
-            'birth_of_date' => 'date',
-            'domicile' => 'string',
-        ]);
-        
-        if($request->user_id){
-            $user = User::find($request->user_id);
-            if($user != null){
-                $applicant->user_id = $user->id;
-            }else{
-
-            }
+        if($applicant->id){
+            $request->validate([
+                'name' => 'string|max:100',
+                'phone_no' => 'string|max:100',
+                'domicile' => 'string',
+            ]);
+            
+        }else{
+            return response()->json([
+                'success' => true,
+                'data' => "Applicant not found"
+            ]);
         }
+
+        
+        
 
         if($request->name){
             $applicant->name = $request->input('name');
@@ -211,15 +210,14 @@ class ApplicantController extends Controller
 
         if($request->education){
             foreach($request->education as $edu){
+                if($edu['is_add'] == false){
                 $education = Education::whereHas('applicant', function($query){
-                    $query->where('applicant_id','=', $this->applicant_id);
+                                        $query->where('applicant_id','=', $this->applicant_id);
                 })->get();
-                if(count($education)!=0){
                 foreach($education as $e){
-                    $education_id = $e->id;
+                        $education_id = $e->id;
                     
-                    $education_e = $applicant->education()->find($education_id);
-                    if($education_e->id){
+                        $education_e = $applicant->education()->find($education_id);
                         if($edu['level']!=null){
                             $education_e->level = $edu['level'];
                         }
@@ -232,8 +230,9 @@ class ApplicantController extends Controller
                         if($edu['graduation_year']!=null){
                             $education_e->graduation_year = $edu['graduation_year'];
                         }
-                    }else{
-                        foreach($request->education as $edu){
+                }
+            }else{
+                foreach($request->education as $edu){
                         $educati = $applicant->education()->create([
                             'level' => $edu['level'],
                             'major' => $edu['major'],
@@ -243,29 +242,15 @@ class ApplicantController extends Controller
                         
                         $educati->applicant()->sync($applicant->id);
                     }
-                    }
-                    
-                }
-                }else{
-                    foreach($request->education as $edu){
-                        $educati = $applicant->education()->create([
-                            'level' => $edu['level'],
-                            'major' => $edu['major'],
-                            'educational_institution' => $edu['educational_institution'],
-                            'graduation_year' => $edu['graduation_year'],
-                        ]);
-                        
-                        $educati->applicant()->sync($applicant->id);
-                    }
-                }
-                
+                }   
             }
-        } 
-        
-        if($request->work_experience){
+        }          
+    
+        if($request->work_experience!=null){
             foreach($request->work_experience as $wexp){
+                if($wexp['is_add']==false){
+
                 $work_exp = WorkExperience::where('applicant_id','=', $id)->get();
-                if(count($work_exp)!=0){
                 foreach($work_exp as $we){
                     $work_id = $we->id;
 
@@ -286,7 +271,10 @@ class ApplicantController extends Controller
                         if($wexp['description']!=null){
                             $work_e->description = $wexp['description'];
                         }
-                    }else{
+                    }
+                }
+                
+                }else{
                         foreach($request->work_experience as $we){
                             $we = $applicant->workExperience()->create([
                                 'work_institution' => $we['work_institution'],
@@ -300,63 +288,37 @@ class ApplicantController extends Controller
                     }
                     
                 }
-                }else{
-                    foreach($request->work_experience as $we){
-                        $we = $applicant->workExperience()->create([
-                            'work_institution' => $we['work_institution'],
-                            'position' => $we['position'],
-                            'start_year' => $we['start_year'],
-                            'end_year' => $we['end_year'],
-                            'description' => $we['description'],
-                            'application_id' => $applicant->id,
-                        ]);
-                    }
-                }
             }
-        } 
 
         if($request->skill){
             foreach($request->skill as $skill){
-                $skill_s = Skill::whereHas('applicant', function($query){
-                    $query->where('applicant_id','=', $this->applicant_id);
-                })->get();
-                if(count($skill_s)!=0){
-                    foreach($skill_s as $sk){
-                        $skill_id = $sk->id;
-
-                        $skill_sk = $applicant->skill()->find($skill_id);
-
-                        if($skill_sk->id){
-                            if($skill['name']!=null){
-                                $skill_sk->name = $skill['name'];
-                            }
-                            if($skill['skill_category']!=null){
-                                $sk_c = SkillCategory::where('name', $skill['skill_category'])->get();
-                                foreach($sk_c as $sc){
-                                    $skill_c_id = $sc->id;
+                if($skill['is_add']==false){
+                    $skill_s = Skill::whereHas('applicant', function($query){
+                        $query->where('applicant_id','=', $this->applicant_id);
+                    })->get();
+                    
+                        foreach($skill_s as $sk){
+                            $skill_id = $sk->id;
+    
+                            $skill_sk = $applicant->skill()->find($skill_id);
+    
+                            if($skill_sk->id){
+                                if($skill['name']!=null){
+                                    $skill_sk->name = $skill['name'];
                                 }
-                                if(count($sk_c) == 1){
-                                    $skill_cat = $skill_sk->skillCategory->find($skill_c_id);
-                                    $skill_cat->name = $skill['skill_category'];
-                                }
-                            }
-                        }else{
-                            foreach($request->skill as $skill){
-                                $skill_c = SkillCategory::where('name', $skill['skill_category'])->get();
-                                foreach($skill_c as $sc){
-                                    $skill_category_id = $sc->id;
-                                }
-                                if(count($skill_c)==1){
-                                    $skill = $applicant->skill()->create([
-                                        'name' => $skill['name'],
-                                        'skill_category_id' => $skill_category_id,
-                                    ]);
-                                    $skill->applicant()->sync($applicant->id);
+                                if($skill['skill_category']!=null){
+                                    $sk_c = SkillCategory::where('name', $skill['skill_category'])->get();
+                                    foreach($sk_c as $sc){
+                                        $skill_c_id = $sc->id;
+                                    }
+                                    if(count($sk_c) == 1){
+                                        $skill_cat = $skill_sk->skillCategory->find($skill_c_id);
+                                        $skill_cat->name = $skill['skill_category'];
+                                    }
                                 }
                             }
                         }
-                        
-                    }
+
                 }else{
                     foreach($request->skill as $skill){
                         $skill_c = SkillCategory::where('name', $skill['skill_category'])->get();
@@ -378,10 +340,10 @@ class ApplicantController extends Controller
 
         if($request->interest_area){
             foreach($request->interest_area as $interest){
-                $inter = InterestArea::whereHas('applicant', function($query){
-                    $query->where('applicant_id','=', $this->applicant_id);
-                })->get();
-                if(count($inter)!=0){
+                if($interest['is_add']==false){
+                    $inter = InterestArea::whereHas('applicant', function($query){
+                        $query->where('applicant_id','=', $this->applicant_id);
+                    })->get();
                     foreach($inter as $in){
                         $interest_id = $in->id;
     
@@ -402,7 +364,7 @@ class ApplicantController extends Controller
                                 $interest->applicant()->sync($applicant->id);
                             } 
                         }
-                    }                    
+                    }       
                 }else{
                     foreach($request->interest_area as $interest){
                         $interest = $applicant->interestArea()->create([
@@ -418,7 +380,8 @@ class ApplicantController extends Controller
              
         if($request->soft_skill){
             foreach($request->soft_skill as $soft_skill){
-                $soft_sk = SoftSkill::where('applicant_id','=', $id)->get();
+                if($soft_skill['is_add']==false){
+                    $soft_sk = SoftSkill::where('applicant_id','=', $id)->get();
                 if(count($soft_sk)!=0){
                     foreach($soft_sk as $ss){
                         $soft_sk_id = $ss->id;
@@ -434,7 +397,7 @@ class ApplicantController extends Controller
                                     'name' => $ss['name'],
                                     'applicant_id' => $applicant->id,
                                 ]);
-                        }
+                            }
                         }
                     }
                 }else{
@@ -448,11 +411,12 @@ class ApplicantController extends Controller
 
             }
         } 
+        }
 
         if($request->certificate){
             foreach($request->certificate as $certif){
-                $cert = Certificate::where('applicant_id','=', $id)->get();
-                if(count($cert)!=0){
+                if($certif['is_add']==false){
+                    $cert = Certificate::where('applicant_id','=', $id)->get();
                     foreach($cert as $ct){
                         $certif_id = $ct->id;
                         $certif_c = $applicant->certificate()->find($certif_id);
@@ -478,6 +442,7 @@ class ApplicantController extends Controller
                             }
                         }
                     }
+
                 }else{
                     foreach($request->certificate as $certif){
                         $certif = $applicant->certificate()->create([
