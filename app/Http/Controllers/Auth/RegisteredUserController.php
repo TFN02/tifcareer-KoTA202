@@ -27,23 +27,21 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        if ($request->role == 'pelamar'){
+        if ($request->role == 'pelamar' || $request->role == 'admin'){
             $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:'.User::class,
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
-                'role' => ['required', 'in:pelamar,perusahaan'],
+                'name' => 'required|string|max:100',
+                'email' => 'required|string|email|max:100|unique:'.User::class,
+                'password' => ['required', Rules\Password::defaults()],
+                'role' => ['required', 'in:pelamar,admin'],
             ]);
-
-            
 
         }else if($request->role == 'perusahaan') {
             $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:'.User::class,
+                'name' => 'required|string|max:100',
+                'email' => 'required|string|email|max:100|unique:'.User::class,
                 'npwp' => 'required|digits:15',
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
-                'role' => ['required', 'in:pelamar,perusahaan'],
+                'password' => ['required', Rules\Password::defaults()],
+                'role' => ['required', 'in:perusahaan'],
             ]);
         }
 

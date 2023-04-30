@@ -178,23 +178,22 @@ class ApplicantController extends Controller
     {
         $this->applicant_id = $id;
         $applicant = Applicant::findOrFail($id); 
-
-        $request->validate([
-            'user_id' => 'int',
-            'name' => 'string|max:100',
-            'phone_no' => 'string|max:100',
-            'birth_of_date' => 'date',
-            'domicile' => 'string',
-        ]);
-        
-        if($request->user_id){
-            $user = User::find($request->user_id);
-            if($user != null){
-                $applicant->user_id = $user->id;
-            }else{
-
-            }
+        if($applicant->id){
+            $request->validate([
+                'name' => 'string|max:100',
+                'phone_no' => 'string|max:100',
+                'domicile' => 'string',
+            ]);
+            
+        }else{
+            return response()->json([
+                'success' => true,
+                'data' => "Applicant not found"
+            ]);
         }
+
+        
+        
 
         if($request->name){
             $applicant->name = $request->input('name');
@@ -211,128 +210,247 @@ class ApplicantController extends Controller
 
         if($request->education){
             foreach($request->education as $edu){
+                if($edu['is_add'] == false){
                 $education = Education::whereHas('applicant', function($query){
-                    $query->where('applicant_id','=', $this->applicant_id);
+                                        $query->where('applicant_id','=', $this->applicant_id);
                 })->get();
                 foreach($education as $e){
-                    $education_id = $e->id;
-
-                    $education_e = $applicant->education()->find($education_id);
-                    if($edu['level']!=null){
-                        $education_e->level = $edu['level'];
-                    }
-                    if($edu['major']!=null){
-                        $education_e->major = $edu['major'];
-                    }
-                    if($edu['educational_institution']!=null){
-                        $education_e->educational_institution = $edu['educational_institution'];
-                    }
-                    if($edu['graduation_year']!=null){
-                        $education_e->graduation_year = $edu['graduation_year'];
-                    }
+                        $education_id = $e->id;
+                    
+                        $education_e = $applicant->education()->find($education_id);
+                        if($edu['level']!=null){
+                            $education_e->level = $edu['level'];
+                        }
+                        if($edu['major']!=null){
+                            $education_e->major = $edu['major'];
+                        }
+                        if($edu['educational_institution']!=null){
+                            $education_e->educational_institution = $edu['educational_institution'];
+                        }
+                        if($edu['graduation_year']!=null){
+                            $education_e->graduation_year = $edu['graduation_year'];
+                        }
                 }
+            }else{
+                foreach($request->education as $edu){
+                        $educati = $applicant->education()->create([
+                            'level' => $edu['level'],
+                            'major' => $edu['major'],
+                            'educational_institution' => $edu['educational_institution'],
+                            'graduation_year' => $edu['graduation_year'],
+                        ]);
+                        
+                        $educati->applicant()->sync($applicant->id);
+                    }
+                }   
             }
-        } 
-        
-        if($request->work_experience){
+        }          
+    
+        if($request->work_experience!=null){
             foreach($request->work_experience as $wexp){
+                if($wexp['is_add']==false){
+
                 $work_exp = WorkExperience::where('applicant_id','=', $id)->get();
                 foreach($work_exp as $we){
                     $work_id = $we->id;
 
                     $work_e = $applicant->workExperience()->find($work_id);
-                    if($wexp['work_institution']!=null){
-                        $work_e->work_institution = $wexp['work_institution'];
-                    }
-                    if($wexp['position']!=null){
-                        $work_e->position = $wexp['position'];
-                    }
-                    if($wexp['start_year']!=null){
-                        $work_e->start_year = $wexp['start_year'];
-                    }
-                    if($wexp['end_year']!=null){
-                        $work_e->end_year = $wexp['end_year'];
-                    }
-                    if($wexp['description']!=null){
-                        $work_e->description = $wexp['description'];
+                    if($work_e->id){
+                        if($wexp['work_institution']!=null){
+                            $work_e->work_institution = $wexp['work_institution'];
+                        }
+                        if($wexp['position']!=null){
+                            $work_e->position = $wexp['position'];
+                        }
+                        if($wexp['start_year']!=null){
+                            $work_e->start_year = $wexp['start_year'];
+                        }
+                        if($wexp['end_year']!=null){
+                            $work_e->end_year = $wexp['end_year'];
+                        }
+                        if($wexp['description']!=null){
+                            $work_e->description = $wexp['description'];
+                        }
                     }
                 }
+                
+                }else{
+                        foreach($request->work_experience as $we){
+                            $we = $applicant->workExperience()->create([
+                                'work_institution' => $we['work_institution'],
+                                'position' => $we['position'],
+                                'start_year' => $we['start_year'],
+                                'end_year' => $we['end_year'],
+                                'description' => $we['description'],
+                                'application_id' => $applicant->id,
+                            ]);
+                        }
+                    }
+                    
+                }
             }
-        } 
 
         if($request->skill){
             foreach($request->skill as $skill){
-                $skill_s = Skill::whereHas('applicant', function($query){
-                    $query->where('applicant_id','=', $this->applicant_id);
-                })->get();
-                foreach($skill_s as $sk){
-                    $skill_id = $sk->id;
-
-                    $skill_sk = $applicant->skill()->find($skill_id);
-                    if($skill['name']!=null){
-                        $skill_sk->name = $skill['name'];
-                    }
-                    if($skill['skill_category']!=null){
-                        $sk_c = SkillCategory::where('name', $skill['skill_category'])->get();
-                        foreach($sk_c as $sc){
-                            $skill_c_id = $sc->id;
+                if($skill['is_add']==false){
+                    $skill_s = Skill::whereHas('applicant', function($query){
+                        $query->where('applicant_id','=', $this->applicant_id);
+                    })->get();
+                    
+                        foreach($skill_s as $sk){
+                            $skill_id = $sk->id;
+    
+                            $skill_sk = $applicant->skill()->find($skill_id);
+    
+                            if($skill_sk->id){
+                                if($skill['name']!=null){
+                                    $skill_sk->name = $skill['name'];
+                                }
+                                if($skill['skill_category']!=null){
+                                    $sk_c = SkillCategory::where('name', $skill['skill_category'])->get();
+                                    foreach($sk_c as $sc){
+                                        $skill_c_id = $sc->id;
+                                    }
+                                    if(count($sk_c) == 1){
+                                        $skill_cat = $skill_sk->skillCategory->find($skill_c_id);
+                                        $skill_cat->name = $skill['skill_category'];
+                                    }
+                                }
+                            }
                         }
-                        if(count($sk_c) == 1){
-                            $skill_cat = $skill_sk->skillCategory->find($skill_c_id);
-                            $skill_cat->name = $skill['skill_category'];
+
+                }else{
+                    foreach($request->skill as $skill){
+                        $skill_c = SkillCategory::where('name', $skill['skill_category'])->get();
+                        foreach($skill_c as $sc){
+                            $skill_category_id = $sc->id;
+                        }
+                        if(count($skill_c)==1){
+                            $skill = $applicant->skill()->create([
+                                'name' => $skill['name'],
+                                'skill_category_id' => $skill_category_id,
+                            ]);
+                            $skill->applicant()->sync($applicant->id);
                         }
                     }
                 }
+
             }
         } 
 
         if($request->interest_area){
             foreach($request->interest_area as $interest){
-                $inter = InterestArea::whereHas('applicant', function($query){
-                    $query->where('applicant_id','=', $this->applicant_id);
-                })->get();
-                foreach($inter as $in){
-                    $interest_id = $in->id;
-
-                    $interest_in = $applicant->interestArea()->find($interest_id);
-                    if($interest['name_of_field']!=null){
-                        $interest_in->name = $interest['name_of_field'];
-                    }
-                    if($interest['reason_of_interest']!=null){
-                        $interest_in->name = $interest['reason_of_interest'];
+                if($interest['is_add']==false){
+                    $inter = InterestArea::whereHas('applicant', function($query){
+                        $query->where('applicant_id','=', $this->applicant_id);
+                    })->get();
+                    foreach($inter as $in){
+                        $interest_id = $in->id;
+    
+                        $interest_in = $applicant->interestArea()->find($interest_id);
+                        if($interest_in->id){
+                            if($interest['name_of_field']!=null){
+                                $interest_in->name = $interest['name_of_field'];
+                            }
+                            if($interest['reason_of_interest']!=null){
+                                $interest_in->name = $interest['reason_of_interest'];
+                            }
+                        }else{
+                            foreach($request->interest_area as $interest){
+                                $interest = $applicant->interestArea()->create([
+                                    'name_of_field' => $interest['name_of_field'],
+                                    'reason_of_interest' => $interest['reason_of_interest'],
+                                ]);
+                                $interest->applicant()->sync($applicant->id);
+                            } 
+                        }
+                    }       
+                }else{
+                    foreach($request->interest_area as $interest){
+                        $interest = $applicant->interestArea()->create([
+                            'name_of_field' => $interest['name_of_field'],
+                            'reason_of_interest' => $interest['reason_of_interest'],
+                        ]);
+                        $interest->applicant()->sync($applicant->id);
                     }
                 }
+
             }
         } 
              
         if($request->soft_skill){
             foreach($request->soft_skill as $soft_skill){
-                $soft_sk = SoftSkill::where('applicant_id','=', $id)->get();
-                foreach($soft_sk as $ss){
-                    $soft_sk_id = $ss->id;
-
-                    $soft_s = $applicant->softSkill()->find($soft_sk_id);
-                    if($soft_skill['name']!=null){
-                        $soft_s->name = $soft_skill['name'];
+                if($soft_skill['is_add']==false){
+                    $soft_sk = SoftSkill::where('applicant_id','=', $id)->get();
+                if(count($soft_sk)!=0){
+                    foreach($soft_sk as $ss){
+                        $soft_sk_id = $ss->id;
+    
+                        $soft_s = $applicant->softSkill()->find($soft_sk_id);
+                        if($soft_s->id){
+                            if($soft_skill['name']!=null){
+                                $soft_s->name = $soft_skill['name'];
+                            }
+                        }else{
+                            foreach($request->soft_skill as $ss){
+                                $ss = $applicant->softSkill()->create([
+                                    'name' => $ss['name'],
+                                    'applicant_id' => $applicant->id,
+                                ]);
+                            }
+                        }
                     }
+                }else{
+                    foreach($request->soft_skill as $ss){
+                        $ss = $applicant->softSkill()->create([
+                            'name' => $ss['name'],
+                            'applicant_id' => $applicant->id,
+                        ]);
                 }
+                }
+
             }
         } 
+        }
 
         if($request->certificate){
             foreach($request->certificate as $certif){
-                $cert = Certificate::where('applicant_id','=', $id)->get();
-                foreach($cert as $ct){
-                    $certif_id = $ct->id;
-                    $certif_c = $applicant->certificate()->find($certif_id);
-                    if($certif['title']!=null){
-                        $certif_c->name = $certif['title'];
+                if($certif['is_add']==false){
+                    $cert = Certificate::where('applicant_id','=', $id)->get();
+                    foreach($cert as $ct){
+                        $certif_id = $ct->id;
+                        $certif_c = $applicant->certificate()->find($certif_id);
+
+                        if($certif_c->id){
+                            if($certif['title']!=null){
+                                $certif_c->name = $certif['title'];
+                            }
+                            if($certif['description']!=null){
+                                $certif_c->name = $certif['description'];
+                            }
+                            if($certif['no_certificate']!=null){
+                                $certif_c->name = $certif['no_certificate'];
+                            }
+                        }else{
+                            foreach($request->certificate as $certif){
+                                $certif = $applicant->certificate()->create([
+                                    'title' => $certif['title'],
+                                    'description' => $certif['description'],
+                                    'no_certificate' => $certif['no_certificate'],
+                                    'applicant_id' => $applicant->id,
+                                ]);
+                            }
+                        }
                     }
-                    if($certif['description']!=null){
-                        $certif_c->name = $certif['description'];
-                    }
-                    if($certif['no_certificate']!=null){
-                        $certif_c->name = $certif['no_certificate'];
+
+                }else{
+                    foreach($request->certificate as $certif){
+                        $certif = $applicant->certificate()->create([
+                            'title' => $certif['title'],
+                            'description' => $certif['description'],
+                            'no_certificate' => $certif['no_certificate'],
+                            'applicant_id' => $applicant->id,
+                        ]);
                     }
                 }
             }

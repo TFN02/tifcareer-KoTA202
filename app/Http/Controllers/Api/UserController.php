@@ -66,8 +66,9 @@ class UserController extends Controller
             ]);
         }
 
+      
+        $role = Role::where('name',$request->role)->first();
         
-        $role = Role::where('name',$request->role);
         
         if($role != null){
             $user = User::create([
@@ -82,11 +83,11 @@ class UserController extends Controller
                     'user_id' => $user->id,
                     'name' => $request->name,
                 ]);
+                
 
                 $user->applicant_id = $applicant->id;
                 $user->save();
-                
-    
+            
             }else if ($request->role=="admin"){
                 
                 $admin = $user->superAdmin()->create([
@@ -109,6 +110,7 @@ class UserController extends Controller
                 $user->save();
 
             }
+            
             $user->roles()->sync($role->id);
         }
 
