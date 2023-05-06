@@ -13,6 +13,7 @@ class WorkExperienceController extends Controller
     private  int $applicant_id;
     public function index(Request $request)
     {
+
         $experience = WorkExperience::with('applicant');
 
         if($request->applicant_id){
@@ -59,6 +60,7 @@ class WorkExperienceController extends Controller
             'end_year' => $request->end_year,
 
         ]);
+
 
         return response()->json([
             'success' => true,

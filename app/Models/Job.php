@@ -30,4 +30,8 @@ class Job extends Model
     public function weightingVariable(){
         return $this->hasMany(WeightingVariable::class, 'job_id');
     }
+
+    public function application(){
+        return $this->hasMany(Application::class, 'job_id');
+    }
 }

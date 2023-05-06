@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\SkillController;
 use App\Http\Controllers\Api\SoftSkillController;
 use App\Http\Controllers\Api\WorkExperienceController;
 use App\Http\Controllers\Api\SkillCategoryController;
+use App\Http\Controllers\Api\ApplicationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -44,3 +45,4 @@ Route::apiResource('softSkills', SoftSkillController::class);
 Route::apiResource('certificates', CertificateController::class);
 Route::apiResource('jobCategories', JobCategoryController::class);
 Route::apiResource('skillCategories', SkillCategoryController::class);
+Route::apiResource('applications', ApplicationController::class);
