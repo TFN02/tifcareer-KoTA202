@@ -12,7 +12,7 @@ class Certificate extends Model
     protected $guarded = ['id'];
 
     public function applicant(){
-        return $this->belongsTo(Applicant::class);
+        return $this->belongsTo(Applicant::class, 'applicant_id');
     }
 
 }

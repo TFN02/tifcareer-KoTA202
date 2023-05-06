@@ -20,7 +20,7 @@ class Applicant extends Model
     }
 
     public function workExperience(){
-        return $this->hasMany(WorkExperience::class);
+        return $this->hasMany(WorkExperience::class, 'applicant_id');
     }
 
     public function skill(){
@@ -36,14 +36,14 @@ class Applicant extends Model
     }
 
     public function application(){
-        return $this->hasMany(Application::class);
+        return $this->hasMany(Application::class, 'applicant_id');
     }
 
     public function softSkill(){
-        return $this->hasMany(SoftSkill::class);
+        return $this->hasMany(SoftSkill::class, 'applicant_id');
     }
 
     public function certificate(){
-        return $this->hasMany(Certificate::class);
+        return $this->hasMany(Certificate::class, 'applicant_id');
     }
 }

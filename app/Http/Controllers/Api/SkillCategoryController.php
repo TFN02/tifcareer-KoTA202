@@ -1,85 +1,79 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\SkillCategory;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class SkillCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $skill_category = SkillCategory::with('skill');
+
+        if($request->order_by && $request->order_type){
+            $skill_category = $skill_category->orderBy($request->order_by, $request->order_type);
+        }else{
+            $skill_category = $skill_category->orderBy('created_at', 'desc');
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $skill_category->paginate(20),
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:100',
+        ]);
+
+        $skill_category = SkillCategory::create([
+            'name' => $request->name,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' =>  $skill_category,
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\SkillCategory  $skillCategory
-     * @return \Illuminate\Http\Response
-     */
-    public function show(SkillCategory $skillCategory)
+    public function show( $id)
     {
-        //
+        $skill_category = SkillCategory::with('job')->findOrFail($id);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $skill_category
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\SkillCategory  $skillCategoriy
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(SkillCategory $skillCategory)
+    public function update(Request $request, $id)
     {
-        //
+        $skill_category = SkillCategory::findOrFail($id); 
+            
+        if($request->name){
+            $skill_category->name = $request->input('name');
+        }
+            $skill_category->save();
+        
+
+        return response()->json([
+            'success' => true,
+            'data' => $skill_category
+        ]); 
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\SkillCategory  $skillCategory
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, SkillCategory $skillCategory)
+    public function destroy($id)
     {
-        //
-    }
+        $skill_category = SkillCategory::find($id);
+        $skill_category->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\SkillCategory  $skillCategory
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(SkillCategory $skillCategory)
-    {
-        //
+        return response()->json([
+            'message' => 'Skill Category deleted',
+            'data' => $skill_category,
+        ]);
     }
 }

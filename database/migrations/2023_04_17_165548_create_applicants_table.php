@@ -17,9 +17,11 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->string('name',100)->nullable();
+            $table->string('gander',100)->nullable();
             $table->string('phone_no',100)->nullable();
             $table->date('birth_of_date')->nullable();
             $table->text('domicile')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

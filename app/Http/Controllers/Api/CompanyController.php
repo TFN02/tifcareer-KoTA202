@@ -167,7 +167,7 @@ class CompanyController extends Controller
         $company->delete();
 
         return response()->json([
-            'message' => 'User deleted',
+            'message' => 'Company deleted',
             'data' => $company,
         ]);
     }
