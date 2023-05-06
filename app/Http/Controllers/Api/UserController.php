@@ -226,7 +226,7 @@ class UserController extends Controller
         } 
         return response()->json([
             'success' => true,
-            'data' => $user->roles
+            'data' => $user
         ]); 
     }
 

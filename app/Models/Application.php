@@ -10,7 +10,7 @@ class Application extends Model
     use HasFactory;
 
     public function applicant(){
-        return $this->belongsTo(Applicant::class);
+        return $this->belongsTo(Applicant::class, 'applicant_id');
     }
 
     public function videoResume(){

@@ -23,9 +23,9 @@ class ApplicantController extends Controller
                                         'notification', 'application', 'softSkill', 'certificate');
 
         if($request->order_by && $request->order_type){
-            $jobs = $applicant->orderBy($request->order_by, $request->order_type);
+            $applicant = $applicant->orderBy($request->order_by, $request->order_type);
         }else{
-            $jobs = $applicant->orderBy('created_at', 'desc');
+            $applicant = $applicant->orderBy('created_at', 'desc');
         }
 
         return response()->json([
@@ -38,7 +38,6 @@ class ApplicantController extends Controller
     public function store(Request $request)
     {
         $applicant = Applicant::class;
-        $education = Education::class;
 
         if($request->user_id){
             $user = User::find($request->user_id);
@@ -46,17 +45,21 @@ class ApplicantController extends Controller
                 $request->validate([
                     'user_id' => 'required|int',
                     'name' => 'required|string|max:100',
+                    'gander' => 'required|string|max:100',
                     'phone_no' => 'required|string|max:100',
                     'birth_of_date' => 'required|date',
                     'domicile' => 'required|string',
+                    'description' => 'required|string',
                 ]);
 
                 $applicant = Applicant::create([
                     'user_id' => $user->id,
                     'name' => $request->input('name'),
+                    'gander' => $request->input('gander'),
                     'phone_no' => $request->input('phone_no'),
                     'birth_of_date' => $request->input('birth_of_date'),
                     'domicile' => $request->input('domicile'),
+                    'description' => $request->input('description'),
                 ]);     
                 
                 $user->applicant_id = $applicant->id;
@@ -181,8 +184,10 @@ class ApplicantController extends Controller
         if($applicant->id){
             $request->validate([
                 'name' => 'string|max:100',
+                'gander' => 'string|max:100',
                 'phone_no' => 'string|max:100',
                 'domicile' => 'string',
+                'description' => 'string',
             ]);
             
         }else{

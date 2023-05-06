@@ -9,6 +9,8 @@ class SkillCategory extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+    
     public function skill(){
         return $this->hasMany(Skill::class);
     }

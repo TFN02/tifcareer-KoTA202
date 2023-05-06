@@ -1,85 +1,80 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\JobCategory;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class JobCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    public function index(Request $request)
     {
-        //
+        $job_category = JobCategory::with('job');
+
+        if($request->order_by && $request->order_type){
+            $job_category = $job_category->orderBy($request->order_by, $request->order_type);
+        }else{
+            $job_category = $job_category->orderBy('created_at', 'desc');
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $job_category->paginate(20),
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:100',
+        ]);
+
+        $job_category = JobCategory::create([
+            'name' => $request->name,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' =>  $job_category,
+        ]);
+    }
+    
+    public function show( $id)
+    {
+        $job_category = JobCategory::with('job')->findOrFail($id);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $job_category
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\JobCategory  $jobCategory
-     * @return \Illuminate\Http\Response
-     */
-    public function show(JobCategory $jobCategory)
+    public function update(Request $request, $id)
     {
-        //
+        $job_category = JobCategory::findOrFail($id); 
+            
+        if($request->name){
+            $job_category->name = $request->input('name');
+        }
+            $job_category->save();
+        
+
+        return response()->json([
+            'success' => true,
+            'data' => $job_category
+        ]);  
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\JobCategory  $jobCategory
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(JobCategory $jobCategory)
+    public function destroy( $id)
     {
-        //
-    }
+        $job_category = JobCategory::find($id);
+        $job_category->delete();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\JobCategory  $jobCategory
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, JobCategory $jobCategory)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\JobCategory  $jobCategory
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(JobCategory $jobCategory)
-    {
-        //
+        return response()->json([
+            'message' => 'Job Category deleted',
+            'data' => $job_category,
+        ]);
     }
 }

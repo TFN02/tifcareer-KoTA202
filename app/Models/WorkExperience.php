@@ -12,6 +12,6 @@ class WorkExperience extends Model
     protected $guarded = ['id'];
 
     public function applicant(){
-        return $this->belongsTo(applicant::class);
+        return $this->belongsTo(applicant::class, 'applicant_id');
     }
 }
