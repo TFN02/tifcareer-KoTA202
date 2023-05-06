@@ -54,6 +54,7 @@ class EducationController extends Controller
                     'educational_institution' => $request->educational_institution,
                     'graduation_year' => $request->graduation_year,
                 ]);
+                $education->applicant()->sync($applicant->id);
             }else{
                 return response()->json([
                     'success' => false,

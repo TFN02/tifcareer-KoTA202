@@ -51,6 +51,7 @@ class InterestAreaController extends Controller
             'name_of_field' => $request->name_of_field,
             'reason_of_interest' => $request->reason_of_interest,
         ]);
+        $interest->applicant()->sync($applicant->id);
 
         return response()->json([
             'success' => true,
