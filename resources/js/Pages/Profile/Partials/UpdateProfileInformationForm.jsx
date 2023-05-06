@@ -10,12 +10,13 @@ import axios from 'axios';
 export default function UpdateProfileInformationForm(className, errors, processing, mustVerifyEmail, status) {
     const user = usePage().props.auth.user;
     const aplicant = usePage().props.auth.user.applicant_id;
+    // const applicant_id = usePage().props.auth.user.
     // console.log('data User:', user);
     // console.log('data Applicant:', aplicant);
 
     // Data Diri
+    const { data, setData, patch, } = useForm({ name: user.name, email: user.email });
     const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
     const [phone_no, setPhone] = useState('');
     const [aplicantDescription, setAplicantDescription] = useState('');
     const [domicile, setDomicile] = useState('');
@@ -23,7 +24,8 @@ export default function UpdateProfileInformationForm(className, errors, processi
     const [gender, setGender] = useState('');
 
     // work experience
-    // const [work_experience, setWorkExperience] =useState(['']);
+    const [workExperience, setWorkExperience] = useState([]);
+    console.log('dataUsestate:', workExperience);
     const [position, setPosition] = useState('');
     const [work_institution, setWorkInstitution] = useState('');
     const [start_year, setStartYear] = useState('');
@@ -32,61 +34,79 @@ export default function UpdateProfileInformationForm(className, errors, processi
 
     const [show, setShow] = useState(false);
 
-    // const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
-    //     name: user.name,
-    //     email: user.email,
-    //     phone_no: aplicant.phone_no,
-    //     aplicantDescription: '',
-    //     domicile: aplicant.domicile,
-    //     birth_of_date: aplicant.birth_of_date,
-    //     gender: '',
-    // });
+
 
     useEffect(() => {
         axios.get(`http://localhost:8000/api/applicants/${aplicant}`)
             .then(res => {
-                const dataLuar = res.data.data.work_experience?.[aplicant];
+                const applicant_id = res.data.data.user.applicant_id;
                 const datas = res.data.data;
-                // const work_experience = res.data.data.work_experience?.[aplicant];
-                console.log('dataLuar', dataLuar);
+                const arrayWorkExperience = res.data.data.work_experience;
+                const work_experience = res.data.data.work_experience.find(exp => exp.applicant_id === applicant_id);
+                console.log('dataLuar', applicant_id);
                 console.log('datas:', datas);
-                console.log(aplicant);
-                // console.log('pengalaman', work_experience);
+                console.log('applicant_id:', aplicant);
+                console.log('pengalaman', work_experience);
+                console.log('data pengalaman', arrayWorkExperience);
+
                 setName(datas.name || '');
-                setEmail(datas.email || '');
                 setPhone(datas.phone_no || '');
                 setAplicantDescription(datas.aplicantDescription || '');
                 setDomicile(datas.domicile || '');
                 setBirthOfDate(datas.birth_of_date || '');
                 setGender(datas.gender || '');
-                setPosition(work_experience.position || '');
-                setWorkInstitution(work_experience.work_institution || '');
-                setStartYear(work_experience.start_year || '');
-                setEndYear(work_experience.end_year || '');
-                setDescription(work_experience.description || '');
+                setWorkExperience(arrayWorkExperience || '');
+                setPosition(work_experience?.position || '');
+                setWorkInstitution(work_experience?.work_institution || '');
+                setStartYear(work_experience?.start_year || '');
+                setEndYear(work_experience?.end_year || '');
+                setDescription(work_experience?.description || '');
             })
             .catch(err => console.log(err));
     }, []);
 
-    const submit = (e) => {
-        e.preventDefault();
+    const [list, setList] = useState([]);
 
-        // patch(route('profile.update'));
-        axios.put(`http://localhost:8000/api/applicants/${aplicant.id}`, {
-            name: name,
-            email: email,
+    console.log('list', list);
+    const handleChange = (index, e) => {
+        // setList(prevList => {
+        //     const newList = [...prevList];
+        //     newList[index] = {
+        //       ...newList[index],
+        //       [e.target.name]: value
+        //     };
+        //     console.log(e.target.name);
+        //     return newList;
+        //   });
+        const { name, value } = e.target;
+        setList(prevList => {
+          const newList = [...prevList];
+          newList[index] = { ...newList[index], [name]: value };
+          return newList;
+        });
+    };
+
+    const submit = async (e) => {
+        e.preventDefault();
+        const item = list[e.target.id];
+        console.log('item:',item.position);
+
+        patch(route('profile.update'));
+        axios.put(`http://localhost:8000/api/applicants/${aplicant}`, {
+            name: data.name,
             phone_no: phone_no,
             aplicantDescription: aplicantDescription,
             domicile: domicile,
             birth_of_date: birth_of_date,
             gender: gender,
-            work_experience: [
+            work_experience:[
                 {
-                    work_institution: work_institution,
-                    position: position,
-                    start_year: start_year,
-                    end_year: end_year,
-                    description: description,
+                    work_institution: item.work_institution,
+                    position: item.position,
+                    start_year: item.start_year,
+                    end_year: item.end_year,
+                    description: item.description,
+                    is_add: true,
                 }
             ]
         }).then(res => res.data.success ? setShow(true) && console.log('data res-2', res.data) : setShow(false))
@@ -109,8 +129,8 @@ export default function UpdateProfileInformationForm(className, errors, processi
                             <TextInput
                                 id="name"
                                 className="mt-1 block w-full text-black"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
+                                value={data.name}
+                                onChange={(e) => setData('name', e.target.value)}
                                 required
                                 isFocused
                                 autoComplete="name"
@@ -128,8 +148,8 @@ export default function UpdateProfileInformationForm(className, errors, processi
                                     id="email"
                                     type="email"
                                     className="mt-1 block w-full text-black"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={data.email}
+                                    onChange={(e) => setData('email', e.target.value)}
                                     required
                                     autoComplete="username"
                                 />
@@ -222,93 +242,109 @@ export default function UpdateProfileInformationForm(className, errors, processi
                         </div>
 
                         {/* SECTION PENGALAMAN KERJA */}
-
                         <div className="card bg-white shadow sm:rounded-lg">
                             <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Pengalaman Kerja</h1></figure>
-                            <div className="card-body ">
-                                <div>
-                                    <InputLabel htmlFor="position" value="Posisi Kerja" />
-
-                                    <TextInput
-                                        id="position"
-                                        className="mt-1 block w-full text-black w-full max-w-xl"
-                                        value={position}
-                                        onChange={(e) => setPosition(e.target.value)}
-                                        type="text"
-                                        required
-                                        autoComplete="position"
-                                    />
-
-                                    <InputError className="mt-2" message={errors.position} />
-                                </div>
-
-                                <div>
-                                    <InputLabel htmlFor="work_institution" value="Nama Perusahaan" />
-
-                                    <TextInput
-                                        id="work_institution"
-                                        className="mt-1 block w-full text-black w-full max-w-xl"
-                                        value={work_institution}
-                                        onChange={(e) => setWorkInstitution(e.target.value)}
-                                        type="text"
-                                        required
-                                        autoComplete="work_institution"
-                                    />
-
-                                    <InputError className="mt-2" message={errors.work_institution} />
-                                </div>
-
-                                <div className='grid grid-cols-2 gap-4'>
-
-                                    <div>
-                                        <InputLabel htmlFor="start_year" value="Tahun Masuk" />
+                            <div className="card-body divide-y divide-double gap-5 ">
+                                {workExperience.map((we, index) => (
+                                    <div key={index} className='pt-3'>
+                                        <InputLabel htmlFor={`position-${index}`} value="Posisi Kerja" />
 
                                         <TextInput
-                                            id="start_year"
-                                            className="mt-1 block w-full text-black w-full max-w-xs"
-                                            value={start_year}
-                                            onChange={(e) => setStartYear(e.target.value)}
-                                            type="number"
+
+                                            id={`position-${index}`}
+                                            name="position"
+                                            className="mt-1 block w-full text-black w-full max-w-xl"
+                                            defaultValue={we.position}
+                                            onChange={(e) => handleChange(index, e)}
+                                            type="text"
                                             required
-                                            autoComplete="start_year"
+                                            autoComplete="position"
                                         />
 
-                                        <InputError className="mt-2" message={errors.start_year} />
-                                    </div>
+                                        <InputError className="mt-2" message={errors.position} />
 
-                                    <div>
-                                        <InputLabel htmlFor="end_year" value="Tahun Keluar" />
+
+
+                                        <InputLabel htmlFor={`work_institution-${index}`} value="Nama Perusahaan" />
 
                                         <TextInput
-                                            id="end_year"
-                                            className="mt-1 block w-full text-black w-full max-w-xs"
-                                            value={end_year}
-                                            onChange={(e) => setEndYear(e.target.value)}
-                                            type="number"
+                                            id={`work_institution-${index}`}
+                                            name="work_institution"
+                                            className="mt-1 block w-full text-black w-full max-w-xl"
+                                            defaultValue={we.work_institution}
+                                            onChange={(e) => handleChange(index, e)}
+                                            type="text"
                                             required
-                                            autoComplete="end_year"
+                                            autoComplete="work_institution"
                                         />
 
-                                        <InputError className="mt-2" message={errors.end_year} />
+                                        <InputError className="mt-2" message={errors.work_institution} />
+
+
+
+
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+
+                                                <InputLabel htmlFor={`start_year-${index}`} value="Tahun Masuk" />
+
+                                                <TextInput
+                                                    id={`start_year-${index}`}
+                                                    name="start_year"
+                                                    className="mt-1 block w-full text-black w-full max-w-xs flex -flex-row grid grid-cols-2"
+                                                    value={we.start_year}
+                                                    onChange={(e) => handleChange(index, e)}
+                                                    type="number"
+                                                    required
+                                                    autoComplete="start_year"
+                                                />
+
+                                                <InputError className="mt-2" message={errors.start_year} />
+                                            </div>
+
+
+                                            <div>
+
+                                                <InputLabel htmlFor={`end_year-${index}`} value="Tahun Keluar" />
+
+                                                <TextInput
+                                                    id={`end_year-${index}`}
+                                                    name="end_year"
+                                                    className="mt-1 block w-full text-black w-full max-w-xs flex flex-row grid grid-cols-2"
+                                                    value={we.end_year}
+                                                    onChange={(e) => handleChange(index, e)}
+                                                    type="number"
+                                                    required
+                                                    autoComplete="end_year"
+                                                />
+
+                                                <InputError className="mt-2" message={errors.end_year} />
+                                            </div>
+
+                                        </div>
+
+
+                                        <InputLabel htmlFor={`description-${index}`} value="Deskripsi Kerja" />
+
+                                        <TextInput
+                                            id={`description-${index}`}
+                                            name="description"
+                                            className="mt-1 block w-full text-black w-full max-w-xl"
+                                            value={we.description}
+                                            onChange={(e) => setDescription(e.target.value)}
+                                            type="text"
+                                            required
+                                            autoComplete="description"
+                                        />
+
+                                        <InputError className="mt-2" message={errors.description} />
+                                        <PrimaryButton id={index} onClick={submit}>Save</PrimaryButton>
                                     </div>
-                                </div>
-                                <div>
-                                    <InputLabel htmlFor="description" value="Deskripsi Kerja" />
-
-                                    <TextInput
-                                        id="description"
-                                        className="mt-1 block w-full text-black w-full max-w-xl"
-                                        value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
-                                        type="text"
-                                        required
-                                        autoComplete="description"
-                                    />
-
-                                    <InputError className="mt-2" message={errors.description} />
-                                </div>
+                                ))}
                             </div>
                         </div>
+
+
                         {mustVerifyEmail && user.email_verified_at === null && (
                             <div>
                                 <p className="text-sm mt-2 text-gray-800">
@@ -332,7 +368,7 @@ export default function UpdateProfileInformationForm(className, errors, processi
                         )}
 
                         <div className="flex items-center gap-4">
-                            <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                            
 
                             <Transition
                                 show={show}

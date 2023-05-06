@@ -52,9 +52,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Route Profil
 Route::middleware('auth')->group(function () {
+    Route::get('/profile/new', function(){
+        return Inertia::render('Profile/Partials/FormNewWorkExperience');
+    })->name('profile.new');
+    Route::get('/produk/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/profile/show', [ProfileController::class, 'show'])->name('profile.show');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->middleware(['auth'])->name('profile.edit');
-    Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    // Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

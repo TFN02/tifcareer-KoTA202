@@ -7,7 +7,7 @@ import { Link } from '@inertiajs/react';
 
 export default function LayoutPelamar({ auth, header, children, footer }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-
+   
     return (
         <div className="min-h-screen bg-gray-100">
             <nav className="bg-white border-b border-gray-100">

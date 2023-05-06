@@ -244,15 +244,25 @@ class ApplicantController extends Controller
                     }
                 }   
             }
-        }          
-    
+        }       
+        
+        // if($request->work_experience['is_add'] === true){
+        //     WorkExperience::where('id', $request->id)->update([
+        //         'position' => $request->position,
+        //         'work_institution' => $request->work_institution,
+        //         'start_year' => $request->start_year,
+        //         'end_year' => $request->end_year,
+        //         'description' => $request->description,
+        //     ]);
+        // }
+
         if($request->work_experience!=null){
             foreach($request->work_experience as $wexp){
-                if($wexp['is_add']==false){
+                if($wexp['is_add']==true){
 
-                $work_exp = WorkExperience::where('applicant_id','=', $id)->get();
-                foreach($work_exp as $we){
-                    $work_id = $we->id;
+                // $work_exp = WorkExperience::where('applicant_id','=', $id)->get();
+                // foreach($work_exp as $we){
+                    $work_id = $wexp['id'];
 
                     $work_e = $applicant->workExperience()->find($work_id);
                     if($work_e->id){
@@ -272,7 +282,8 @@ class ApplicantController extends Controller
                             $work_e->description = $wexp['description'];
                         }
                     }
-                }
+                    $work_e->update();
+                // }
                 
                 }else{
                         foreach($request->work_experience as $we){
@@ -282,13 +293,13 @@ class ApplicantController extends Controller
                                 'start_year' => $we['start_year'],
                                 'end_year' => $we['end_year'],
                                 'description' => $we['description'],
-                                'application_id' => $applicant->id,
+                                'applicant_id' => $applicant->id,
                             ]);
                         }
                     }
                     
                 }
-            }
+        }
 
         if($request->skill){
             foreach($request->skill as $skill){

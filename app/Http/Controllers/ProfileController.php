@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\WorkExperience;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,12 +17,13 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function show(Request $request): Response
+    public function show(WorkExperience $id, Request $request): Response
     {
         if (Auth::user()->roles()->first()->name =='pelamar') {
 
             // return redirect(RouteServiceProvider::HOME);
             return Inertia::render('Profile/DataAplicant', [
+                'getId' => $id->find($request->no_id),
                 'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
                 'status' => session('status'),
             ]);
@@ -34,12 +36,14 @@ class ProfileController extends Controller
 
 
     }
-    public function edit(Request $request): Response
+    public function edit(WorkExperience $id, Request $request)
     {
         if (Auth::user()->roles()->first()->name =='pelamar') {
 
             // return redirect(RouteServiceProvider::HOME);
-            return Inertia::render('Profile/Edit', [
+           
+            return Inertia::render('Profile/Partials/FormUpdateWorkExperience', [
+                'getId' => $id->find($request->no_id),
                 'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
                 'status' => session('status'),
             ]);
