@@ -42,7 +42,7 @@ class SkillCategoryController extends Controller
 
     public function show( $id)
     {
-        $skill_category = SkillCategory::with('job')->findOrFail($id);
+        $skill_category = SkillCategory::with('skill')->findOrFail($id);
         
         return response()->json([
             'success' => true,

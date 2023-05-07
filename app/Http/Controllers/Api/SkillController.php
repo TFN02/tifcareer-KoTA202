@@ -65,7 +65,7 @@ class SkillController extends Controller
             'skill_category_id' => $skill_category_id,
             'name' => $request->name,
         ]);
-        $skill->applicant()->sync($applicant->id);
+        $skill->applicant()->attach($applicant->id);
 
         return response()->json([
             'success' => true,

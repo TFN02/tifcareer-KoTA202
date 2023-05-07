@@ -9,11 +9,13 @@ class Question extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+
     public function assignmentVideoResume(){
-        return $this->belongsTo(AssignmentVideoResume::class);
+        return $this->belongsTo(AssignmentVideoResume::class, 'assignment_video_resume_id');
     }
 
     public function videoResume(){
-        return $this->belongsToMany(VideoResume::class, 'question_video_resume');
+        return $this->belongsToMany(VideoResume::class, 'question_video_resume')->withPivot('score');
     }
 }
