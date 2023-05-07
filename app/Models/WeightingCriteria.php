@@ -16,6 +16,6 @@ class WeightingCriteria extends Model
     }
 
     public function weightingVariable(){
-        return $this->belongsTo(WeightingVariable::class, 'weighting_criteria_id');
+        return $this->HasMany(WeightingVariable::class, 'weighting_criteria_id');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-
+use Carbon\Carbon;
 use App\Models\Application;
 use App\Models\Applicant;
 use App\Models\Job;
@@ -53,17 +53,17 @@ class ApplicationController extends Controller
         $request->validate([
             'applicant_id' => 'required|int',
             'job_id' => 'required|int',
-
         ]);
 
         if($request->job_id){
             $job = Job::findOrFail($request->job_id);
-            $job_id = $job->id;
         }
         if($request->applicant_id){
             $applicant = Applicant::with('education','workExperience', 'skill', 'interestArea', 'softSkill', 'certificate')->find($request->applicant_id);
 
         }
+
+        $currentTime = Carbon::now();
 
         if($job->id && $applicant->id){
             $application = Application::create([
@@ -75,6 +75,7 @@ class ApplicationController extends Controller
                 'interest_area' => $applicant->interestArea,
                 'soft_skill' => $applicant->softSkill,
                 'certificate' => $applicant->certificate,
+                'send_date' => $currentTime
             ]);
         }
 
@@ -94,11 +95,22 @@ class ApplicationController extends Controller
         ]);
     }
 
-    public function update(Request $request, Application $application)
+    public function update(Request $request, $id)
     {
+        $application = Application::findOrFail($id); 
+
+        if($request->rank){
+            $application->rank = $request->input('rank');
+        }
+        if($request->score){
+            $application->score = $request->input('score');
+        }
+        if($request->status){
+            $application->status = $request->input('status');
+        }
         return response()->json([
             'success' => false,
-            'data' => "Disable for this method",
+            'data' => $application,
         ]);
     }
 
@@ -108,7 +120,7 @@ class ApplicationController extends Controller
         $application->delete();
 
         return response()->json([
-            'message' => 'Work Experience deleted',
+            'message' => 'Application deleted',
             'data' => $application,
         ]);
     }

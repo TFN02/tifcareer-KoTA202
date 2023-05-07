@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SuperAdmin;
+use App\Models\WeightingCriteria;
 use Illuminate\Http\Request;
 
 class SuperAdminController extends Controller
@@ -14,7 +15,25 @@ class SuperAdminController extends Controller
      */
     public function index()
     {
-        //
+        $w_criteria = WeightingCriteria::with('applicant', '');
+
+        if($request->applicant_id){
+            $this->applicant_id = $request->applicant_id;
+            $experience = $experience->whereHas('applicant', function($query){
+                            $query->where('applicant_id', $this->applicant_id);
+            });
+        }
+
+        if($request->order_by && $request->order_type){
+            $experience = $experience->orderBy($request->order_by, $request->order_type);
+        }else{
+            $experience = $experience->orderBy('created_at', 'desc');
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $experience->paginate(20),
+        ]);
     }
 
     /**

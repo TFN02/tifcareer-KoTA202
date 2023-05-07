@@ -14,7 +14,7 @@ class SegmentVideoResumeController extends Controller
      */
     public function index()
     {
-        //
+        kljjbh
     }
 
     /**
