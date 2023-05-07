@@ -8,27 +8,22 @@ import { useEffect, useState } from "react";
 
 
 
-const FormNewEdu = ({ auth, processing, errors, Transition }) => {
+const FormUpdateSkill = ({ auth, getIdSkill, processing, className, errors, Transition }) => {
 
-    console.log('id edu yang ke get:', auth.user);
+    const skillId = getIdSkill.id;
+    console.log('id skill yang ke get:', getIdSkill);
 
-    const [level, setLevel] = useState('');
-    const [major, setMajor] = useState('');
-    const [educational_institution, setEducationalInstitution] = useState('');
-    const [graduation_year, setGraduationYear] = useState('');
-
+    const [name, setName] = useState(getIdSkill.name);
 
     // const [show, setShow] = useState(false);
 
     const submit = async (e) => {
         e.preventDefault();
 
-        axios.post(`http://localhost:8000/api/educations`, {
+        axios.put(`http://localhost:8000/api/skills/${skillId}`, {
             applicant_id: auth.user.applicant_id,
-            level: level,
-            major: major,
-            educational_institution: educational_institution,
-            graduation_year: graduation_year,
+            // skill_category_id: ,
+            name: name,
         }).then(res => console.log('data res-2', res))
             .catch(err => console.log(err));
 
@@ -42,29 +37,29 @@ const FormNewEdu = ({ auth, processing, errors, Transition }) => {
             <div className="p-5">
 
                 <div className="card bg-white shadow sm:rounded-lg">
-                    <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Riwayat Pendidikan</h1></figure>
+                    <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Hard Skill</h1></figure>
                     <div className="card-body divide-y divide-double">
                         <form onSubmit={submit} className="space-y-6">
                             <div className='pt-3'>
-                                <InputLabel htmlFor={'level'} value="Jenjang Pendidikan" />
+                                <InputLabel htmlFor={'name'} value="HardSkill" />
 
                                 <TextInput
 
-                                    id="level"
-                                    name="level"
+                                    id="name"
+                                    name="name"
                                     className="mt-1 block text-black w-full max-w-xl"
-                                    value={level}
-                                    onChange={(e) => setLevel(e.target.value)}
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                     type="text"
                                     required
-                                    autoComplete="level"
+                                    autoComplete="name"
                                 />
 
-                                <InputError className="mt-2" message={errors.level} />
+                                <InputError className="mt-2" message={errors.name} />
 
 
 
-                                <InputLabel htmlFor={major} value="Jurusan" />
+                                {/* <InputLabel htmlFor={major} value="Jurusan" />
 
                                 <TextInput
                                     id="major"
@@ -107,7 +102,7 @@ const FormNewEdu = ({ auth, processing, errors, Transition }) => {
                                     autoComplete="graduation_year"
                                 />
 
-                                <InputError className="mt-2" message={errors.graduation_year} />
+                                <InputError className="mt-2" message={errors.graduation_year} /> */}
 
                                 <PrimaryButton disable={processing}>Save</PrimaryButton>
                                 {/* <Link route={route('profile.show')}>Back</Link> */}
@@ -132,4 +127,4 @@ const FormNewEdu = ({ auth, processing, errors, Transition }) => {
     )
 }
 
-export default FormNewEdu
+export default FormUpdateSkill

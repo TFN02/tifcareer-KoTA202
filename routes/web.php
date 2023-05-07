@@ -52,13 +52,44 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Route Profil
 Route::middleware('auth')->group(function () {
-    Route::get('/profile/new', function(){
+    // Data aplicant
+    Route::get('/profile/show', [ProfileController::class, 'show'])->name('profile.show');
+
+    // work experience applicant
+    Route::get('/profile/work-experience/new', function(){
         return Inertia::render('Profile/Partials/FormNewWorkExperience');
     })->name('profile.new');
-    Route::get('/produk/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::get('/profile/show', [ProfileController::class, 'show'])->name('profile.show');
-    // Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/produk/work-experience/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+
+    // education applicant
+    Route::get('/profile/education/new', function(){
+        return Inertia::render('Profile/Partials/FormNewEdu');
+    })->name('profile.edu.new');
+    Route::get('/produk/education/edit', [ProfileController::class, 'editEducation'])->name('profile.edu.edit');
+
+    // hardSkill applicant
+    Route::get('/profile/skill/new', function(){
+        return Inertia::render('Profile/Partials/FormNewSkill');
+    })->name('profile.skill.new');
+    Route::get('/produk/skill/edit', [ProfileController::class, 'editSkill'])->name('profile.skill.edit');
+
+    // interest area applicant
+    Route::get('/profile/interest-area/new', function(){
+        return Inertia::render('Profile/Partials/FormNewInterest');
+    })->name('profile.interest.new');
+    Route::get('/produk/interest-area/edit', [ProfileController::class, 'editInterestArea'])->name('profile.interest.edit');
+
+     // interest area applicant
+    Route::get('/profile/softSkill/new', function(){
+        return Inertia::render('Profile/Partials/FormNewSoftSkill');
+        })->name('profile.softSkill.new');
+    Route::get('/produk/softSkill/edit', [ProfileController::class, 'editSoftSkill'])->name('profile.softSkill.edit');
+
+    // certificate applcant
+    Route::get('/profile/certificate/new', function(){
+        return Inertia::render('Profile/Partials/FormNewCertificate');
+        })->name('profile.certificate.new');
+    Route::get('/produk/certificate/edit', [ProfileController::class, 'editCertificate'])->name('profile.certificate.edit');
 });
 
 require __DIR__.'/auth.php';

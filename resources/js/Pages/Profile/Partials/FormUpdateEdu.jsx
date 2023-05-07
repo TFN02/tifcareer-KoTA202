@@ -8,36 +8,27 @@ import { useEffect, useState } from "react";
 
 
 
-const FormUpdateEdu = ({ auth, getId, processing, className, errors, Transition }) => {
+const FormUpdateEdu = ({ auth, getIdEdu, processing, className, errors, Transition }) => {
 
-    const workId = getId;
-    console.log('id WE yang ke get:', auth.user);
+    const eduId = getIdEdu.id;
+    console.log('id edu yang ke get:', eduId);
 
-    const [position, setPosition] = useState(workId.position);
-    const [work_institution, setWorkInstitution] = useState(workId.work_institution);
-    const [start_year, setStartYear] = useState(workId.start_year);
-    const [end_year, setEndYear] = useState(workId.end_year);
-    const [description, setDescription] = useState(workId.description);
+    const [level, setLevel] = useState(getIdEdu.level);
+    const [major, setMajor] = useState(getIdEdu.major);
+    const [educational_institution, setEducationalInstitution] = useState(getIdEdu.educational_institution);
+    const [graduation_year, setGraduationYear] = useState(getIdEdu.graduation_year);
 
-    console.log('position:', position);
-
-    const [show, setShow] = useState(false);
+    // const [show, setShow] = useState(false);
 
     const submit = async (e) => {
         e.preventDefault();
-       
-        axios.put(`http://localhost:8000/api/applicants/${auth.user.applicant_id}`, {
-            work_experience: [
-                {
-                    id:workId.id,
-                    work_institution: work_institution,
-                    position: position,
-                    start_year: start_year,
-                    end_year: end_year,
-                    description: description,
-                    is_add: true,
-                }
-            ]
+
+        axios.put(`http://localhost:8000/api/educations/${eduId}`, {
+            applicant_id: auth.user.applicant_id,
+            level: level,
+            major: major,
+            educational_institution: educational_institution,
+            graduation_year: graduation_year,
         }).then(res => console.log('data res-2', res))
             .catch(err => console.log(err));
 
@@ -51,101 +42,73 @@ const FormUpdateEdu = ({ auth, getId, processing, className, errors, Transition 
             <div className="p-5">
 
                 <div className="card bg-white shadow sm:rounded-lg">
-                    <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Pengalaman Kerja</h1></figure>
+                    <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Riwayat Pendidikan</h1></figure>
                     <div className="card-body divide-y divide-double">
                         <form onSubmit={submit} className="space-y-6">
                             <div className='pt-3'>
-                                <InputLabel htmlFor={'position'} value="Posisi Kerja" />
+                                <InputLabel htmlFor={'level'} value="Jenjang Pendidikan" />
 
                                 <TextInput
 
-                                    id="position"
-                                    name="position"
+                                    id="level"
+                                    name="level"
                                     className="mt-1 block text-black w-full max-w-xl"
-                                    value={position}
-                                    onChange={(e) => setPosition(e.target.value)}
+                                    value={level}
+                                    onChange={(e) => setLevel(e.target.value)}
                                     type="text"
                                     required
-                                    autoComplete="position"
+                                    autoComplete="level"
                                 />
 
-                                <InputError className="mt-2" message={errors.position} />
+                                <InputError className="mt-2" message={errors.level} />
 
 
 
-                                <InputLabel htmlFor={work_institution} value="Nama Perusahaan" />
+                                <InputLabel htmlFor={major} value="Jurusan" />
 
                                 <TextInput
-                                    id="work_institution"
-                                    name="work_institution"
+                                    id="major"
+                                    name="major"
                                     className="mt-1 block text-black w-full max-w-xl"
-                                    defaultValue={work_institution}
-                                    onChange={(e) => setWorkInstitution(e.target.value)}
+                                    defaultValue={major}
+                                    onChange={(e) => setMajor(e.target.value)}
                                     type="text"
                                     required
-                                    autoComplete="work_institution"
+                                    autoComplete="major"
                                 />
 
-                                <InputError className="mt-2" message={errors.work_institution} />
+                                <InputError className="mt-2" message={errors.major} />
 
+                                <InputLabel htmlFor={educational_institution} value="Universitas / Politeknik" />
 
-
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-
-                                        <InputLabel htmlFor={start_year} value="Tahun Masuk" />
-
-                                        <TextInput
-                                            id="start_year"
-                                            name="start_year"
-                                            className="mt-1 block w-full text-black w-full max-w-xl"
-                                            value={start_year}
-                                            onChange={(e) => setStartYear(e.target.value)}
-                                            type="number"
-                                            required
-                                            autoComplete="start_year"
-                                        />
-
-                                        <InputError className="mt-2" message={errors.start_year} />
-                                    </div>
-
-
-                                    <div>
-
-                                        <InputLabel htmlFor={end_year} value="Tahun Keluar" />
-
-                                        <TextInput
-                                            id="end_year"
-                                            name="end_year"
-                                            className="mt-1 block w-full text-black w-full max-w-xl"
-                                            value={end_year}
-                                            onChange={(e) => setEndYear(e.target.value)}
-                                            type="number"
-                                            required
-                                            autoComplete="end_year"
-                                        />
-
-                                        <InputError className="mt-2" message={errors.end_year} />
-                                    </div>
-
-                                </div>
-
-
-                                <InputLabel htmlFor={description} value="Deskripsi Kerja" />
-
-                                <textarea
-                                    id="description"
-                                    name="description"
-                                    className="mt-1 block text-black w-full max-w-7xl"
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
+                                <TextInput
+                                    id="educational_institution"
+                                    name="educational_institution"
+                                    className="mt-1 block text-black w-full max-w-xl"
+                                    defaultValue={educational_institution}
+                                    onChange={(e) => setEducationalInstitution(e.target.value)}
                                     type="text"
                                     required
-                                    autoComplete="description"
+                                    autoComplete="major"
                                 />
 
-                                <InputError className="mt-2" message={errors.description} />
+                                <InputError className="mt-2" message={errors.educational_institution} />
+
+                                <InputLabel htmlFor={graduation_year} value="Tahun Lulus" />
+
+                                <TextInput
+                                    id="graduation_year"
+                                    name="graduation_year"
+                                    className="mt-1 block w-full text-black w-full max-w-xl"
+                                    value={graduation_year}
+                                    onChange={(e) => setGraduationYear(e.target.value)}
+                                    type="number"
+                                    required
+                                    autoComplete="graduation_year"
+                                />
+
+                                <InputError className="mt-2" message={errors.graduation_year} />
+
                                 <PrimaryButton disable={processing}>Save</PrimaryButton>
                                 {/* <Link route={route('profile.show')}>Back</Link> */}
                                 <div className="flex items-center gap-4">

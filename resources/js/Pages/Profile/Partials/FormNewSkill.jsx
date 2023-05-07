@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 
 
-const FormNewEdu = ({ auth, processing, errors, Transition }) => {
+const FormNewSkill = ({ auth, processing, errors, Transition }) => {
 
     console.log('id edu yang ke get:', auth.user);
 
@@ -132,4 +132,4 @@ const FormNewEdu = ({ auth, processing, errors, Transition }) => {
     )
 }
 
-export default FormNewEdu
+export default FormNewSkill
