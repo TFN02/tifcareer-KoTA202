@@ -6,7 +6,7 @@ use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\AssignmentVideoResume;
-use App\Models\VideoResume;
+
 
 class QuestionController extends Controller
 {
@@ -91,9 +91,7 @@ class QuestionController extends Controller
             $question->question = $request->input('question');
         }
         
-
         $question->save();
-        
 
         return response()->json([
             'success' => true,

@@ -88,7 +88,7 @@ class RegisteredUserController extends Controller
 
             }
             
-            $user->roles()->sync($role->id);
+            $user->roles()->attach($role->id);
         }
 
         if ($request->role=="pelamar"){

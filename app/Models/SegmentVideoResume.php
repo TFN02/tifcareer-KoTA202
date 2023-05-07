@@ -9,6 +9,8 @@ class SegmentVideoResume extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+    
     public function videoResume(){
         return $this->belongsTo(VideoResume::class);
     }

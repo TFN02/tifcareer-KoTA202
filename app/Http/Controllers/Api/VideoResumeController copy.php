@@ -15,7 +15,7 @@ class VideoResumeController extends Controller
 
     public function index(Request $request)
     {
-        $vr = VideoResume::with('application','question');
+        $vr = VideoResume::with('application','question','segmentVideoResume');
 
         if($request->application_id){
             $this->application_id = $request->assignment_video_resume_id;
@@ -57,6 +57,17 @@ class VideoResumeController extends Controller
             'duration' => $request->duration,
         ]);
 
+        if($request->segment_video_resume){
+            $s_vids = $request->segment_video_resume;
+            foreach($s_vids as $s){
+                $vr->segmentVideoResume()->create([
+                    'time_to_jump' => $s['time_to_jump'],
+                    'segment_title' => $s['segment_title'],
+                    'video_resume_id' => $vr->id,
+                ]);
+
+            }
+        }
         return response()->json([
             'success' => true,
             'data' =>  $vr,

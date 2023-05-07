@@ -75,7 +75,7 @@ class ApplicantController extends Controller
                             'graduation_year' => $edu['graduation_year'],
                         ]);
                         
-                        $educati->applicant()->sync($applicant->id);
+                        $educati->applicant()->attach($applicant->id);
                     }
                 }
                     
@@ -106,7 +106,7 @@ class ApplicantController extends Controller
                                 'name' => $skill['name'],
                                 'skill_category_id' => $skill_category_id,
                             ]);
-                            $skill->applicant()->sync($applicant->id);
+                            $skill->applicant()->attach($applicant->id);
                         }
                     }
                     
@@ -119,7 +119,7 @@ class ApplicantController extends Controller
                                 'name_of_field' => $interest['name_of_field'],
                                 'reason_of_interest' => $interest['reason_of_interest'],
                             ]);
-                            $interest->applicant()->sync($applicant->id);
+                            $interest->applicant()->attach($applicant->id);
                     }
                 } 
 
@@ -245,7 +245,7 @@ class ApplicantController extends Controller
                             'graduation_year' => $edu['graduation_year'],
                         ]);
                         
-                        $educati->applicant()->sync($applicant->id);
+                        $educati->applicant()->attach($applicant->id);
                     }
                 }   
             }
@@ -335,7 +335,7 @@ class ApplicantController extends Controller
                                 'name' => $skill['name'],
                                 'skill_category_id' => $skill_category_id,
                             ]);
-                            $skill->applicant()->sync($applicant->id);
+                            $skill->applicant()->attach($applicant->id);
                         }
                     }
                 }
@@ -366,7 +366,7 @@ class ApplicantController extends Controller
                                     'name_of_field' => $interest['name_of_field'],
                                     'reason_of_interest' => $interest['reason_of_interest'],
                                 ]);
-                                $interest->applicant()->sync($applicant->id);
+                                $interest->applicant()->attach($applicant->id);
                             } 
                         }
                     }       
@@ -376,7 +376,7 @@ class ApplicantController extends Controller
                             'name_of_field' => $interest['name_of_field'],
                             'reason_of_interest' => $interest['reason_of_interest'],
                         ]);
-                        $interest->applicant()->sync($applicant->id);
+                        $interest->applicant()->attach($applicant->id);
                     }
                 }
 

@@ -111,7 +111,7 @@ class UserController extends Controller
 
             }
             
-            $user->roles()->sync($role->id);
+            $user->roles()->attach($role->id);
         }
 
         return response()->json([
@@ -219,7 +219,7 @@ class UserController extends Controller
                 }
 
                 
-                $user->roles()->sync([$role->id]);
+                $user->roles()->attach([$role->id]);
             }
             
             $user->save();
