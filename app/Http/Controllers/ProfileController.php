@@ -7,7 +7,9 @@ use App\Models\Certificate;
 use App\Models\Education;
 use App\Models\InterestArea;
 use App\Models\Skill;
+use App\Models\SkillCategory;
 use App\Models\SoftSkill;
+use App\Models\User;
 use App\Models\WorkExperience;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -22,13 +24,13 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function show(WorkExperience $id, Request $request): Response
+    public function show(Request $request): Response
     {
         if (Auth::user()->roles()->first()->name =='pelamar') {
 
             // return redirect(RouteServiceProvider::HOME);
             return Inertia::render('Profile/DataAplicant', [
-                'getId' => $id->find($request->no_id),
+                
                 'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
                 'status' => session('status'),
             ]);
@@ -40,6 +42,25 @@ class ProfileController extends Controller
         }
 
 
+    }
+
+    public function editDataDiri(User $id, Request $request)
+    {
+        if (Auth::user()->roles()->first()->name =='pelamar') {
+
+            // return redirect(RouteServiceProvider::HOME);
+           
+            return Inertia::render('Profile/Partials/FormUpdateDataDiri', [
+                'getIdUser' => $id->find($request->dataDiri_id),
+                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+                'status' => session('status'),
+            ]);
+        }else if(Auth::user()->roles()->first()->name =='perusahaan'){
+            return Inertia::render('Profile/EditPerusahaan', [
+                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+                'status' => session('status'),
+            ]);
+        }
     }
     public function edit(WorkExperience $id, Request $request)
     {
@@ -78,6 +99,24 @@ class ProfileController extends Controller
         }
     }
 
+    public function createSkillCategory(SkillCategory $id, Request $request)
+    {
+        if (Auth::user()->roles()->first()->name =='pelamar') {
+
+            // return redirect(RouteServiceProvider::HOME);
+           
+            return Inertia::render('Profile/Partials/FormNewSkill', [
+                'getIdCategory' => $id->find($request->category_id),
+                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+                'status' => session('status'),
+            ]);
+        }else if(Auth::user()->roles()->first()->name =='perusahaan'){
+            return Inertia::render('Profile/EditPerusahaan', [
+                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+                'status' => session('status'),
+            ]);
+        }
+    }
     public function editSkill(Skill $id, Request $request)
     {
         if (Auth::user()->roles()->first()->name =='pelamar') {
@@ -167,7 +206,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit');
+        return Redirect::route('profile.show');
     }
 
     /**

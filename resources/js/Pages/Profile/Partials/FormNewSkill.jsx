@@ -4,35 +4,58 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import LayoutPelamar from "@/Layouts/LayoutPelamar";
 import { Link } from "@inertiajs/react";
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 
 
-const FormNewSkill = ({ auth, processing, errors, Transition }) => {
+const FormNewSkill = ({ auth, getIdCategory, processing, className, errors, Transition }) => {
 
-    console.log('id edu yang ke get:', auth.user);
+    const skillId = getIdCategory.id;
+    console.log('id skill yang ke get:', skillId);
 
-    const [level, setLevel] = useState('');
-    const [major, setMajor] = useState('');
-    const [educational_institution, setEducationalInstitution] = useState('');
-    const [graduation_year, setGraduationYear] = useState('');
-
+    const [name, setName] = useState('');
+    const [nameCategory, setNameCategory] = useState([]);
 
     // const [show, setShow] = useState(false);
+
+    useEffect(() => {
+        const getCategory = async () => {
+            const { data } = await axios.get(`http://localhost:8000/api/skillCategories`);
+            const datas = data.data.data;
+            setNameCategory(datas);
+        }
+
+        getCategory();
+    }, [skillId])
+
+    console.log("cek kategori", nameCategory);
+
+    
+    const [selectedOption, setSelectedOption] = useState('');
+
+    const handleSelectChange = (event) => {
+        setSelectedOption(event.target.value);
+    }
+    console.log(selectedOption);
 
     const submit = async (e) => {
         e.preventDefault();
 
-        axios.post(`http://localhost:8000/api/educations`, {
+        // axios.post(`http://localhost:8000/api/skillCategories`, {
+        //     name: nameCategory,
+        // }).then(res => console.log('data category', res))
+        //     .catch(err => console.log(err));
+
+        axios.post(`http://localhost:8000/api/skills`, {
             applicant_id: auth.user.applicant_id,
-            level: level,
-            major: major,
-            educational_institution: educational_institution,
-            graduation_year: graduation_year,
-        }).then(res => console.log('data res-2', res))
+            skill_category_id: selectedOption,
+            name: name,
+        }).then(res => console.log('data skill', res))
             .catch(err => console.log(err));
 
     };
+
 
     return (
         <LayoutPelamar
@@ -42,72 +65,38 @@ const FormNewSkill = ({ auth, processing, errors, Transition }) => {
             <div className="p-5">
 
                 <div className="card bg-white shadow sm:rounded-lg">
-                    <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Riwayat Pendidikan</h1></figure>
+                    <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Hard Skill</h1></figure>
                     <div className="card-body divide-y divide-double">
                         <form onSubmit={submit} className="space-y-6">
                             <div className='pt-3'>
-                                <InputLabel htmlFor={'level'} value="Jenjang Pendidikan" />
+
+                                <label htmlFor="dropdown">Kategori Skill:</label>
+                                <select className="select select-primary w-full max-w-xs" id="dropdown" 
+                                onChange={handleSelectChange} value={selectedOption}>
+                                <option selected>--Pilih Kategori Yang Sesuai--</option>
+                                    {nameCategory.map((nameCat, i) => (
+                                        <option key={i} value={nameCat.id}>{nameCat.name}</option>
+                                        
+                                    ))}
+                                </select>
+
+                                <InputError className="mt-2" message={errors.nameCategory} />
+
+                                <InputLabel htmlFor={'name'} value="HardSkill" />
 
                                 <TextInput
 
-                                    id="level"
-                                    name="level"
+                                    id="name"
+                                    name="name"
                                     className="mt-1 block text-black w-full max-w-xl"
-                                    value={level}
-                                    onChange={(e) => setLevel(e.target.value)}
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                     type="text"
                                     required
-                                    autoComplete="level"
+                                    autoComplete="name"
                                 />
 
-                                <InputError className="mt-2" message={errors.level} />
-
-
-
-                                <InputLabel htmlFor={major} value="Jurusan" />
-
-                                <TextInput
-                                    id="major"
-                                    name="major"
-                                    className="mt-1 block text-black w-full max-w-xl"
-                                    defaultValue={major}
-                                    onChange={(e) => setMajor(e.target.value)}
-                                    type="text"
-                                    required
-                                    autoComplete="major"
-                                />
-
-                                <InputError className="mt-2" message={errors.major} />
-
-                                <InputLabel htmlFor={educational_institution} value="Universitas / Politeknik" />
-
-                                <TextInput
-                                    id="educational_institution"
-                                    name="educational_institution"
-                                    className="mt-1 block text-black w-full max-w-xl"
-                                    defaultValue={educational_institution}
-                                    onChange={(e) => setEducationalInstitution(e.target.value)}
-                                    type="text"
-                                    required
-                                    autoComplete="major"
-                                />
-
-                                <InputError className="mt-2" message={errors.educational_institution} />
-
-                                <InputLabel htmlFor={graduation_year} value="Tahun Lulus" />
-
-                                <TextInput
-                                    id="graduation_year"
-                                    name="graduation_year"
-                                    className="mt-1 block w-full text-black w-full max-w-xl"
-                                    value={graduation_year}
-                                    onChange={(e) => setGraduationYear(e.target.value)}
-                                    type="number"
-                                    required
-                                    autoComplete="graduation_year"
-                                />
-
-                                <InputError className="mt-2" message={errors.graduation_year} />
+                                <InputError className="mt-2" message={errors.name} />
 
                                 <PrimaryButton disable={processing}>Save</PrimaryButton>
                                 {/* <Link route={route('profile.show')}>Back</Link> */}

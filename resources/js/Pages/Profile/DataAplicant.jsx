@@ -8,17 +8,22 @@ import axios from 'axios';
 
 export default function DataAplicant({ auth, mustVerifyEmail, status }) {
     const aplicant_id = usePage().props.auth.user.applicant_id;
+    const user = usePage();
 
+    console.log(user);
+
+    const [idUser, setIdUser] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [domicile, setDomicile] = useState('');
     const [phone_no, setPhone] = useState('');
     const [birth_of_date, setBirthOfDate] = useState('');
+    const [description, setDescription] = useState('');
     const [workExperience, setWorkExperience] = useState([]);
     const [education, setEducation] = useState([]);
 
-    // const [idCategory, setIdCategory] = useState('');
-    // const [skillCategory, setSkillCategory] = useState([]);
+    const [getId, setGetId] = useState('');
+    const [skillCategory, setSkillCategory] = useState([]);
     const [hardSkill, setHardSkill] = useState([]);
     const [interest_area, setInterestArea] = useState([]);
     const [softSkill, setSoftSkill] = useState([]);
@@ -31,36 +36,44 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
 
             console.log('cek data', datas);
 
+            setIdUser(datas.user.id);
             setName(datas.user.name);
             setEmail(datas.user.email);
             setDomicile(datas.domicile);
             setPhone(datas.phone_no);
             setBirthOfDate(datas.birth_of_date);
+            setDescription(datas.description);
             setWorkExperience(datas.work_experience || []);
             setEducation(datas.education || []);
             // setIdCategory(datas.skill.skill_category_id);
-            setHardSkill(datas.skill || []);
+            
             setInterestArea(datas.interest_area || []);
             setSoftSkill(datas.soft_skill || []);
             setCertificates(datas.certificate || []);
 
         }
-        // const getSkillCategory = async() => {
-        //     const { data } = await axios.get(`http://localhost:8000/api/skillCategories/${idCategory}`);
-        //     setSkillCategory(data);
-        // }
+
+        const getHardSkill = async() => {
+            const { data } = await axios.get(`http://localhost:8000/api/skills?applicant_id=${aplicant_id}`);
+            const datas = data.data.data;
+            // const kategori = datas.skill_category;
+            setHardSkill(datas);
+            
+        }
         getAplicants();
-        // getSkillCategory();
-    }, []);
+        getHardSkill();
+    }, [aplicant_id]);
+
+    useEffect(() => {
+        const id = hardSkill[0] ? hardSkill[0].skill_category_id : '';
+        setGetId(id);
+      }, [hardSkill]);
 
 
-    console.log("data pengalaman", workExperience);
-    console.log("data education", education);
+
     console.log("data hard skill", hardSkill);
-    console.log("data interest area:", interest_area);
-    console.log("data softskill:", softSkill);
-    console.log("data certificates:", certificates);
-    // console.log("data kategori:", skillCategory);
+    console.log("id kategori:", getId);
+    console.log("data kategori:", skillCategory);
 
 
     const handleDeleteWE = async (id) => {
@@ -128,14 +141,8 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
         >
             <Head title="Profile" />
 
-            <div className='flex flex-row justify-between py-12'>
+            <div className='flex flex-row justify-between py-5'>
                 <div className="mx-auto sm:px-6 lg:px-8 space-y-2">
-                    <Link href={route('profile.edit')}>
-                        <button className="p-5 bg-indigo-800 text-white hover:bg-slate-500 hover:text-white shadow shadow-md w-full rounded-lg font-medium">
-                            Update Data Kamu Disini !
-                        </button>
-                    </Link>
-
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                         <DeleteUserForm className="max-w-xl" />
                     </div>
@@ -146,16 +153,28 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
                         <figure><h1 className='text-lg text-white bg-violet-700 w-full p-5'>Data Pelamar</h1></figure>
                         <div className="card-body">
                             <div className="card mb-3 bg-white shadow sm:rounded-lg">
-                                <figure><h1 className='text-md text-white bg-violet-700 w-full p-3'>Data Diri</h1></figure>
+                                <figure>
+                                    <h1 className='text-md text-white bg-violet-700 w-full p-3 flex justify-between'>
+                                        Data Diri
+                                        <Link
+                                        href={route("profile.dataDiri.edit")}
+                                        data={{ id_dataDiri: aplicant_id }}
+                                        >
+                                        <button className='btn btn-warning btn-sm text-xs'>
+                                            Update Data Diri
+                                        </button>
+                                        </Link>
+                                    </h1>
+                                </figure>
                                 <div className="card-body flex flex-row gap-10">
                                     <img className='avatar rounded w-24' src={fotoTegar} alt="foto tegar" />
-                                    <table>
-                                        <tbody>
+                                    <table className='table'>
+                                        <tbody className='flex justify-between flex-wrap'>
                                             <tr>
                                                 <td className='font-bold'>{name}</td>
                                             </tr>
                                             <tr>
-                                                <td colSpan="4" className='text-md text-justify'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Error, eveniet. Unde cumque mollitia tenetur eaque nobis rem asperiores sit dolorem cupiditate </td>
+                                                <td colSpan="4" className='text-sm text-justify w-full max-w-2xl'>{description}</td>
                                             </tr>
                                             <tr className='text-xs h-7'>
                                                 <td>{phone_no}</td>
@@ -243,7 +262,7 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
                                 <figure>
                                     <h1 className='text-md text-white bg-violet-700 w-full p-3 flex justify-between'>
                                         Hardskill
-                                        <Link href={route('profile.skill.new')}>
+                                        <Link href={route('profile.skill.new')} data={{ category_id: getId }}>
                                             <button className='btn btn-primary'>
                                                 Create New
                                             </button>
@@ -256,7 +275,8 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
                                         <tbody>
                                             {hardSkill && hardSkill.length > 0 ? hardSkill.map((skill, i) => (
                                                 <tr key={i} className='flex justify-between'>
-                                                    <td colSpan={2} className='font-bold'>{skill.name}</td>
+                                                    <td colSpan={2} className='font-bold'>{skill.name}</td>                                                    
+                                                    <td>{skill.skill_category.name}</td>
                                                     <td>
                                                         <Link
                                                             href={route('profile.skill.edit')}
