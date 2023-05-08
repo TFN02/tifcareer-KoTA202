@@ -75,7 +75,7 @@ class SkillController extends Controller
 
     public function show( $id)
     {
-        $skill = Skill::with('applicant')->findOrFail($id);
+        $skill = Skill::with('applicant', 'skillCategory')->findOrFail($id);
         
         return response()->json([
             'success' => true,
