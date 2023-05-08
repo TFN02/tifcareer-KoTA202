@@ -1,0 +1,103 @@
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import LayoutPelamar from "@/Layouts/LayoutPelamar";
+import { Link } from "@inertiajs/react";
+import { useEffect, useState } from "react";
+
+
+
+const FormUpdateInterest = ({ auth, getIdInterest, processing, className, errors, Transition }) => {
+
+    const interestId = getIdInterest.id;
+    console.log('id interest yang ke get:', getIdInterest);
+
+    const [name_of_field, setNameOfField] = useState(getIdInterest.name_of_field);
+    const [reason_of_interest, setReasonOfInterest] = useState(getIdInterest.reason_of_interest);
+
+    // const [show, setShow] = useState(false);
+
+    const submit = async (e) => {
+        e.preventDefault();
+
+        axios.put(`http://localhost:8000/api/interestAreas/${interestId}`, {
+            
+            applicant_id: auth.user.applicant_id,
+            name_of_field: name_of_field,
+            reason_of_interest: reason_of_interest,
+
+        }).then(res => console.log('data res-2', res))
+            .catch(err => console.log(err));
+
+    };
+
+    return (
+        <LayoutPelamar
+            auth={auth}
+        >
+
+            <div className="p-5">
+
+                <div className="card bg-white shadow sm:rounded-lg">
+                    <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Bidang Ketertarikan</h1></figure>
+                    <div className="card-body divide-y divide-double">
+                        <form onSubmit={submit} className="space-y-6">
+                            <div className='pt-3'>
+                                <InputLabel htmlFor={'name_of_field'} value="Bidang Yang Disukai" />
+
+                                <TextInput
+
+                                    id="name_of_field"
+                                    name="name_of_field"
+                                    className="mt-1 block text-black w-full max-w-xl"
+                                    value={name_of_field}
+                                    onChange={(e) => setNameOfField(e.target.value)}
+                                    type="text"
+                                    required
+                                    autoComplete="name_of_field"
+                                />
+
+                                <InputError className="mt-2" message={errors.name_of_field} />
+
+
+
+                                <InputLabel htmlFor={reason_of_interest} value="Alasan Menyukai Bidang Tersebut" />
+
+                                <TextInput
+                                    id="reason_of_interest"
+                                    name="reason_of_interest"
+                                    className="mt-1 block text-black w-full max-w-xl"
+                                    defaultValue={reason_of_interest}
+                                    onChange={(e) => setReasonOfInterest(e.target.value)}
+                                    type="text"
+                                    required
+                                    autoComplete="reason_of_interest"
+                                />
+
+                                <InputError className="mt-2" message={errors.reason_of_interest} />
+
+                                <PrimaryButton disable={processing}>Save</PrimaryButton>
+                                {/* <Link route={route('profile.show')}>Back</Link> */}
+                                <div className="flex items-center gap-4">
+
+
+                                    {/* <Transition
+                                        show={show}
+                                        enterFrom="opacity-0"
+                                        leaveTo="opacity-0"
+                                        className="transition ease-in-out"
+                                    >
+                                        <p className="text-sm text-gray-600">Saved.</p>
+                                    </Transition> */}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </LayoutPelamar>
+    )
+}
+
+export default FormUpdateInterest

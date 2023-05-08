@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('weighting_variables', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_id');
-            $table->foreignId('weighting_criteria_id');
-            $table->string('name',100);
-            $table->float('weight');
+            $table->bigInteger('job_id')->unsigned()->nullable();
+            $table->bigInteger('weighting_criteria_id')->unsigned()->nullable();
+            $table->string('name',100)->nullable();
+            $table->float('weight')->nullable();
             $table->timestamps();
         });
     }

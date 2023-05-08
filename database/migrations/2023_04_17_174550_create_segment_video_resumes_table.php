@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('segment_video_resumes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('video_resume_id');
-            $table->time('time_to_jump');
-            $table->string('segment_title',100);
+            $table->bigInteger('video_resume_id')->unsigned()->nullable();
+            $table->time('time_to_jump')->nullable();
+            $table->string('segment_title',100)->nullable();
             $table->timestamps();
         });
     }

@@ -15,17 +15,19 @@ return new class extends Migration
     {
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_id');
-            $table->foreignId('applicant_id');
-            $table->foreignId('video_resume_id');
-            $table->float('score');
-            $table->integer('rank');
-            $table->string('status',100);
-            $table->json('education');
-            $table->json('work_experience');
-            $table->json('skill');
-            $table->json('interest_area');
-            $table->timestamp('send_date');
+            $table->bigInteger('job_id')->unsigned()->nullable();
+            $table->bigInteger('applicant_id')->unsigned()->nullable();
+            $table->bigInteger('video_resume_id')->unsigned()->nullable();
+            $table->float('score')->nullable();
+            $table->integer('rank')->nullable();
+            $table->string('status',100)->nullable();
+            $table->json('education')->nullable();
+            $table->json('work_experience')->nullable();
+            $table->json('skill')->nullable();
+            $table->json('interest_area')->nullable();
+            $table->json('soft_skill')->nullable();
+            $table->json('certificate')->nullable();
+            $table->timestamp('send_date')->nullable();
             $table->timestamps();
         });
     }

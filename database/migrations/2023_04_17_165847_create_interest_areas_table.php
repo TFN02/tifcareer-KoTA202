@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('interest_areas', function (Blueprint $table) {
             $table->id();
-            $table->string('name_of_field',100);
-            $table->longText('reason_of_interest');
+            $table->string('name_of_field',100)->nullable();
+            $table->longText('reason_of_interest')->nullable();
             $table->timestamps();
         });
     }
