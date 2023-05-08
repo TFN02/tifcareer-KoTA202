@@ -168,13 +168,16 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
                                 </figure>
                                 <div className="card-body flex flex-row gap-10">
                                     <img className='avatar rounded w-24' src={fotoTegar} alt="foto tegar" />
-                                    <table className='table'>
-                                        <tbody className='flex justify-between flex-wrap'>
+                                    <table className='table '>
+                                        <tbody>
+                                        <tr>
+                                            <td className='font-bold'>{name}</td>
+                                        </tr>
+                                        </tbody>
+                                        <tbody >
+
                                             <tr>
-                                                <td className='font-bold'>{name}</td>
-                                            </tr>
-                                            <tr>
-                                                <td colSpan="4" className='text-sm text-justify w-full max-w-2xl'>{description}</td>
+                                                <td colSpan="3" className='text-sm text-justify w-full max-w-2xl'>{description}</td>
                                             </tr>
                                             <tr className='text-xs h-7'>
                                                 <td>{phone_no}</td>
@@ -262,7 +265,7 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
                                 <figure>
                                     <h1 className='text-md text-white bg-violet-700 w-full p-3 flex justify-between'>
                                         Hardskill
-                                        <Link href={route('profile.skill.new')} data={{ category_id: getId }}>
+                                        <Link href={route('profile.skill.new')}>
                                             <button className='btn btn-primary'>
                                                 Create New
                                             </button>
@@ -369,16 +372,16 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
                                     </h1>
                                 </figure>
                                 <div className="card-body">
-                                    <table className='table'>
-                                        <tbody>
+                                    <table className='table flex-wrap'>
+                                        <tbody className='flex-wrap'>
                                                 {certificates && certificates.length > 0 ? certificates.map((sertif, i) => (
                                         
     
-                                                    <tr key={i} className='flex justify-between'>
-                                                <td className='font-bold text-left'>{sertif.title}</td>
-                                                <td >{sertif.description}</td>
+                                            <tr key={i} >
+                                                <td className='w-full max-w-xs'><p className=' flex flex-wrap font-bold text-left'>{sertif.title}</p></td>
+                                                <td>{sertif.description}</td>
                                                 <td >{sertif.no_certificate}</td>
-                                                <td >
+                                                <td>
                                                     <Link
                                                     href={route('profile.certificate.edit')}
                                                     data={{ certificate_id: sertif.id }}

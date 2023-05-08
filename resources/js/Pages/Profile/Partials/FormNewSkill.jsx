@@ -11,8 +11,8 @@ import { useEffect, useState } from "react";
 
 const FormNewSkill = ({ auth, getIdCategory, processing, className, errors, Transition }) => {
 
-    const skillId = getIdCategory.id;
-    console.log('id skill yang ke get:', skillId);
+    // const skillId = getIdCategory.id;
+    // console.log('id skill yang ke get:', skillId);
 
     const [name, setName] = useState('');
     const [nameCategory, setNameCategory] = useState([]);
@@ -27,7 +27,7 @@ const FormNewSkill = ({ auth, getIdCategory, processing, className, errors, Tran
         }
 
         getCategory();
-    }, [skillId])
+    }, [])
 
     console.log("cek kategori", nameCategory);
 

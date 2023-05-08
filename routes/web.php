@@ -70,10 +70,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/education/edit', [ProfileController::class, 'editEducation'])->name('profile.edu.edit');
 
     // hardSkill applicant
-    // Route::get('/profile/skill/new', function(){
-    //     return Inertia::render('Profile/Partials/FormNewSkill',[ProfileController::class, 'editSkillCategory']);
-    // })->name('profile.skill.new');
-    Route::get('/profile/skill/new', [ProfileController::class, 'createSkillCategory'])->name('profile.skill.new');
+    Route::get('/profile/skill/new', function(){
+        return Inertia::render('Profile/Partials/FormNewSkill');
+    })->name('profile.skill.new');
+    // Route::get('/profile/skill/new', [ProfileController::class, 'createSkillCategory'])->name('profile.skill.new');
     Route::get('/profile/skill/edit', [ProfileController::class, 'editSkill'])->name('profile.skill.edit');
 
     // interest area applicant
