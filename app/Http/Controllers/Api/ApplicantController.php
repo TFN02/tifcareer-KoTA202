@@ -212,6 +212,12 @@ class ApplicantController extends Controller
         if($request->domicile){
             $applicant->domicile = $request->input('domicile');
         }
+        if($request->description){
+            $applicant->description = $request->input('description');
+        }
+        if($request->gender){
+            $applicant->gender = $request->input('gender');
+        }
 
         if($request->education){
             foreach($request->education as $edu){
