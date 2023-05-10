@@ -65,3 +65,10 @@ Route::apiResource('notifications', NotificationController::class);
 Route::apiResource('superAdmins', SuperAdminController::class);
 Route::apiResource('segmentVideoResumes', SegmentVideoResumeController::class);
 Route::put('scoring', [ScoringVRController::class, 'updateScore']);
+Route::put('saw',[ApplicationController::class, 'applyJob']);
+
+Route::post('/applyJob/{id}', [ApplicationController::class, 'applyJob']);
+
+Route::get('/myJobs/{company_id}', [JobController::class, 'getMyJobs']);
+
+Route::get('/my-Jobs', [JobController::class, 'getMyJobs'])->middleware('auth:api');

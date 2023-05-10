@@ -48,7 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/lowonganKerjaPerusahaan', [JobController::class, 'show'])->name('LowonganKerjaPerusahaan');
     Route::get('/lowonganKerjaPerusahaan/edit', [JobController::class, 'edit'])->name('LowonganKerjaPerusahaan.edit');
     Route::post('/lowonganKerjaPerusahaan/update', [JobController::class, 'update'])->name('LowonganKerjaPerusahaan.update');
-});    
+});
 
 // Route Profil
 Route::middleware('auth')->group(function () {

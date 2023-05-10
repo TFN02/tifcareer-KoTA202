@@ -10,6 +10,7 @@ use App\Http\Resources\JobsCollection;
 use App\Models\JobCategory;
 use App\Models\WeightingCriteria;
 use App\Models\WeightingVariable;
+use Illuminate\Support\Facades\Auth;
 
 class JobController extends Controller
 {
@@ -34,7 +35,7 @@ class JobController extends Controller
             foreach( $job_categories as $job_category){
                 array_push($this->job_category_id,$job_category->id);
             }
-            
+
             $jobs = $jobs->whereHas('jobCategory', function($query){
                                 $query->whereIn('job_category_id', $this->job_category_id);
                                 });
@@ -68,7 +69,7 @@ class JobController extends Controller
         $company = Company::class;
 
         if($request->company_id){
-            
+
             $company = Company::find($request->company_id);
             if($company != null){
                 $request->validate([
@@ -153,7 +154,7 @@ class JobController extends Controller
                 'data' =>  "Company Id is Required",
             ]);
         }
-        
+
     }
 
     public function show($id)
@@ -166,10 +167,17 @@ class JobController extends Controller
         ]);
     }
 
+    public function getMyJobs($company_id)
+    {
+        $myJobs = Job::where('company_id', $company_id)->get();
+
+        return response()->json($myJobs);
+    }
+
 
     public function update(Request $request, $id)
     {
-        $jobs = Job::findOrFail($id); 
+        $jobs = Job::findOrFail($id);
 
         $request->validate([
             'company_id' => 'int',
@@ -191,7 +199,7 @@ class JobController extends Controller
             $jobs->job_category_id = $job_category_id;
 
         }
-        
+
         if($request->company_id){
             $company = Company::find($request->company_id);
             if($company != null){
@@ -224,7 +232,7 @@ class JobController extends Controller
         }
         if($request->end_date){
             $jobs->end_date = $request->input('end_date');
-        }  
+        }
         if($request->weighting_criteria){
             foreach($request->weighting_criteria as $criteria){
                 $weighting_criterias = WeightingCriteria::where('name','=', $criteria['name'] )
@@ -241,7 +249,7 @@ class JobController extends Controller
                     }
                 }
             }
-        } 
+        }
         if($request->weighting_variable){
             foreach($request->weighting_variable as $variable){
                 $weighting_variables = WeightingVariable::where('name','=', $variable['name'] )
@@ -266,8 +274,8 @@ class JobController extends Controller
                     }
                 }
             }
-        }       
-               
+        }
+
         $jobs->save();
 
         return response()->json([
