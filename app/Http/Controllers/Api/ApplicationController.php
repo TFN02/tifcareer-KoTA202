@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Application;
 use App\Models\Applicant;
 use App\Models\Job;
+use App\Models\WeightingCriteria;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -140,7 +141,10 @@ class ApplicationController extends Controller
         // Periksa jika ada pelamar yang telah melamar pada job_id tersebut
         if (count($applications) > 0) {
             // Ambil data kriteria bobot dari job tersebut
-            $weightingCriteria = $job->weightingCriteria()->get();
+            $weightingCriteria = WeightingCriteria::with('weightingVariable')
+                ->where('job_id', $id)
+                ->get();
+
 
             // Lakukan perangkingan
             foreach ($applications as $application) {
@@ -148,46 +152,56 @@ class ApplicationController extends Controller
                 $totalScore = 0;
 
                 foreach ($weightingCriteria as $criteria) {
+
                     $criteriaName = $criteria->name;
                     $criteriaWeight = $criteria->weight;
 
+
+
                     // Periksa data aplikasi berdasarkan kriteria dan variabel bobot
-                    switch ($criteriaName) {
-                        case 'education':
-                            $applicantEducation = $applicant->education->first()->pivot->level;
-                            $educationWeightingVariable = $criteria->weightingVariable()->where('name', $applicantEducation)->first();
-                            if ($educationWeightingVariable) {
-                                $educationScore = $educationWeightingVariable->weight * $criteriaWeight;
-                                $totalScore += $educationScore;
-                            }
-                            break;
+                    if ($criteriaName == 'education') {
+                        $applicantEducation = $applicant->education->first()->level;
+                        $educationWeightingVariable = $criteria->weightingVariable
+                            ->where('name', $applicantEducation)
+                            ->first();
 
-                        case 'skill':
-                            $applicantSkill = $applicant->skill->first()->pivot->name;
-                            $skillWeightingVariable = $criteria->weightingVariable()->where('name', $applicantSkill)->first();
-                            if ($skillWeightingVariable) {
-                                $skillScore = $skillWeightingVariable->weight * $criteriaWeight;
-                                $totalScore += $skillScore;
-                            }
-                            break;
+                        if ($educationWeightingVariable) {
+                            $educationScore = $educationWeightingVariable->weight * $criteriaWeight;
+                            $totalScore += $educationScore;
+                        }
 
-                        case 'work_experience':
-                            $applicantWorkExperience = $applicant->workExperience->first()->positon;
-                            $workExperienceWeightingVariable = $criteria->weightingVariable()->where('name', $applicantWorkExperience)->first();
-                            if ($workExperienceWeightingVariable) {
-                                $workExperienceScore = $workExperienceWeightingVariable->weight * $criteriaWeight;
-                                $totalScore += $workExperienceScore;
-                            }
-                            break;
 
-                        case 'interest_area':
-                            $applicantInterestArea = $applicant->interestArea->first()->pivot->name_of_field;
-                            $interestAreaWeightingVariable = $criteria->weightingVariable()->where('name', $applicantInterestArea)->first();
-                            if ($interestAreaWeightingVariable) {
-                                $interestAreaScore = $interestAreaWeightingVariable->weight * $criteriaWeight;
-                                $totalScore += $interestAreaScore;
-                            }
-                            break;
+
+                    } elseif ($criteriaName === 'skill') {
+                        $applicantSkill = $applicant->skill->first()->name;
+                        $skillWeightingVariable = $criteria->weightingVariable
+                            ->where('name', $applicantSkill)
+                            ->first();
+
+                        if ($skillWeightingVariable) {
+                            $skillScore = $skillWeightingVariable->weight * $criteriaWeight;
+                            $totalScore += $skillScore;
+                        }
+                    } elseif ($criteriaName === 'work_experience') {
+                        $applicantWorkExperience = $applicant->workExperience->first()->position;
+                        $workExperienceWeightingVariable = $criteria->weightingVariable
+                            ->where('name', $applicantWorkExperience)
+                            ->first();
+
+                        if ($workExperienceWeightingVariable) {
+                            $workExperienceScore = $workExperienceWeightingVariable->weight * $criteriaWeight;
+                            $totalScore += $workExperienceScore;
+                        }
+                    } elseif ($criteriaName === 'interest_area') {
+                        $applicantInterestArea = $applicant->interestArea->first()->name_of_field;
+                        $interestAreaWeightingVariable = $criteria->weightingVariable
+                            ->where('name', $applicantInterestArea)
+                            ->first();
+
+                        if ($interestAreaWeightingVariable) {
+                            $interestAreaScore = $interestAreaWeightingVariable->weight * $criteriaWeight;
+                            $totalScore += $interestAreaScore;
+                        }
                     }
                 }
 
@@ -212,6 +226,8 @@ class ApplicationController extends Controller
         });
 
         return $applicants;
-    }
 
+
+
+    }
 }

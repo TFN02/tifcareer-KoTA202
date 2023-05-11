@@ -22,4 +22,10 @@ class Application extends Model
     public function videoResume(){
         return $this->hasOne(VideoResume::class);
     }
+
+    public function weightingCriteria()
+    {
+        return $this->belongsTo(WeightingCriteria::class, 'job_id');
+    }
+
 }

@@ -16,7 +16,7 @@ class Applicant extends Model
     }
 
     public function education(){
-        return $this->belongsToMany(Education::class, 'applicant_education');
+        return $this->belongsToMany(Education::class, 'applicant_education', 'applicant_id', 'education_id');
     }
 
     public function workExperience(){
@@ -24,11 +24,11 @@ class Applicant extends Model
     }
 
     public function skill(){
-        return $this->belongsToMany(Skill::class, 'applicant_skill');
+        return $this->belongsToMany(Skill::class, 'applicant_skill', 'applicant_id', 'skill_id');
     }
 
     public function interestArea(){
-        return $this->belongsToMany(InterestArea::class, 'applicant_interest_area');
+        return $this->belongsToMany(InterestArea::class, 'applicant_interest_area', 'applicant_id', 'interest_area_id');
     }
 
     public function notification(){

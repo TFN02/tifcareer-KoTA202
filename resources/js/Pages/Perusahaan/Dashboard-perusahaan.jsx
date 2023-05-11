@@ -30,81 +30,127 @@ const Dashboard = ({ auth }) => {
     const [variableWeight, setVariableWeight] = useState("");
 
     const handleCriteriaChange = (e) => {
-        setCriteriaName(e.target.value);
-        setCriteriaWeight(e.target.value);
+        setCriteriaName(e.target.name);
+        setCriteriaWeight(e.target.weight);
         setShowVariableInput(true);
     };
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Mengirim data job
         const jobData = {
-          company_id: auth.user.company_id,
-          title: title,
-          job_position: job_position,
-          job_desc: job_desc,
-          qualification: qualification,
-          location: location,
-          salary: salary,
-          status: status,
-          start_date: start_date,
-          end_date: end_date,
-          job_category: job_category,
+            company_id: company_id,
+            title: title,
+            job_position: job_position,
+            job_desc: job_desc,
+            qualification: qualification,
+            location: location,
+            salary: salary,
+            start_date: start_date,
+            end_date: end_date,
+            job_category: job_category,
+
+            weighting_criteria: [
+                {
+                    name: criteriaName,
+                    weight: criteriaWeight,
+                },
+            ],
+            weighting_variable: [
+                {
+                    criteria: criteriaName,
+                    name: variableName,
+                    weight: variableWeight,
+                },
+            ],
         };
-        const jobResponse = await axios.post(
-          "http://localhost:8000/api/jobs",
-          jobData
-        );
-        const jobId = jobResponse.data.id;
 
-        // Mengecek apakah ada data weighting criteria
-        if (criteriaName && criteriaWeight) {
-          // Mengirim data weighting criteria
-          const criteriaData = {
-            job_id: jobId,
-            name: criteriaName,
-            weight: criteriaWeight,
-          };
-          const criteriaResponse = await axios.post(
-            "http://localhost:8000/api/weightingCriterias",
-            criteriaData
-          );
-          const criteriaId = criteriaResponse.data.id;
-
-          // Mengecek apakah ada data weighting variable
-          if (variableName && variableWeight) {
-            // Mengirim data weighting variable
-            const variableData = {
-              job_id: jobId,
-              weighting_criteria_id: criteriaId,
-              name: variableName,
-              weight: variableWeight,
-            };
-            await axios.post(
-              "http://localhost:8000/api/weightingVariables",
-              variableData
+        try {
+            const jobResponse = await axios.post(
+                "http://localhost:8000/api/jobs",
+                jobData
             );
-          }
+
+            const jobId = jobResponse.data.id;
+
+            console.log("Job created with ID:", jobId);
+
+            if (criteriaName && criteriaWeight) {
+                const criteriaData = {
+                    job_id: jobId,
+                    name: criteriaName,
+                    weight: criteriaWeight,
+                };
+                const criteriaResponse = await axios.post(
+                    "http://localhost:8000/api/weightingCriterias",
+                    criteriaData
+                );
+                const criteriaId = criteriaResponse.data.id;
+
+                if (variableName && variableWeight) {
+                    const variableData = {
+                        job_id: jobId,
+                        weighting_criteria_id: criteriaId,
+                        name: variableName,
+                        weight: variableWeight,
+                    };
+                    await axios.post(
+                        "http://localhost:8000/api/weightingVariables",
+                        variableData
+                    );
+                }
+            }
+
+            // Reset nilai inputan setelah submit
+            setTitle("");
+            setJobPosition("");
+            setJobDescription("");
+            setQualification("");
+            setLocation("");
+            setSalary("");
+            setStatus("");
+            setStartDate("");
+            setEndDate("");
+            setJobCategoryId("");
+            setCriteriaName("");
+            setCriteriaWeight("");
+            setVariableName("");
+            setVariableWeight("");
+        } catch (error) {
+            console.error("Error creating job:", error);
         }
+    };
 
-        // Reset nilai inputan setelah submit
-        setTitle("");
-        setJobPosition("");
-        setJobDescription("");
-        setQualification("");
-        setLocation("");
-        setSalary("");
-        setStatus("");
-        setStartDate("");
-        setEndDate("");
-        setJobCategoryId("");
-        setCriteriaName("");
-        setCriteriaWeight("");
-        setVariableName("");
-        setVariableWeight("");
+    const handleAddWeightingCriteria = () => {
+        // Pastikan nama kriteria dan bobot kriteria sudah terisi
+        if (criteriaName && criteriaWeight) {
+            // Buat objek baru untuk data kriteria
+            const newCriteria = {
+                name: criteriaName,
+                weight: criteriaWeight,
+            };
+
+            // Tambahkan data kriteria ke dalam array weightingCriteria
+            setWeightingCriteria([...weightingCriteria, newCriteria]);
+
+            // Reset nilai inputan kriteria
+            setCriteriaName("");
+            setCriteriaWeight("");
+        } else {
+            // Tampilkan pesan error jika ada inputan yang belum terisi
+            console.log("Mohon isi nama dan bobot kriteria");
+        }
+    };
+
+    const handleSaveTemporaryData = () => {
+        // Lakukan operasi yang diperlukan dengan data yang telah disimpan sementara
+        console.log("criteriaName:", criteriaName);
+        console.log("criteriaWeight:", criteriaWeight);
+        console.log("variableName:", variableName);
+        console.log("variableWeight:", variableWeight);
       };
-
 
     useEffect(() => {
         const getJobCategory = async () => {
@@ -330,94 +376,187 @@ const Dashboard = ({ auth }) => {
                                 Persyaratan
                             </h2>
 
-                            {/* kolom pembobotan */}
+                            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 m-3 border bg-slate-100">
+                                {/* CONTOH FIX */}
+                                <div>
+                                    {/* Form input weighting criteria */}
+                                    <div>
+                                        <label
+                                            htmlFor="criteriaName"
+                                            className="label"
+                                        >
+                                            Nama Kriteria
+                                        </label>
+                                        <input
+                                            id="criteriaName"
+                                            type="text"
+                                            className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                                            value={criteriaName}
+                                            onChange={(e) =>
+                                                setCriteriaName(e.target.value)
+                                            }
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label
+                                            htmlFor="criteriaWeight"
+                                            className="label"
+                                        >
+                                            Bobot Kriteria
+                                        </label>
+                                        <input
+                                            id="criteriaWeight"
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            max="1"
+                                            className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                                            value={criteriaWeight}
+                                            onChange={(e) =>
+                                                setCriteriaWeight(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </div>
+
+                                {criteriaName && (
+                                    <div className="mt-4">
+                                        {/* Form input weighting variable */}
+                                        <label
+                                            htmlFor="variableName"
+                                            className="label"
+                                        >
+                                            Nama Variable
+                                        </label>
+                                        <input
+                                            id="variableName"
+                                            type="text"
+                                            className="m-0 input input-bordered w-full mb-5 bg-slate-200 text-black"
+                                            value={variableName}
+                                            onChange={(e) =>
+                                                setVariableName(e.target.value)
+                                            }
+                                        />
+
+                                        <label
+                                            htmlFor="variableWeight"
+                                            className="label"
+                                        >
+                                            Bobot Variable
+                                        </label>
+                                        <input
+                                            id="variableWeight"
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            max="1"
+                                            className="m-0 input input-bordered w-full mb-5 bg-slate-200 text-black"
+                                            value={variableWeight}
+                                            onChange={(e) =>
+                                                setVariableWeight(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                                                        <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                                Persyaratan
+                            </h2>
 
                             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 m-3 border bg-slate-100">
-                                {/* Criteria name and weight */}
-                            </div>
-
-                            {/* CONTOH FIX */}
-                            <div className="space-y-4">
-                                {/* Form input weighting criteria */}
+                                {/* CONTOH FIX */}
                                 <div>
-                                    <label
-                                        htmlFor="criteriaName"
-                                        className="text-lg font-semibold"
-                                    >
-                                        Nama Kriteria
-                                    </label>
-                                    <input
-                                        id="criteriaName"
-                                        type="text"
-                                        className="w-full border border-gray-300 rounded px-4 py-2"
-                                        value={criteriaName}
-                                        onChange={(e) =>
-                                            setCriteriaName(e.target.value)
-                                        }
-                                    />
+                                    {/* Form input weighting criteria */}
+                                    <div>
+                                        <label
+                                            htmlFor="criteriaName"
+                                            className="label"
+                                        >
+                                            Nama Kriteria
+                                        </label>
+                                        <input
+                                            id="criteriaName"
+                                            type="text"
+                                            className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                                            value={criteriaName}
+                                            onChange={(e) =>
+                                                setCriteriaName(e.target.value)
+                                            }
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label
+                                            htmlFor="criteriaWeight"
+                                            className="label"
+                                        >
+                                            Bobot Kriteria
+                                        </label>
+                                        <input
+                                            id="criteriaWeight"
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            max="1"
+                                            className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                                            value={criteriaWeight}
+                                            onChange={(e) =>
+                                                setCriteriaWeight(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <label
-                                        htmlFor="criteriaWeight"
-                                        className="text-lg font-semibold"
-                                    >
-                                        Bobot Kriteria
-                                    </label>
-                                    <input
-                                        id="criteriaWeight"
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        max="1"
-                                        className="w-full border border-gray-300 rounded px-4 py-2"
-                                        value={criteriaWeight}
-                                        onChange={(e) =>
-                                            setCriteriaWeight(e.target.value)
-                                        }
-                                    />
-                                </div>
+                                {criteriaName && (
+                                    <div className="mt-4">
+                                        {/* Form input weighting variable */}
+                                        <label
+                                            htmlFor="variableName"
+                                            className="label"
+                                        >
+                                            Nama Variable
+                                        </label>
+                                        <input
+                                            id="variableName"
+                                            type="text"
+                                            className="m-0 input input-bordered w-full mb-5 bg-slate-200 text-black"
+                                            value={variableName}
+                                            onChange={(e) =>
+                                                setVariableName(e.target.value)
+                                            }
+                                        />
+
+                                        <label
+                                            htmlFor="variableWeight"
+                                            className="label"
+                                        >
+                                            Bobot Variable
+                                        </label>
+                                        <input
+                                            id="variableWeight"
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            max="1"
+                                            className="m-0 input input-bordered w-full mb-5 bg-slate-200 text-black"
+                                            value={variableWeight}
+                                            onChange={(e) =>
+                                                setVariableWeight(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                )}
                             </div>
-
-                            {criteriaName && (
-                                <div className="mt-4">
-                                    {/* Form input weighting variable */}
-                                    <label
-                                        htmlFor="variableName"
-                                        className="text-lg font-semibold"
-                                    >
-                                        Nama Variable
-                                    </label>
-                                    <input
-                                        id="variableName"
-                                        type="text"
-                                        className="w-full border border-gray-300 rounded px-4 py-2"
-                                        value={variableName}
-                                        onChange={(e) =>
-                                            setVariableName(e.target.value)
-                                        }
-                                    />
-
-                                    <label
-                                        htmlFor="variableWeight"
-                                        className="text-lg font-semibold"
-                                    >
-                                        Bobot Variable
-                                    </label>
-                                    <input
-                                        id="variableWeight"
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        max="1"
-                                        className="w-full border border-gray-300 rounded px-4 py-2"
-                                        value={variableWeight}
-                                        onChange={(e) =>
-                                            setVariableWeight(e.target.value)
-                                        }
-                                    />
-                                </div>
-                            )}
 
                             <PrimaryButton
                                 className="m-3 flex flex-row-reverse"
