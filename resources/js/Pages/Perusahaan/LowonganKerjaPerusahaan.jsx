@@ -17,7 +17,9 @@ const LowonganKerjaPerusahaan = ({ auth }) => {
     useEffect(() => {
         const getMyJobs = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:8000/api/myJobs/${company_id}`);
+                const { data } = await axios.get(
+                    `http://localhost:8000/api/myJobs/${company_id}`
+                );
                 const datas = data;
 
                 setMyJobs(datas);
@@ -28,6 +30,8 @@ const LowonganKerjaPerusahaan = ({ auth }) => {
 
         getMyJobs();
     }, [company_id]);
+
+
 
     return (
         <LayoutPerusahaan
@@ -68,11 +72,10 @@ const LowonganKerjaPerusahaan = ({ auth }) => {
                                     </DangerButton>
                                     <WarningButton className="rounded-full">
                                         <Link
-                                            href={route(
-                                                "LowonganKerjaPerusahaan.edit"
-                                            )}
+                                            href={route("edit-loker", {
+                                                id: job.id,
+                                            })}
                                             method="GET"
-                                            data={{ id: job.id }}
                                         >
                                             Edit
                                         </Link>

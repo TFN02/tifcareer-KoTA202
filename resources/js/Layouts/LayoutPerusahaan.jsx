@@ -99,13 +99,13 @@ export default function LayoutPelamar({ auth, header, children, footer }) {
                 <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
                     <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink href={route('dashboard-perusahaan')} active={route().current('dashboard-perusahaan')}>
-                            Buat Lowongan Kerja 
+                            Buat Lowongan Kerja
                         </ResponsiveNavLink>
                     </div>
 
                     <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink href={route('LowonganKerjaPerusahaan')}>
-                            Lowongan Kerja AKtif 
+                            Lowongan Kerja AKtif
                         </ResponsiveNavLink>
                     </div>
 

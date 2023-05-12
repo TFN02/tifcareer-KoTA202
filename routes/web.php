@@ -38,6 +38,10 @@ Route::get('/dashboard-perusahaan', function() {
     return Inertia::render('Perusahaan/Dashboard-perusahaan');
 })->middleware(['auth', 'verified'])->name('dashboard-perusahaan');
 
+Route::get('/edit-loker', function() {
+    return Inertia::render('Perusahaan/EditLoker');
+})->middleware(['auth', 'verified'])->name('edit-loker');
+
 Route::get('/register-perusahaan', function () {
     return Inertia::render('Auth/RegisterPerusahaan');
 });

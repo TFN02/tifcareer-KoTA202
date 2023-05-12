@@ -3,11 +3,30 @@ import LayoutPerusahaan from '@/Layouts/LayoutPerusahaan';
 import { Head, Link, router } from '@inertiajs/react';
 import WarningButton from '@/Components/WarningButton';
 
-export default function EditLoker(props) {
-    const [posisiPekerjaan, setPosisiPekerjaan] = useState('');
-    const [jenisPekerjaan, setJenisPekerjaan] = useState('');
-    const [lokasi, setLokasi] = useState('');
-    const [gajih, setGajih] = useState('');
+export default function EditLoker({auth, props}) {
+    const company_id = usePage().props.auth.user.company_id;
+    const user = usePage();
+
+    console.log(user);
+
+    const [title, setTitle] = useState("");
+    const [job_position, setJobPosition] = useState("");
+    const [job_desc, setJobDescription] = useState("");
+    const [qualification, setQualification] = useState("");
+    const [location, setLocation] = useState("");
+    const [salary, setSalary] = useState("");
+    const [status, setStatus] = useState("");
+    const [start_date, setStartDate] = useState("");
+    const [end_date, setEndDate] = useState("");
+    const [job_category, setJobCategoryId] = useState("");
+    const [job_categories, setJobCategories] = useState([]);
+
+    const [selectedCriteria, setSelectedCriteria] = useState("");
+    const [criteriaName, setCriteriaName] = useState("");
+    const [criteriaWeight, setCriteriaWeight] = useState("");
+    const [showVariableInput, setShowVariableInput] = useState(false);
+    const [variableName, setVariableName] = useState("");
+    const [variableWeight, setVariableWeight] = useState("");
 
     const handleSubmit = () => {
         const data = {
@@ -16,6 +35,8 @@ export default function EditLoker(props) {
         router.post('/lowonganKerjaPerusahaan/update', data);
 
     }
+
+    
     return (
         <LayoutPerusahaan
             auth={props.auth}
