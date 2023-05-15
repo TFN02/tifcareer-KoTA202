@@ -72,11 +72,23 @@ class RegisteredUserController extends Controller
                 
             ]);
         } 
-        // BELOM DIUBAH KEK APLICANT 
+        
         else if ($request->role == 'perusahaan') {
-            $company = $user->company()->create([
-                'name' => $request->name,
-                'npwp' => $request->npwp,
+            $existingCompany = Company::where('user_id', $user->id)->first();
+
+            if (!$existingCompany) {
+                $company = $user->company()->create([
+                    'name' => $request->name,
+                    'user_id' => $user->id,
+                    'npwp' => $request->npwp,
+                ]);
+            } else {
+                $company = $existingCompany;
+            }
+    
+            $user->update([
+                'company_id' => $company->id,
+                
             ]);
         }
     
