@@ -19,6 +19,8 @@ class User extends Authenticatable
         'email',
         'npwp',
         'password',
+        'applicant_id',
+        'company_id',
 
     ];
 
