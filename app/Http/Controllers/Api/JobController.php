@@ -24,7 +24,6 @@ class JobController extends Controller
             $this->keyword = $request->search;
             $jobs = $jobs->where('title', 'LIKE', "%" . $this->keyword . "%")
                         ->orWhere('job_position','LIKE',"%" . $this->keyword . "%")
-                        ->orWhere('qualification','LIKE',"%" . $this->keyword . "%")
                         ->orWhere('job_desc','LIKE',"%" . $this->keyword . "%")
                         ->orWhere('location','LIKE',"%" . $this->keyword . "%")
                         ->orWhere('salary','LIKE',"%" . $this->keyword . "%");
@@ -76,7 +75,6 @@ class JobController extends Controller
                     'title' => 'required|string|max:100',
                     'job_position' => 'required|string',
                     'job_category' => 'required|string',
-                    'qualification' => 'required|string',
                     'location' => 'required|string|max:150',
                     'salary' => 'required|string|max:20',
                     'start_date' => 'required|date',
@@ -92,7 +90,6 @@ class JobController extends Controller
                         'job_category_id' => $job_category_id,
                         'title' => $request->input('title'),
                         'job_position' => $request->input('job_position'),
-                        'qualification' => $request->input('qualification'),
                         'job_desc' => $request->input('job_desc'),
                         'location' => $request->input('location'),
                         'salary' => $request->input('salary'),
@@ -176,7 +173,6 @@ class JobController extends Controller
             'title' => 'string|max:100',
             'job_position' => 'string',
             'job_category' => 'string',
-            'qualification' => 'string',
             'location' => 'string|max:150',
             'salary' => 'string|max:20',
             'start_date' => 'date',
@@ -203,9 +199,6 @@ class JobController extends Controller
 
         if($request->title){
             $jobs->title = $request->input('title');
-        }
-        if($request->qualification){
-            $jobs->qualification = $request->input('qualification');
         }
         if($request->job_desc){
             $jobs->job_desc = $request->input('job_desc');
