@@ -20,7 +20,6 @@ return new class extends Migration
             $table->bigInteger('job_category_id')->unsigned()->nullable();
             $table->string('title',100)->nullable();
             $table->string('job_position')->nullable();
-            $table->longText('qualification')->nullable();
             $table->longText('job_desc')->nullable();
             $table->string('location',150)->nullable();
             $table->string('salary',20)->nullable();

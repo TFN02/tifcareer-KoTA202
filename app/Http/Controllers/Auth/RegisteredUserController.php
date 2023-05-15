@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\User;
-use App\Models\Role;
+use App\Models\Applicant;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ use Inertia\Response;
 class RegisteredUserController extends Controller
 {
 
+    
     public function create(): Response
     {
         return Inertia::render('Auth/Register');
@@ -43,60 +45,61 @@ class RegisteredUserController extends Controller
             ]);
         }
 
-      
-        $role = Role::where('name',$request->role)->first();
         
-        
-        if($role != null){
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
 
-            if ($request->role=="pelamar"){
-
-                $applicant = $user->applicant()->create([
-                    'user_id' => $user->id,
-                    'name' => $request->name,
-                ]);
-                
-
-                $user->applicant_id = $applicant->id;
-                $user->save();
-            
-            }else if ($request->role=="admin"){
-                
-                $admin = $user->superAdmin()->create([
-                    'user_id' => $user->id,
-                    'name' => $request->name,
-                ]);
-
-                $user->super_admin_id = $admin->id;
-                $user->save();
-
-            }else if ($request->role=="perusahaan"){
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
     
-                $company = $user->company()->create([
-                    'user_id' => $user->id,
+        $applicant = null;
+    
+        if ($request->role == 'pelamar') {
+            $existingApplicant = Applicant::where('user_id', $user->id)->first();
+    
+            if (!$existingApplicant) {
+                $applicant = $user->applicant()->create([
                     'name' => $request->name,
+                    'user_id' => $user->id,
+                ]);
+            } else {
+                $applicant = $existingApplicant;
+            }
+    
+            $user->update([
+                'applicant_id' => $applicant->id,
+                
+            ]);
+        } 
+        
+        else if ($request->role == 'perusahaan') {
+            $existingCompany = Company::where('user_id', $user->id)->first();
+
+            if (!$existingCompany) {
+                $company = $user->company()->create([
+                    'name' => $request->name,
+                    'user_id' => $user->id,
                     'npwp' => $request->npwp,
                 ]);
-
-                $user->company_id = $company->id;
-                $user->save();
-
+            } else {
+                $company = $existingCompany;
             }
-            
-            $user->roles()->attach($role->id);
+    
+            $user->update([
+                'company_id' => $company->id,
+                
+            ]);
         }
-
-        if ($request->role=="pelamar"){
-
+    
+        event(new Registered($user));
+        
+        Auth::login($user);
+        $user->roles()->attach(\App\Models\Role::where('name', $request->role)->first());
+    
+        if ($request->role == "pelamar") {
             return redirect('/lowonganKerja');
-
-        }else if ($request->role=="perusahaan"){
-
+        } else if ($request->role == "perusahaan") {
             return redirect('/dashboard-perusahaan');
         }
     }
