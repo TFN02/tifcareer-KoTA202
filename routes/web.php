@@ -52,6 +52,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/lowonganKerjaPerusahaan', [JobController::class, 'show'])->name('LowonganKerjaPerusahaan');
     Route::get('/lowonganKerjaPerusahaan/edit', [JobController::class, 'edit'])->name('LowonganKerjaPerusahaan.edit');
     Route::post('/lowonganKerjaPerusahaan/update', [JobController::class, 'update'])->name('LowonganKerjaPerusahaan.update');
+
+    // jobs detail
+    Route::get('/jobs/detail', [JobController::class, 'detailJobs'])->name('job.detail');
 });
 
 // Route Profil
@@ -97,6 +100,8 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Profile/Partials/FormNewCertificate');
         })->name('profile.certificate.new');
     Route::get('/profile/certificate/edit', [ProfileController::class, 'editCertificate'])->name('profile.certificate.edit');
+
+
 });
 
 require __DIR__.'/auth.php';

@@ -5,7 +5,7 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
 
-export default function LayoutPelamar({ auth, header, children, footer }) {
+export default function LayoutPerusahaan({ auth, header, children, footer }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (

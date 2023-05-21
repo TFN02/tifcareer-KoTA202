@@ -1,10 +1,11 @@
+import { Link } from "@inertiajs/react";
 import PrimaryButton from "../PrimaryButton"
+
 
 const isJobs = (jobs) => {
     
     return jobs.map((data, i) => {
-        console.log(data.company.name);
-        console.log(data.location);
+        console.log("data card", jobs);
 
         return (
             <div key={i} className="card w-full lg:w-96 bg-white shadow-xl">
@@ -23,7 +24,7 @@ const isJobs = (jobs) => {
                         <p className="text-black badge badge-outline">{data.job_position}</p>
                         <p className="text-black">Gajih: Rp. {data.salary} /bln</p>
                         <div className="card-actions justify-end">
-                            <PrimaryButton className="mt-5">Detail Pekerjaan</PrimaryButton>
+                            <Link href={route('job.detail')} data={{ id: data.id }} ><button className="btn btn-primary">View Detail</button></Link>
                         </div>
                     </div>
                 </div>
