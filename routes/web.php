@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -101,7 +102,22 @@ Route::middleware('auth')->group(function () {
         })->name('profile.certificate.new');
     Route::get('/profile/certificate/edit', [ProfileController::class, 'editCertificate'])->name('profile.certificate.edit');
 
+    //Notification
+    Route::get('/notification/detail', [NotificationController::class, 'detailNotif'])->name('notification.detail');
 
+    //Applicant Rank
+    Route::get('/applicant-rank', function(){
+        return Inertia::render('Perusahaan/RankApplicants');
+        })->name('applicants.rank');
+
+    //Video Resume
+    Route::get('/video-resume-applicants', function(){
+        return Inertia::render('Perusahaan/VideoResumeApplicants');
+        })->name('videoResume');
+
+    Route::get('/video-resume-applicant', function(){
+        return Inertia::render('Perusahaan/VideoApplicant');
+        })->name('videoResume.applicant');
 });
 
 require __DIR__.'/auth.php';
