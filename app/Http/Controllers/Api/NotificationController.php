@@ -6,7 +6,6 @@ use App\Models\Notification;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Inertia\Inertia;
 
 
 class NotificationController extends Controller
@@ -47,31 +46,31 @@ class NotificationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'company_id' => 'required|int', // ID perusahaan
-            'message' => 'required|string', // Pesan
+            'company_id' => 'required|int',
+            'message' => 'required|string',
         ]);
 
-        $company_id = $request->company_id;
-        $message = $request->message;
+        if($request->company_id){
+            $company = Company::find($request->company_id);
+            $company_id = $company->id;
+        }
 
         $notif = Notification::create([
             'company_id' => $company_id,
-            'message' => $message,
+            'message' => $request->message,
         ]);
 
-        if ($request->applicant) {
+        if($request->applicant){
             $applicants = $request->applicant;
-            foreach ($applicants as $app) {
-                $notif->applicant()->attach($app['applicant_id']); // Menghubungkan pelamar ke notifikasi
+            foreach($applicants as $app){
+                $notif->applicant()->attach($app['applicant_id']);
             }
         }
-
         return response()->json([
             'success' => true,
             'data' =>  $notif,
         ]);
     }
-
 
     public function show($id)
     {
@@ -104,13 +103,6 @@ class NotificationController extends Controller
         ]);
     }
 
-    public function detailNotif(Notification $notif, Request $request)
-    {
-        return Inertia::render('Notification/DetailNotification', [
-            'idNotif' => $notif->find($request->id),
-        ]);
-    }
-
     public function destroy($id)
     {
         $notif = Notification::find($id);
@@ -122,39 +114,6 @@ class NotificationController extends Controller
         ]);
     }
 
-    public function sendNotification(Request $request)
-    {
-        try {
-            $companyId = $request->input('company_id');
-            $message = $request->input('message');
 
-            // Lakukan proses pengiriman notifikasi ke pelamar di sini
-            // Misalnya, Anda dapat menyimpan notifikasi ke database
-            $notification = Notification::create([
-                'company_id' => $companyId,
-                'message' => $message,
-            ]);
-
-            // Mendapatkan data pelamar dari $request
-            $applicantId = $request->input('applicant_id');
-
-            // Menyimpan data applicant_id dan notification_id ke dalam tabel applicant_notification
-            $notification->applicant()->attach($applicantId, ['company_id' => $companyId]);
-
-            // Mengirim respon berhasil dengan data notifikasi yang telah dibuat
-            return response()->json([
-                'success' => true,
-                'message' => 'Notifikasi berhasil dikirim',
-                'data' => $notification,
-            ], 200);
-        } catch (\Exception $e) {
-            // Mengirim respon gagal jika terjadi error
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan dalam pengiriman notifikasi',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
+    
 }
