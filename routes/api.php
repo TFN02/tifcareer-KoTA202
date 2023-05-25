@@ -67,8 +67,12 @@ Route::apiResource('segmentVideoResumes', SegmentVideoResumeController::class);
 Route::put('scoring', [ScoringVRController::class, 'updateScore']);
 Route::put('saw',[ApplicationController::class, 'applyJob']);
 
+Route::get('/jobs/{jobId}/applicants',[JobController::class, 'getApplicantsByJob']);
+
 Route::post('/applyJob/{id}', [ApplicationController::class, 'applyJob']);
 
 Route::get('/myJobs/{company_id}', [JobController::class, 'getMyJobs']);
 
-Route::get('/my-Jobs', [JobController::class, 'getMyJobs'])->middleware('auth:api');
+Route::post('/notifications/send', [NotificationController::class, 'sendNotification']);
+
+// Route::get('/my-Jobs', [JobController::class, 'getMyJobs'])->middleware('auth:api');

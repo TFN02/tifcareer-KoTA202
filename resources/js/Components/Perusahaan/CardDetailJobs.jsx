@@ -1,11 +1,28 @@
 import { useEffect, useState } from "react";
 import PrimaryButton from "../PrimaryButton"
 
-const CardDetailJobs = ({getIdJobs}) => {
+const CardDetailJobs = ({getIdJobs, auth}) => {
 
     console.log("data di carddetail", getIdJobs);
 
     const id = getIdJobs.id;
+
+
+    const handleApplyJob = () => {
+        const applicationData = {
+          applicant_id: auth.user.applicant_id,
+          job_id: id,
+        };
+      
+        axios
+          .post('http://localhost:8000/api/applications', applicationData)
+          .then(response => {
+            console.log(response.data); 
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      };
 
     const [job_position, setJobPosition] = useState('');
     const [status, setStatus] = useState('');
@@ -109,7 +126,7 @@ const CardDetailJobs = ({getIdJobs}) => {
                 <div className="card-body">
 
                 <div className="card-actions justify-end">
-                    <PrimaryButton>Lamar Pekerjaan</PrimaryButton>
+                    <PrimaryButton onClick={handleApplyJob}>Lamar Pekerjaan</PrimaryButton>
                 </div>
                 </div>
             </div>

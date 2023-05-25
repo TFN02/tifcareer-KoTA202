@@ -13,6 +13,8 @@ const LowonganKerjaPerusahaan = ({ auth }) => {
     console.log(user);
 
     const [myJobs, setMyJobs] = useState([]);
+    const [editJobId, setEditJobId] = useState(null);
+
 
     useEffect(() => {
         const getMyJobs = async () => {
@@ -31,7 +33,26 @@ const LowonganKerjaPerusahaan = ({ auth }) => {
         getMyJobs();
     }, [company_id]);
 
+    const handleDelete = async (id) => {
+        try {
+          await axios.delete(`http://localhost:8000/api/jobs/${id}`);
+          setMyJobs(myJobs.filter(job => job.id !== id));
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
+      const handleEdit = async (id) => {
+        try {
+          const { data } = await axios.get(
+            `http://localhost:8000/api/jobs/${id}`
+          );
+          // Lakukan sesuatu dengan data job yang diambil
+          console.log(data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
     return (
         <LayoutPerusahaan
@@ -67,16 +88,11 @@ const LowonganKerjaPerusahaan = ({ auth }) => {
                                     Gajih: Rp. {job.salary} /bln
                                 </p>
                                 <div className="flex flex-row-reverse gap-2 mt-4">
-                                    <DangerButton className="rounded-full">
+                                    <DangerButton className="rounded-full" onClick={() => handleDelete(job.id)}>
                                         <Link>Delete</Link>
                                     </DangerButton>
                                     <WarningButton className="rounded-full">
-                                        <Link
-                                            href={route("edit-loker", {
-                                                id: job.id,
-                                            })}
-                                            method="GET"
-                                        >
+                                        <Link href={route('LowonganKerjaPerusahaan.edit')} data={{ id: job.id }}>
                                             Edit
                                         </Link>
                                     </WarningButton>
@@ -92,6 +108,7 @@ const LowonganKerjaPerusahaan = ({ auth }) => {
             </div>
         </LayoutPerusahaan>
     );
+
 };
 
 export default LowonganKerjaPerusahaan;

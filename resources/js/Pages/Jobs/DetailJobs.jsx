@@ -3,7 +3,7 @@ import LayoutPelamar from "@/Layouts/LayoutPelamar"
 import { usePage } from "@inertiajs/react"
 import { useState } from "react"
 
-const DetailJobs = ({ getIdJobs }) => {
+const DetailJobs = ({ getIdJobs, auth }) => {
     const user = usePage().props;
 
     // const [job_position, setJobPosition] = useState('');
@@ -24,7 +24,7 @@ const DetailJobs = ({ getIdJobs }) => {
                 footer={<h5 className="text-center">Copyright KoTA 202 ©️ All Reserved</h5>}
             >
                 <div className="p-5">
-                    <CardDetailJobs getIdJobs={getIdJobs} />
+                    <CardDetailJobs getIdJobs={getIdJobs} auth={auth}/>
                 </div>
 
             </LayoutPelamar>

@@ -136,9 +136,7 @@ class ApplicationController extends Controller
             ->get();
 
         $applicants = [];
-        $ranking = 1;
 
-        // Periksa jika ada pelamar yang telah melamar pada job_id tersebut
         if (count($applications) > 0) {
             // Ambil data kriteria bobot dari job tersebut
             $weightingCriteria = WeightingCriteria::with('weightingVariable')
@@ -151,68 +149,97 @@ class ApplicationController extends Controller
                 $applicant = $application->applicant;
                 $totalScore = 0;
 
+
                 foreach ($weightingCriteria as $criteria) {
 
                     $criteriaName = $criteria->name;
                     $criteriaWeight = $criteria->weight;
 
-
-
                     // Periksa data aplikasi berdasarkan kriteria dan variabel bobot
                     if ($criteriaName == 'education') {
-                        $applicantEducation = $applicant->education->first()->level;
-                        $educationWeightingVariable = $criteria->weightingVariable
-                            ->where('name', $applicantEducation)
-                            ->first();
 
-                        if ($educationWeightingVariable) {
-                            $educationScore = $educationWeightingVariable->weight * $criteriaWeight;
-                            $totalScore += $educationScore;
+                        $applicantEducations = $applicant->education->pluck('level')->all();
+                        $educationWeightingVariables = $criteria->weightingVariable->whereIn('name', $applicantEducations);
+                        $educationScore = 0;
+
+                        foreach ($educationWeightingVariables as $educationWeightingVariable) {
+                            $educationScore += $educationWeightingVariable->weight * $criteriaWeight;
                         }
 
+                        // return response()->json([
+                        //     'eduWeight' => $educationScore
+                        // ]
+                        // );
 
+                        $totalScore += $educationScore;
 
                     } elseif ($criteriaName === 'skill') {
-                        $applicantSkill = $applicant->skill->first()->name;
-                        $skillWeightingVariable = $criteria->weightingVariable
-                            ->where('name', $applicantSkill)
-                            ->first();
 
-                        if ($skillWeightingVariable) {
-                            $skillScore = $skillWeightingVariable->weight * $criteriaWeight;
-                            $totalScore += $skillScore;
+                        $applicantSkill = $applicant->skill->pluck('name')->all();
+                        $skillWeightVariables = $criteria->weightingVariable->filter(function ($variable) use ($applicantSkill) {
+                            return in_array(strtolower($variable->name), array_map('strtolower', $applicantSkill));
+                        });
+
+                        $skillScore = 0;
+
+                        foreach ($skillWeightVariables as $skillWeightVariable) {
+                            $skillScore += $skillWeightVariable->weight * $criteriaWeight;
                         }
+                        $totalScore += $skillScore;
+
+
                     } elseif ($criteriaName === 'work_experience') {
-                        $applicantWorkExperience = $applicant->workExperience->first()->position;
-                        $workExperienceWeightingVariable = $criteria->weightingVariable
-                            ->where('name', $applicantWorkExperience)
-                            ->first();
 
-                        if ($workExperienceWeightingVariable) {
-                            $workExperienceScore = $workExperienceWeightingVariable->weight * $criteriaWeight;
-                            $totalScore += $workExperienceScore;
+                        $applicantWorkExperience = $applicant->workExperience->pluck('position')->all();
+                        // $workExperienceVariables = $criteria->weightingVariable->whereIn('name', $applicantWorkExperience);
+
+                        $workExperienceVariables = $criteria->weightingVariable->filter(function ($variable) use ($applicantWorkExperience) {
+                            return in_array(strtolower($variable->name), array_map('strtolower', $applicantWorkExperience));
+                        });
+
+                        $workExperienceScore = 0;
+
+                        foreach ($workExperienceVariables as $workExperienceVariable) {
+                            $workExperienceScore += $workExperienceVariable->weight * $criteriaWeight;
                         }
+                        $totalScore += $workExperienceScore;
+
+
                     } elseif ($criteriaName === 'interest_area') {
-                        $applicantInterestArea = $applicant->interestArea->first()->name_of_field;
-                        $interestAreaWeightingVariable = $criteria->weightingVariable
-                            ->where('name', $applicantInterestArea)
-                            ->first();
 
-                        if ($interestAreaWeightingVariable) {
-                            $interestAreaScore = $interestAreaWeightingVariable->weight * $criteriaWeight;
-                            $totalScore += $interestAreaScore;
+                        $applicantInterestArea = $applicant->interestArea->pluck('name_of_field')->all();
+                        // $interestAreaWeightingVariables = $criteria->weightingVariable->whereIn('name', $applicantInterestArea);
+
+                        $interestAreaWeightingVariables = $criteria->weightingVariable->filter(function ($variable) use ($applicantInterestArea) {
+                            return in_array(strtolower($variable->name), array_map('strtolower', $applicantInterestArea));
+                        });
+
+                        $interestAreaScore = 0;
+
+                        foreach ($interestAreaWeightingVariables as $interestAreaWeightingVariable) {
+                            $interestAreaScore += $interestAreaWeightingVariable->weight * $criteriaWeight;
                         }
+
+                        $totalScore += $interestAreaScore;
                     }
                 }
 
                 $application->score = $totalScore;
+                $application->save();
+
+            }
+
+            $sortedApplications = $applications->sortByDesc('score');
+
+            $ranking = 1;
+            foreach ($sortedApplications as $application) {
                 $application->rank = $ranking;
                 $application->save();
 
                 $applicants[] = [
-                    'id' => $applicant->id,
-                    'name' => $applicant->name,
-                    'score' => $totalScore,
+                    'id' => $application->applicant->id,
+                    'name' => $application->applicant->name,
+                    'score' => $application->score,
                     'rank' => $ranking,
                 ];
 
@@ -220,14 +247,16 @@ class ApplicationController extends Controller
             }
         }
 
-        // Lakukan perangkingan berdasarkan total score
-        usort($applicants, function ($a, $b) {
-            return $b['score'] <=> $a['score'];
-        });
 
         return $applicants;
 
-
-
+        // return response()->json([
+        //     'applicant' => $applicants,
+        //     'edu' => $applicantEducation,
+        //     'interest_area' => $applicantInterestArea,
+        //     'work_experience' => $applicantWorkExperience,
+        //     'skill' => $applicantSkill
+        // ]
+        // );
     }
 }

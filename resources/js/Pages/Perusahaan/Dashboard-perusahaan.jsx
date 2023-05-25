@@ -3,6 +3,7 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import LayoutPerusahaan from "@/Layouts/LayoutPerusahaan";
 import { router, usePage } from "@inertiajs/react";
 import axios from "axios";
+import { Await } from "react-router-dom";
 
 const Dashboard = ({ auth }) => {
     const company_id = usePage().props.auth.user.company_id;
@@ -32,42 +33,58 @@ const Dashboard = ({ auth }) => {
     const [weightingCriteria, setWeightingCriteria] = useState([]);
     const [weightingVariables, setWeightingVariables] = useState([]);
 
-    const handleAddWeightingCriteria = () => {
-        // Pastikan nama kriteria dan bobot kriteria sudah terisi
-        if (criteriaName && criteriaWeight) {
-            // Buat objek baru untuk data kriteria
-            const newCriteria = {
-                name: criteriaName,
-                weight: criteriaWeight,
-                variables: weightingVariables,
-            };
+    const [variables, setVariables] = useState([]);
 
-            // Tambahkan data kriteria ke dalam array weightingCriteria
-            setWeightingCriteria([...weightingCriteria, newCriteria]);
+    // const handleAddWeightingCriteria = () => {
+    //     if (
+    //         criteriaName &&
+    //         criteriaWeight &&
+    //         criteriaWeight <= 1 &&
+    //         criteriaWeight > 0
+    //     ) {
+    //         const newCriteria = {
+    //             name: criteriaName,
+    //             weight: criteriaWeight,
+    //             variables: [],
+    //         };
+    //         setWeightingCriteria([...weightingCriteria, newCriteria]);
 
-            // Reset nilai inputan kriteria
-            setCriteriaName("");
-            setCriteriaWeight("");
-            setWeightingVariables([]);
-        } else {
-            // Tampilkan pesan error jika ada inputan yang belum terisi
-            console.log("Mohon isi nama dan bobot kriteria");
-        }
-    };
+    //         setCriteriaName("");
+    //         setCriteriaWeight("");
+    //     } else {
+    //         console.log("Mohon isi nama dan bobot kriteria");
+    //     }
+    // };
 
-    const handleAddWeightingVariable = () => {
-        if (variableName && variableWeight) {
-            const newVariable = {
-                name: variableName,
-                weight: variableWeight,
-            };
-            setWeightingVariables([...weightingVariables, newVariable]);
-            setVariableName("");
-            setVariableWeight("");
-        } else {
-            console.log("Mohon isi nama dan bobot variabel");
-        }
-    };
+    // const handleAddWeightingVariable = () => {
+    //     if (
+    //         variableName &&
+    //         variableWeight &&
+    //         variableWeight <= 1 &&
+    //         variableWeight > 0
+    //     ) {
+    //         const newVariable = {
+    //             name: variableName,
+    //             weight: variableWeight,
+    //         };
+    //         const updatedCriteria = {
+    //             ...selectedCriteria,
+    //             variables: [...selectedCriteria.variables, newVariable],
+    //         };
+    //         const updatedCriteriaIndex = weightingCriteria.findIndex(
+    //             (criteria) => criteria.name === selectedCriteria.name
+    //         );
+    //         const updatedWeightingCriteria = [...weightingCriteria];
+    //         updatedWeightingCriteria[updatedCriteriaIndex] = updatedCriteria;
+
+    //         setWeightingCriteria(updatedWeightingCriteria);
+
+    //         setVariableName("");
+    //         setVariableWeight("");
+    //     } else {
+    //         console.log("Mohon isi nama dan bobot variabel");
+    //     }
+    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -84,21 +101,29 @@ const Dashboard = ({ auth }) => {
             end_date: end_date,
             job_category: job_category,
 
-            weighting_criteria: [
-                ...weightingCriteria,
-                {
-                    name: criteriaName,
-                    weight: criteriaWeight,
-                },
-            ],
-            weighting_variable: [
-                {
-                    criteria: criteriaName,
-                    name: variableName,
-                    weight: variableWeight,
-                },
-            ],
+            weighting_criteria: [...weightingCriteria],
+            weighting_variable: [],
         };
+
+    // Add each criteria with its variables to the jobData
+    for (const criteria of weightingCriteria) {
+        const criteriaData = {
+            name: criteria.name,
+            weight: criteria.weight,
+        };
+
+        const variablesData = weightingVariables.filter(
+            (variable) => variable.criteria === criteria.name
+        );
+
+        criteriaData.variables = variablesData.map((variable) => ({
+            name: variable.name,
+            weight: variable.weight,
+        }));
+
+        jobData.weighting_criteria.push(criteriaData);
+        jobData.weighting_variable.push(...variablesData);
+    }
 
         try {
             const jobResponse = await axios.post(
@@ -109,32 +134,6 @@ const Dashboard = ({ auth }) => {
             const jobId = jobResponse.data.id;
 
             console.log("Job created with ID:", jobId);
-
-            if (criteriaName && criteriaWeight) {
-                const criteriaData = {
-                    job_id: jobId,
-                    name: criteriaName,
-                    weight: criteriaWeight,
-                };
-                const criteriaResponse = await axios.post(
-                    "http://localhost:8000/api/weightingCriterias",
-                    criteriaData
-                );
-                const criteriaId = criteriaResponse.data.id;
-
-                if (variableName && variableWeight) {
-                    const variableData = {
-                        job_id: jobId,
-                        weighting_criteria_id: criteriaId,
-                        name: variableName,
-                        weight: variableWeight,
-                    };
-                    await axios.post(
-                        "http://localhost:8000/api/weightingVariables",
-                        variableData
-                    );
-                }
-            }
 
             setTitle("");
             setJobPosition("");
@@ -150,18 +149,17 @@ const Dashboard = ({ auth }) => {
             setCriteriaWeight("");
             setVariableName("");
             setVariableWeight("");
+
+            setWeightingCriteria([]);
+            setWeightingVariables([]);
         } catch (error) {
             console.error("Error creating job:", error);
         }
     };
 
-    const handleSaveTemporaryData = () => {
-        console.log("weightingCriteria:", weightingCriteria);
-        console.log("criteriaName:", criteriaName);
-        console.log("criteriaWeight:", criteriaWeight);
-        console.log("variableName:", variableName);
-        console.log("variableWeight:", variableWeight);
-    };
+    const handleAddVariable = () => {
+        setVariables([...variables, { variableName: "", variableWeight: "" }]);
+      };
 
     useEffect(() => {
         const getJobCategory = async () => {
@@ -396,15 +394,28 @@ const Dashboard = ({ auth }) => {
                                         >
                                             Nama Kriteria
                                         </label>
-                                        <input
+                                        <select
                                             id="criteriaName"
-                                            type="text"
                                             className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
                                             value={criteriaName}
                                             onChange={(e) =>
                                                 setCriteriaName(e.target.value)
                                             }
-                                        />
+                                        >
+                                            <option value="">
+                                                Pilih Kriteria
+                                            </option>
+                                            <option value="education">
+                                                Education
+                                            </option>
+                                            <option value="skill">Skill</option>
+                                            <option value="interest_area">
+                                                Interest Area
+                                            </option>
+                                            <option value="work_experience">
+                                                Work Experience
+                                            </option>
+                                        </select>
                                     </div>
 
                                     <div>
@@ -433,150 +444,68 @@ const Dashboard = ({ auth }) => {
 
                                 {criteriaName && (
                                     <div className="mt-4">
-                                        <label
-                                            htmlFor="variableName"
-                                            className="label"
-                                        >
-                                            Nama Variable
-                                        </label>
-                                        <input
-                                            id="variableName"
-                                            type="text"
-                                            className="m-0 input input-bordered w-full mb-5 bg-slate-200 text-black"
-                                            value={variableName}
-                                            onChange={(e) =>
-                                                setVariableName(e.target.value)
-                                            }
-                                        />
+                                        {variables.map((variable, index) => (
+                                            <div key={index}>
+                                                <label
+                                                    htmlFor={`variableName${index}`}
+                                                    className="label"
+                                                >
+                                                    Nama Variable
+                                                </label>
+                                                <input
+                                                    id={`variableName${index}`}
+                                                    type="text"
+                                                    className="m-0 input input-bordered w-full mb-5 bg-slate-200 text-black"
+                                                    value={variable.name}
+                                                    onChange={(e) => {
+                                                        const updatedVariables =
+                                                            [...variables];
+                                                        updatedVariables[
+                                                            index
+                                                        ].name = e.target.value;
+                                                        setVariables(
+                                                            updatedVariables
+                                                        );
+                                                    }}
+                                                />
 
-                                        <label
-                                            htmlFor="variableWeight"
-                                            className="label"
+                                                <label
+                                                    htmlFor={`variableWeight${index}`}
+                                                    className="label"
+                                                >
+                                                    Bobot Variable
+                                                </label>
+                                                <input
+                                                    id={`variableWeight${index}`}
+                                                    type="number"
+                                                    step="0.01"
+                                                    min="0"
+                                                    max="1"
+                                                    className="m-0 input input-bordered w-full mb-5 bg-slate-200 text-black"
+                                                    value={variable.weight}
+                                                    onChange={(e) => {
+                                                        const updatedVariables =
+                                                            [...variables];
+                                                        updatedVariables[
+                                                            index
+                                                        ].weight =
+                                                            e.target.value;
+                                                        setVariables(
+                                                            updatedVariables
+                                                        );
+                                                    }}
+                                                />
+                                            </div>
+                                        ))}
+
+                                        <button
+                                            className="btn btn-primary mr-2"
+                                            onClick={handleAddVariable}
                                         >
-                                            Bobot Variable
-                                        </label>
-                                        <input
-                                            id="variableWeight"
-                                            type="number"
-                                            step="0.01"
-                                            min="0"
-                                            max="1"
-                                            className="m-0 input input-bordered w-full mb-5 bg-slate-200 text-black"
-                                            value={variableWeight}
-                                            onChange={(e) =>
-                                                setVariableWeight(
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
+                                            Add Variable
+                                        </button>
                                     </div>
                                 )}
-
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        handleAddWeightingCriteria();
-                                        handleAddWeightingVariable();
-                                      }}
-                                >
-                                    Add
-                                </button>
-
-                            </div>
-
-                            <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                                Data Pembobotan Sementara
-                            </h2>
-
-                            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 m-3 border bg-slate-100">
-
-                                <h3 className="font-semibold text-l mt-3 mb-3 text-gray-800 leading-tight">
-                                    Kriteria
-                                </h3>
-                                <div class="flex space-x-4">
-                                    <div class="w-1/2">
-                                        <label class="label">
-                                            <span class="label-text">Name</span>
-                                        </label>
-
-                                        <input
-                                            className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
-                                            type="text"
-                                            id="weightingCriteriaName"
-                                            value={weightingCriteria.map(
-                                                (criteria) => criteria.name
-                                            )}
-                                            readOnly
-                                        />
-                                    </div>
-
-                                    <div class="w-1/2">
-                                        <label class="label">
-                                            <span class="label-text">
-                                                Weight
-                                            </span>
-                                        </label>
-                                        <input
-                                            className="m-0 input input-bordered w-full mb-5 bg-slate-200 text-black"
-                                            type="text"
-                                            id="weightingCriteraWeight"
-                                            value={weightingCriteria.map(
-                                                (criteria) => criteria.weight
-                                            )}
-                                            readOnly
-                                        />
-                                    </div>
-                                </div>
-
-                                <h3 className="font-semibold text-l mt-3 mb-3 text-gray-800 leading-tight">
-                                    Variable
-                                </h3>
-                                <div class="flex space-x-4">
-                                    <div class="w-1/2">
-                                        <label class="label">
-                                            <span class="label-text">Name</span>
-                                        </label>
-
-                                        <input
-                                            className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
-                                            type="text"
-                                            id="weightingVariableName"
-                                            value={weightingVariables.map(
-                                                (variable) => variable.name
-                                            )}
-                                            readOnly
-                                        />
-                                    </div>
-
-                                    <div class="w-1/2">
-                                        <label class="label">
-                                            <span class="label-text">
-                                                Weight
-                                            </span>
-                                        </label>
-                                        <input
-                                            className="m-0 input input-bordered w-full mb-5 bg-slate-200 text-black"
-                                            type="text"
-                                            id="weightingVariableWeight"
-                                            value={weightingVariables.map(
-                                                (variable) => variable.weight
-                                            )}
-                                            readOnly
-                                        />
-                                    </div>
-                                </div>
-
-                                <ul>
-                                    {weightingCriteria.map(
-                                        (criteria, index) => (
-                                            <li key={index}>
-                                                Nama Kriteria: {criteria.name},
-                                                Bobot Kriteria:{" "}
-                                                {criteria.weight}
-                                            </li>
-                                        )
-                                    )}
-                                </ul>
                             </div>
 
                             <PrimaryButton
