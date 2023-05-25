@@ -322,9 +322,8 @@ export default function EditLoker({ myJobs, applicant }) {
                                         {applicant.name}
                                     </td>
                                     <td className="border px-4 py-2">
-                                        {/* Tambahkan tombol atau tautan untuk menampilkan detail pelamar */}
                                         <Link
-                                            href={`/applicant/${applicant.id}`} // Ubah rute sesuai dengan rute yang benar
+                                            href={``} 
                                             className="text-blue-500 underline"
                                         >
                                             View

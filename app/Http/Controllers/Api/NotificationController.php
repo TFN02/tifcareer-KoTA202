@@ -6,7 +6,7 @@ use App\Models\Notification;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Inertia\Inertia;
 
 class NotificationController extends Controller
 {
@@ -103,6 +103,13 @@ class NotificationController extends Controller
         ]);
     }
 
+    public function detailNotif(Notification $notif, Request $request)
+    {
+        return Inertia::render('Notification/DetailNotification', [
+            'idNotif' => $notif->find($request->id),
+        ]);
+    }
+
     public function destroy($id)
     {
         $notif = Notification::find($id);
@@ -113,6 +120,7 @@ class NotificationController extends Controller
             'data' => $notif,
         ]);
     }
+
 
 
     
