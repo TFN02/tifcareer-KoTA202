@@ -74,7 +74,7 @@ const LowonganKerjaPerusahaan = ({ auth }) => {
                         >
                             <div className="card-body">
                                 <h4 className="card-title text-black h-8">
-                                    {job.job_title}
+                                    {job.job_position}
                                 </h4>
                                 <hr />
                                 <p className="text-black">{job.title}</p>
@@ -96,6 +96,10 @@ const LowonganKerjaPerusahaan = ({ auth }) => {
                                             Edit
                                         </Link>
                                     </WarningButton>
+                                    <Link
+                                    data={{ jobId: job.id }}
+                                    href={route("applicants.rank")}
+                                    ><button className="btn btn-primary btn-sm text-sm">Buka</button></Link>
                                 </div>
                             </div>
                         </div>

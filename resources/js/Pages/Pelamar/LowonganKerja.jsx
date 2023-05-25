@@ -3,6 +3,7 @@ import Paginator from '@/Components/Pelamar/Paginator';
 import SearchBar from '@/Components/Pelamar/SearchBar';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import LayoutPelamar from '@/Layouts/LayoutPelamar';
+
 import { Head } from '@inertiajs/react';
 
 export default function LowonganKerja(props) {
@@ -10,7 +11,6 @@ export default function LowonganKerja(props) {
         <LayoutPelamar
             auth={props.auth}
             errors={props.errors}
-        // header={<SearchBar  />}
             footer={<h5 className="text-center">Copyright KoTA 202 ©️ All Reserved</h5>}
         >
             <Head title="Lowongan Kerja" />
