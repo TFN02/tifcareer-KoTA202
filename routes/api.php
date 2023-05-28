@@ -22,7 +22,7 @@ use App\Http\Controllers\Api\ScoringVRController;
 use App\Http\Controllers\Api\SegmentVideoResumeController;
 use App\Http\Controllers\Api\SuperAdminController;
 use App\Http\Controllers\Api\VideoResumeController;
-
+use App\Http\Controllers\YoutubeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -76,3 +76,5 @@ Route::get('/myJobs/{company_id}', [JobController::class, 'getMyJobs']);
 Route::post('/notifications/send', [NotificationController::class, 'sendNotification']);
 
 // Route::get('/my-Jobs', [JobController::class, 'getMyJobs'])->middleware('auth:api');
+
+Route::post('/youtube/upload', [YoutubeController::class, 'uploadVideo']);

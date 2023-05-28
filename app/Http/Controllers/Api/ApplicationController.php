@@ -108,6 +108,9 @@ class ApplicationController extends Controller
         if ($request->status) {
             $application->status = $request->input('status');
         }
+
+        $application->save();
+
         return response()->json([
             'success' => false,
             'data' => $application,
