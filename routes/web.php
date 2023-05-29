@@ -23,7 +23,6 @@ Route::get('/', function (){
     return Inertia::render('Auth/Login');
 })->middleware(['auth', 'verified'])->name('login');
 
-// ROUTE PEMISAH JUGA TAPI INI GATAU BEST PRACTICE GATAU ENGGA
 
 // Route Pelamar
 Route::middleware(['auth', 'verified', ])->group(function () {
