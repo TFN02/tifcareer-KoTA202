@@ -110,6 +110,8 @@ class NotificationController extends Controller
         ]);
     }
 
+
+
     public function destroy($id)
     {
         $notif = Notification::find($id);

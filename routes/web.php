@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\YoutubeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -32,6 +33,9 @@ Route::middleware(['auth', 'verified', ])->group(function () {
 Route::get('/register-pelamar', function () {
     return Inertia::render('Auth/Register');
 });
+
+Route::get('/youtube-api', [YoutubeController::class, 'uploadVideo']);
+Route::get('/youtube-auth', [YoutubeController::class, 'youtubeAuth']);
 
 //Route Perusahaan
 Route::get('/dashboard-perusahaan', function() {
