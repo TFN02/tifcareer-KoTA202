@@ -8,7 +8,7 @@ const VideoGallery = () => {
       id: 1,
       url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       thumbnail: 'https://i3.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-      timestamp: 120, // Menit ke-2
+      timestamp: 71, // Menit ke-2
     },
     {
         id: 2,
