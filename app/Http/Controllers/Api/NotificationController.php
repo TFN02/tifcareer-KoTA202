@@ -126,13 +126,14 @@ class NotificationController extends Controller
             ]);
         }
 
-        if($request->company_id){
+        if($request->company_id && $request->job_id){
             $company = Company::findOrFail($request->company_id);
-            $company_id = $company->id;
-        }
-        if($request->job_id){
-            $job = Company::findOrFail($request->company_id);
+            $job = Company::findOrFail($request->job_id);
             $this->job_id = $job->id;
+            $company->whereHas('job', function($query){
+                $query->where('job_id', $this->job_id);
+            });
+            $company_id = $company->id;
         }
 
         if($job){
@@ -140,24 +141,33 @@ class NotificationController extends Controller
                                                                             $query->where('job_id', $this->job_id);
                                 })->get();
 
-             $application_pass = $application->orderBy('rank', 'asc')->limit($request->total_pass)->get();
+            $application_pass = Application::with('applicant')->whereHas('job', function($query){
+                                                            $query->where('job_id', $this->job_id);
+                                })->orderBy('rank', 'asc')->limit($request->total_pass)->get();
 
+            $notif = Notification::create([
+                'company_id' => $company_id,
+                'message' => $request->message,
+            ]);          
             foreach($application_pass as $appl){
-                $notif = Notification::create([
-                    'company_id' => $company_id,
-                    'message' => $request->message,
-                ]);
                 $notif->applicant()->attach($appl['applicant_id']);
             }
-            $application_loss =  $application->orderBy('rank', 'desc')->limit(count($application)-$request->total_pass)->get();
+            $application_loss =  Application::with('applicant')->whereHas('job', function($query){
+                                                        $query->where('job_id', $this->job_id);
+                                    })->orderBy('rank', 'desc')->limit(count($application)-$request->total_pass)->get();
+            $notif = Notification::create([
+                'company_id' => $company_id,
+                'message' => 'Maaf anda belum lolos',
+            ]);
             foreach($application_loss as $appl){
-                $notif = Notification::create([
-                    'company_id' => $company_id,
-                    'message' => 'Maaf anda belum lolos',
-                ]);
                 $notif->applicant()->attach($appl['applicant_id']);
             }
         }
+
+        return response()->json([
+            'message' => 'Notification  sended',
+            'data' => $notif,
+        ]);
         
     }
 
