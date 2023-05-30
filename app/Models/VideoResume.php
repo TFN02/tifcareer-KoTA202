@@ -20,6 +20,6 @@ class VideoResume extends Model
     }
 
     public function segmentVideoResume(){
-        return $this->hasMany(SegmentVideoResume::class);
+        return $this->hasMany(SegmentVideoResume::class, 'video_resume_id');
     }
 }
