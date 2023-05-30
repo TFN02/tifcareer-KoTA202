@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Notification;
 use App\Models\Company;
+use App\Models\Job;
+use App\Models\Application;
+use App\Models\Applicant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
@@ -12,6 +15,7 @@ class NotificationController extends Controller
 {
     private int $applicant_id;
     private int $company_id;
+    private int $job_id;
 
     public function index(Request $request)
     {
@@ -26,7 +30,7 @@ class NotificationController extends Controller
 
         if($request->company_id){
             $this->company_id = $request->company_id;
-            $notif = $notif->whereHas('comapany', function($query){
+            $notif = $notif->whereHas('company', function($query){
                             $query->where('company_id', $this->company_id);
             });
         }
@@ -110,7 +114,52 @@ class NotificationController extends Controller
         ]);
     }
 
+    public function sendNotifSAW(Request $request)
+    {
+       
+        if($request){
+            $request->validate([
+                'company_id' => 'required|int',
+                'job_id' => 'required|int',
+                'message' => 'required|string',
+                'total_pass' => 'required|int',
+            ]);
+        }
 
+        if($request->company_id){
+            $company = Company::findOrFail($request->company_id);
+            $company_id = $company->id;
+        }
+        if($request->job_id){
+            $job = Company::findOrFail($request->company_id);
+            $this->job_id = $job->id;
+        }
+
+        if($job){
+            $application = Application::with('applicant')->whereHas('job', function($query){
+                                                                            $query->where('job_id', $this->job_id);
+                                })->get();
+
+             $application_pass = $application->orderBy('rank', 'asc')->limit($request->total_pass)->get();
+
+            foreach($application_pass as $appl){
+                $notif = Notification::create([
+                    'company_id' => $company_id,
+                    'message' => $request->message,
+                ]);
+                $notif->applicant()->attach($appl['applicant_id']);
+            }
+            $application_loss =  $application->orderBy('rank', 'desc')->limit(count($application)-$request->total_pass)->get();
+            foreach($application_loss as $appl){
+                $notif = Notification::create([
+                    'company_id' => $company_id,
+                    'message' => 'Maaf anda belum lolos',
+                ]);
+                $notif->applicant()->attach($appl['applicant_id']);
+            }
+        }
+        
+    }
 
     public function destroy($id)
     {
