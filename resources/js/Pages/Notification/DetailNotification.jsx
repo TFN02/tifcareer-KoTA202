@@ -79,9 +79,9 @@ const DetailNotification = (props) => {
                             <div className="card-body">
                             <p className="">Inputkan waktu (dalam satuan menit) anda memulai menjawab pertanyaan. <br />
                             Misal: <br />
-                            Pertanyaan 1: 00:00 <br />
-                            Pertanyaan 2: 03:00 <br />
-                            Pertanyaan 3: 05:00 <br />
+                            Pertanyaan 1: 1 (yang berarti dimulai pada menit ke-1) <br />
+                            Pertanyaan 2: 3 (yang berarti dimulai pada menit ke-3) <br />
+                            Pertanyaan 3: 5 (yang berarti dimulai pada menit ke-5) <br />
                             Dst ...</p>
                             <strong>Wajib memberikan informasi waktu untuk seluruh pertanyaan !</strong>
                             <hr />

@@ -27,10 +27,10 @@ const DynamicTextInput = () => {
         <div key={index}>
           <label>Pertanyaan {index + 1} : </label>
           <input
-            type="text"
+            type="number"
             value={input}
             onChange={(event) => handleInputChange(index, event)}
-            placeholder="Misal: 00:00"
+            placeholder="Misal: 1"
             className="input input-bordered input-primary w-full max-w-xs"
           />
           <button className="btn btn-ghost" onClick={() => removeInput(index)}>
