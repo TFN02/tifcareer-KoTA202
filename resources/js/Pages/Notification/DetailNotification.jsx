@@ -22,6 +22,8 @@ const DetailNotification = (props) => {
     }
   };
 
+  
+
     return (
         <LayoutPelamar
             auth={props.auth}
@@ -69,8 +71,14 @@ const DetailNotification = (props) => {
                         </div>
                         <p className="font-bold">Batas waktu pengumpulan video resume: 13 Desember 2023</p>
 
+                        <div className="flex flex-col gap-2">
+
                         <input type="file" accept=".mp4" onChange={handleFileChange} className="file-input file-input-bordered file-input-primary w-full max-w-7xl" />
                         {selectedFile && <p>File yang dipilih: {selectedFile.name}</p>}
+                        <button href={route('uploadVideo',selectedFile)} className="btn btn-primary btn-sm text-xs">Upload Video</button>
+                        
+                        </div>
+
                         <div className="card bg-white shadow sm:rounded-lg">
                             <figure>
                             <p className="font-bold text-md text-white bg-violet-700 w-full p-3 flex justify-between">Informasi Waktu Jawaban Video Resume</p>
@@ -85,7 +93,7 @@ const DetailNotification = (props) => {
                             Dst ...</p>
                             <strong>Wajib memberikan informasi waktu untuk seluruh pertanyaan !</strong>
                             <hr />
-                            <DynamicTextInput />
+                            <DynamicTextInput idVideo={id}/>
                             </div>
                         </div>
                     </div>
