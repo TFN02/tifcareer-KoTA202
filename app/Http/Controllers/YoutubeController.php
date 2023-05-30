@@ -110,9 +110,18 @@ class YoutubeController extends Controller
                 ]); 
                 $application->video_resume_id = $video_resume->id;
                 $application->save();
+
+                if($request->segment){
+                    foreach($request->segment as $seg){
+                        $seg = $video_resume->segmentVideoResume()->create([
+                            'segment_title' => $seg['segment_title'],
+                            'time_to_jump' => $seg['time_to_jump'],
+                            'video_resume_id' => $video_resume->id,
+                        ]);
+                    }
+                }
             }
                     
-
 
             return response()->json([
                 'applicantion' => $application,

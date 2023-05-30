@@ -12,6 +12,6 @@ class SegmentVideoResume extends Model
     protected $guarded = ['id'];
     
     public function videoResume(){
-        return $this->belongsTo(VideoResume::class);
+        return $this->belongsTo(VideoResume::class,'video_resume_id');
     }
 }
