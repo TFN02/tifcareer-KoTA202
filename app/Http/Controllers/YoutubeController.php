@@ -27,15 +27,15 @@ class YoutubeController extends Controller
 {
 
 
-    public function uploadVideo(Request $request)
+    public function uploadVideo(Client $client,Request $request)
     {
 
         if($request){
             $request->validate([
-                'application_id' => 'required|int',
-                'title' => 'required|string|max:100',
-                'tags' => 'required|string|max:100',
-                'description' => 'required|string',
+                'application_id' => 'int',
+                'title' => 'string|max:100',
+                'tags' => 'string|max:100',
+                'description' => 'string',
                 'video_path' => 'required|string',
             ]);
         }

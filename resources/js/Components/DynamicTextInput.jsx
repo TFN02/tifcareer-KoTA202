@@ -27,33 +27,6 @@ const DynamicTextInput = ({idVideo}) => {
   };
 
 
-const handleSubmit = () => {
-  const formattedInputs = inputs.map(input => {
-    const { hour, minute, second } = input;
-    const formattedTime = moment(`${hour}:${minute}:${second}`, 'HH:mm:ss').format('HH:mm:ss');
-    return formattedTime;
-  });
-
-  const dataToSend = inputs.map((input, index) => {
-    console.log("index", index)
-    return {
-      segment_title: `Pertanyaan ${index + 1}`, 
-      time_to_jump: formattedInputs[index],
-      video_resume_id: idVideo.id,
-    };
-  });
-
-console.log("dataToSend", dataToSend)
-  axios.post('http://localhost:8000/api/segmentVideoResumes', dataToSend)
-    .then(response => {
-      console.log(response)
-    })
-    .catch(error => {
-      console.log(error)
-    });
-};
-
-
   return (
     <div>
       {inputs.map((input, index) => (
@@ -92,7 +65,6 @@ console.log("dataToSend", dataToSend)
       ))}
       <div className='flex flex-row gap-2'>
       <button className='btn btn-primary btn-sm text-xs mt-2' onClick={addInput}>Tambah</button>
-      <button className='btn btn-primary btn-sm text-xs mt-2' onClick={handleSubmit}>Submit</button>
       </div>
     </div>
   );
