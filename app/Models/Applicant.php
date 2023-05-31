@@ -32,7 +32,7 @@ class Applicant extends Model
     }
 
     public function notification(){
-        return $this->belongsToMany(Notification::class, 'applicant_notification');
+        return $this->belongsToMany(Notification::class, 'applicant_notification', 'applicant_id', 'notification_id');
     }
 
     public function application(){

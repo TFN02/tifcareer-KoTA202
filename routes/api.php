@@ -78,3 +78,5 @@ Route::post('/notifications/send', [NotificationController::class, 'sendNotifica
 // Route::get('/my-Jobs', [JobController::class, 'getMyJobs'])->middleware('auth:api');
 
 Route::post('/youtube/upload', [YoutubeController::class, 'uploadVideo']);
+
+Route::post('/notification/sendNotifSaw', [NotificationController::class, 'sendNotifSAW']);
