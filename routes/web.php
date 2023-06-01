@@ -24,7 +24,6 @@ Route::get('/', function (){
     return Inertia::render('Auth/Login');
 })->middleware(['auth', 'verified'])->name('login');
 
-// ROUTE PEMISAH JUGA TAPI INI GATAU BEST PRACTICE GATAU ENGGA
 
 // Route Pelamar
 Route::middleware(['auth', 'verified', ])->group(function () {
@@ -35,8 +34,9 @@ Route::get('/register-pelamar', function () {
     return Inertia::render('Auth/Register');
 });
 
-Route::get('/youtube-api', [YoutubeController::class, 'uploadVideo']);
-Route::get('/youtube-auth', [YoutubeController::class, 'youtubeAuth']);
+// Youtube API
+Route::post('/youtube-api', [YoutubeController::class, 'uploadVideo'])->name('uploadVideo');
+// Route::get('/youtube-auth', [YoutubeController::class, 'youtubeAuth'])->name('auth.google');
 
 //Route Perusahaan
 Route::get('/dashboard-perusahaan', function() {

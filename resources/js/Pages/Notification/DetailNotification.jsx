@@ -1,26 +1,68 @@
 import DynamicTextInput from "@/Components/DynamicTextInput";
+import PrimaryButton from "@/Components/PrimaryButton";
 import LayoutPelamar from "@/Layouts/LayoutPelamar";
 import { Link } from "@inertiajs/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Head, router } from '@inertiajs/react';
+import axios from "axios";
+
 
 const DetailNotification = (props) => {
 
-    // const user = auth.user.name;
-    console.log(props);
+
     const id = props.idNotif;
-    console.log("ambil detail", id);
 
-    const [selectedFile, setSelectedFile] = useState(null);
+    console.log("id",props)
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type === 'video/mp4') {
-      setSelectedFile(file);
-    } else {
-      setSelectedFile(null);
-      alert('Mohon pilih file dengan format .mp4');
-    }
-  };
+    const [selectedFile, setSelectedFile] = useState('');
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file && file.type === 'video/mp4') {
+            const filePath = URL.createObjectURL(file);
+            setSelectedFile(filePath);
+            
+        } else {
+            setSelectedFile(null);
+            alert('Mohon pilih file dengan format .mp4');
+        }
+    };
+    console.log("Path video:", selectedFile);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // ke router langsung (web.php)
+        router.post('/api/youtube/upload',{
+            application_id: 1,
+            title: 'video Tegar',
+            tags: 'ini tags',
+            description: 'ini description',
+            video_path: selectedFile,
+        })
+
+        //pake api
+    
+        // try {
+        //   const response = await axios.post('http://localhost:8000/api/youtube/upload', {
+        //     application_id: 1,
+        //     title: 'video Tegar',
+        //     tags: 'ini tags',
+        //     description: 'ini description',
+        //     video_path: selectedFile,
+        //   }, {
+        //     headers: {
+        //     //   'Content-Type': 'multipart/form-data',
+        //       'Content-Type': 'application/json',
+        //     },
+        //   });
+        //   console.log(response.data); // Lakukan sesuatu dengan respons dari server
+        // } catch (error) {
+        //   console.error(error);
+        // }
+
+    };
+
 
     return (
         <LayoutPelamar
@@ -28,7 +70,8 @@ const DetailNotification = (props) => {
             errors={props.errors}
             footer={<h5 className="text-center">Copyright KoTA 202 ©️ All Reserved</h5>}
         >
-            <div className="p-5">
+            <Head title="Informasi Persyaratan" />
+            <div className="flex flex-col gap-3 p-5">
 
                 <div className="card bg-white shadow sm:rounded-lg">
                     <figure><h1 className='text-lg text-white bg-violet-700 w-full p-5'>Informasi Seleksi Video Resume</h1></figure>
@@ -71,29 +114,30 @@ const DetailNotification = (props) => {
 
                         <input type="file" accept=".mp4" onChange={handleFileChange} className="file-input file-input-bordered file-input-primary w-full max-w-7xl" />
                         {selectedFile && <p>File yang dipilih: {selectedFile.name}</p>}
+                        <button target="_blank" onClick={handleSubmit}>Submit</button>
+
                         <div className="card bg-white shadow sm:rounded-lg">
                             <figure>
-                            <p className="font-bold text-md text-white bg-violet-700 w-full p-3 flex justify-between">Informasi Waktu Jawaban Video Resume</p>
+                                <p className="font-bold text-md text-white bg-violet-700 w-full p-3 flex justify-between">Informasi Waktu Jawaban Video Resume</p>
                             </figure>
 
                             <div className="card-body">
-                            <p className="">Inputkan waktu (dalam satuan menit) anda memulai menjawab pertanyaan. <br />
-                            Misal: <br />
-                            Pertanyaan 1: 1 (yang berarti dimulai pada menit ke-1) <br />
-                            Pertanyaan 2: 3 (yang berarti dimulai pada menit ke-3) <br />
-                            Pertanyaan 3: 5 (yang berarti dimulai pada menit ke-5) <br />
-                            Dst ...</p>
-                            <strong>Wajib memberikan informasi waktu untuk seluruh pertanyaan !</strong>
-                            <hr />
-                            <DynamicTextInput />
+                                <p className="">Inputkan waktu (dalam satuan menit) anda memulai menjawab pertanyaan. <br />
+                                    Misal: <br />
+                                    Pertanyaan 1: 1 (yang berarti dimulai pada menit ke-1) <br />
+                                    Pertanyaan 2: 3 (yang berarti dimulai pada menit ke-3) <br />
+                                    Pertanyaan 3: 5 (yang berarti dimulai pada menit ke-5) <br />
+                                    Dst ...</p>
+                                <strong>Wajib memberikan informasi waktu untuk seluruh pertanyaan !</strong>
+                                <hr />
+                                <DynamicTextInput idVideo={id} />
                             </div>
                         </div>
                     </div>
                 </div>
-                {/* <div className='p-4 sm:p-8 bg-white shadow sm:rounded-lg'>
-                        <UpdatePasswordForm className="max-w-xl" />
-                    </div> */}
-
+                <div className="bg-white p-5 flex justify-center">
+                    
+                </div>
             </div>
         </LayoutPelamar>
     )
