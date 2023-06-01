@@ -26,19 +26,8 @@ use Psr\Http\Message\RequestInterface;
 class YoutubeController extends Controller
 {
 
-
     public function uploadVideo(Request $request)
     {
-
-        if($request){
-            $request->validate([
-                'application_id' => 'required|int',
-                'title' => 'required|string|max:100',
-                'tags' => 'required|string|max:100',
-                'description' => 'required|string',
-                'video_path' => 'required|string',
-            ]);
-        }
 
 
         $client = new Client();
@@ -49,7 +38,6 @@ class YoutubeController extends Controller
         $client->setAccessType('offline');
         $client->setIncludeGrantedScopes(true);
         $url =  $client->createAuthUrl();
-        
 
         if (isset($_GET['code'])) { 
             $tokenSessionKey = 'token-'.$client->prepareScopes();
@@ -65,7 +53,18 @@ class YoutubeController extends Controller
 
             
         if($client->getAccessToken()){
+        dd($client->getAccessToken());
             
+        if($request){
+            $request->validate([
+                'application_id' => 'required|int',
+                'title' => 'required|string|max:100',
+                'tags' => 'required|string|max:100',
+                'description' => 'required|string',
+                'video_path' => 'required|string',
+            ]);
+        }
+
             $video = new Video();
             // Membuat objek layanan YouTube
             $youtube = new YouTube($client);

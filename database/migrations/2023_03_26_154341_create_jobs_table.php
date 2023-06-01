@@ -23,7 +23,7 @@ return new class extends Migration
             $table->longText('job_desc')->nullable();
             $table->string('location',150)->nullable();
             $table->string('salary',20)->nullable();
-            $table->string('status',100)->nullable();
+            $table->bool('is_active',100)->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();
