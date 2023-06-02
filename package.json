@@ -22,9 +22,11 @@
     },
     "dependencies": {
         "@react-icons/all-files": "^4.1.0",
+        "cors": "^2.8.5",
         "daisyui": "^2.51.5",
         "inertia": "0.0.7",
         "moment": "^2.29.4",
+        "react-google-login": "^5.2.2",
         "react-icons": "^4.8.0",
         "react-player": "^2.12.0",
         "react-router-dom": "^6.11.0"

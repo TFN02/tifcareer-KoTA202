@@ -5,63 +5,76 @@ import { Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { Head, router } from '@inertiajs/react';
 import axios from "axios";
+import { GoogleLogin } from 'react-google-login';
 
 
 const DetailNotification = (props) => {
-
 
     const id = props.idNotif;
 
     console.log("id",props)
 
-    const [selectedFile, setSelectedFile] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFilePath, setSelectedFilePath] = useState('');
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file && file.type === 'video/mp4') {
-            const filePath = URL.createObjectURL(file);
-            setSelectedFile(filePath);
+            setSelectedFile(file);
+            //setSelectedFilePath(URL.createObjectURL(event.target.files[0]));
             
         } else {
             setSelectedFile(null);
             alert('Mohon pilih file dengan format .mp4');
         }
     };
-    console.log("Path video:", selectedFile);
+    console.log("Path video:", selectedFilePath);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         // ke router langsung (web.php)
-        router.post('/api/youtube/upload',{
-            application_id: 1,
-            title: 'video Tegar',
-            tags: 'ini tags',
-            description: 'ini description',
-            video_path: selectedFile,
-        })
-
-        //pake api
-    
-        // try {
-        //   const response = await axios.post('http://localhost:8000/api/youtube/upload', {
+        // const response = router.post('/api/youtube/upload',{
         //     application_id: 1,
         //     title: 'video Tegar',
         //     tags: 'ini tags',
         //     description: 'ini description',
-        //     video_path: selectedFile,
-        //   }, {
-        //     headers: {
-        //     //   'Content-Type': 'multipart/form-data',
-        //       'Content-Type': 'application/json',
-        //     },
-        //   });
-        //   console.log(response.data); // Lakukan sesuatu dengan respons dari server
-        // } catch (error) {
-        //   console.error(error);
-        // }
+        //     video_path: 'path',
+        // })
+
+
+        //pake api
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('application_id', 1);
+        formData.append('title', 'Video Tegar');
+        formData.append('tags', 'tags');
+        formData.append('description', 'desc');
+    
+         try {
+          const response = await axios.get('http://localhost:8000/api/auth/youtube', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+              //'Content-Type': 'application/json',
+            },
+          });
+
+
+          const response2 = await axios.post('http://localhost:8000/api/youtube/session', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+              //'Content-Type': 'application/json',
+            },
+          });
+          
+          console.log(response2.data.session)
+          window.location.href = response.data.authUrl
+        } catch (error) {
+          console.error(error);
+        }
 
     };
+
 
 
     return (

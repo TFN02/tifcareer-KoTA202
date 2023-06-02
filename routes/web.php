@@ -35,7 +35,10 @@ Route::get('/register-pelamar', function () {
 });
 
 // Youtube API
-Route::post('/youtube-api', [YoutubeController::class, 'uploadVideo'])->name('uploadVideo');
+Route::get('/youtube/upload', [YoutubeController::class, 'uploadVideo'])->name('uploadVideo');
+// routes/web.php
+Route::post('/auth/youtube', [YoutubeController::class, 'auth'])->name('youtube.auth');
+Route::get('/auth/youtube/callback', [YoutubeController::class, 'authCallback'])->name('youtube.callback');
 // Route::get('/youtube-auth', [YoutubeController::class, 'youtubeAuth'])->name('auth.google');
 
 //Route Perusahaan

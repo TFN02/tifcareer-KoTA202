@@ -6,9 +6,12 @@ namespace App\Http\Controllers;
 use App\Models\VideoResume;
 use App\Models\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+
 use Inertia\Inertia;
 use App\Http\Resources\JobsCollection;
 use App\Models\Applicant;
+use App\Models\Sessions;
 use Illuminate\Support\Facades\Auth;
 
 use GuzzleHttp\Client as Clt;
@@ -21,83 +24,149 @@ use Google\Service\YouTube\Video;
 use Google\Service\YouTube\VideoSnippet;
 use Google\Service\YouTube\VideoStatus;
 use Google\Http\MediaFileUpload;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+
 use Psr\Http\Message\RequestInterface;
 
 class YoutubeController extends Controller
 {
 
+    public int $application_id;
+    public string $title;
+    public string $tags;
+    public string $description;
+    public string $video_path;
+    public  $access_token = [];
 
-    public function uploadVideo(Client $client,Request $request)
+    public function sessionCreate(Request $request)
     {
+        if($request->application_id ){
+            $this->application_id = $request->application_id;
+            $this->title = $request->title;
+            $this->tags = $request->tags;
+            $this->description = $request->description;
+            if($request->hasFile('file')){
+                $filename = $request->file('file')->getClientOriginalName();
+                $destinationPath = public_path().'\vid' ;
+                $this->video_path = $request->file('file')->move($destinationPath, $filename);
+            }
 
-        if($request){
-            $request->validate([
-                'application_id' => 'int',
-                'title' => 'string|max:100',
-                'tags' => 'string|max:100',
-                'description' => 'string',
-                'video_path' => 'required|string',
-            ]);
-        }
+            $sessions = Sessions::create(
+                [
+                    'application_id' => $this->application_id,
+                    'title' => $this->title,
+                    'description' => $this->description,
+                    'tags' => $this->tags,
+                    'video_path' => $this->video_path,
+                ]
+            );
 
+        }   
+        return response()->json([
+            'session' => $sessions,
+        ]);
+
+    }
+    public function auth(Request $request)
+    {
 
         $client = new Client();
         $client->setClientId("356925278435-8131j8sa1rob96r9nupg4upd7oolomsj.apps.googleusercontent.com");
         $client->setClientSecret("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");
+        $client->setRedirectUri("http://localhost:8000/auth/youtube/callback");
         $client->setScopes(YouTube::YOUTUBE_UPLOAD);
-        $client->setRedirectUri("http://localhost:8000/youtube-api");
         $client->setAccessType('offline');
-        $client->setIncludeGrantedScopes(true);
-        $url =  $client->createAuthUrl();
+        $client->setPrompt('consent');
 
-        if (isset($_GET['code'])) { 
-            $tokenSessionKey = 'token-'.$client->prepareScopes();
-            $client->authenticate($_GET['code']); 
-            $_SESSION[$tokenSessionKey] = $client->getAccessToken(); 
+        $authUrl = $client->createAuthUrl();  
+       
+        // if ($request->hasFile('file')) {
+        //     $file = $request->file('file');
+            
+        //     // Get the file path
+        //     $file_path = $file->path();
+        //     session(['video_path' => $file_path]);
+        // }
+        
 
-            if (isset($_SESSION[$tokenSessionKey])) { 
-                $client->setAccessToken($_SESSION[$tokenSessionKey]);
-            }
-        }else{
-            return redirect($url);
+        return response()->json([
+            'authUrl' => $authUrl,
+        ]);
+    }
+
+    public function authCallback(Request $request)
+    {
+        $client = new Client();
+        $client->setClientId("356925278435-8131j8sa1rob96r9nupg4upd7oolomsj.apps.googleusercontent.com");
+        $client->setClientSecret("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");
+        $client->setRedirectUri("http://localhost:8000/auth/youtube/callback");
+        $client->setScopes(YouTube::YOUTUBE_UPLOAD);
+        $client->setAccessType('offline');
+        $client->setPrompt('consent');
+
+        $client->fetchAccessTokenWithAuthCode($request->code);
+
+        $this->access_token = $client->getAccessToken();
+        Session::forget('access_token');
+        Session::put('access_token' , $this->access_token);
+        // session(['access_token' => $this->access_token]);
+
+        if (Session::get('access_token')){ 
+            $client->setAccessToken($this->access_token);
         }
 
+        
+
+        return redirect('youtube/upload');
+    }
+
+    public function uploadVideo(Client $client,Request $request)
+    {
+      
+        
+        if(Session::get('access_token')){
+
+            $access_token = Session::get('access_token');
+            $sessions=Sessions::first(); 
+
+            $application_id = $sessions->application_id;
+            $title = $sessions->title;
+            $tags = $sessions->tags;
+            $description = $sessions->description;
+            $video_path = $sessions->video_path;
             
-        if($client->getAccessToken()){
-        dd($client->getAccessToken());
-            
-        if($request){
-            $request->validate([
-                'application_id' => 'required|int',
-                'title' => 'required|string|max:100',
-                'tags' => 'required|string|max:100',
-                'description' => 'required|string',
-                'video_path' => 'required|string',
-            ]);
-        }
+
+            $client = new Client();
+            $client->setClientId("356925278435-8131j8sa1rob96r9nupg4upd7oolomsj.apps.googleusercontent.com");
+            $client->setClientSecret("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");
+            $client->setRedirectUri("http://localhost:8000/auth/youtube/callback");
+            $client->setScopes(YouTube::YOUTUBE_UPLOAD);
+            $client->setAccessType('offline');
+            $client->setPrompt('consent');
+
+            $client->setAccessToken($access_token);
 
             $video = new Video();
             // Membuat objek layanan YouTube
             $youtube = new YouTube($client);
-    
+
             // Membuat objek video yang akan diunggah
             $video = new Video();
             // Membuat objek video snippet
             $videoSnippet = new VideoSnippet();
-            $videoSnippet->setTitle($request->title);
-            $videoSnippet->setDescription($request->description);
-            $videoSnippet->setTags($request->tags);
+            $videoSnippet->setTitle($title);
+            $videoSnippet->setDescription($description);
+            $videoSnippet->setTags($tags);
             $videoSnippet->setCategoryId("27");
             $video->setSnippet($videoSnippet);
             // Membuat objek video status
             $videoStatus = new VideoStatus();
             $videoStatus->setPrivacyStatus('private');
             $video->setStatus($videoStatus); 
-    
+        
             $chunkSizeBytes = 10 * 10240 * 10240;
-            $video_path = $request->video_path;
-     
-    
+
             $response_yt = $youtube->videos->insert(
                 'snippet,status',
                 $video,
@@ -108,7 +177,9 @@ class YoutubeController extends Controller
                 )
             );
 
-            $application = Application::find($request->application_id);
+            
+            
+            $application = Application::find($application_id);
             if($application->id){
                 $video_resume = VideoResume::create([
                     'application_id' => $application->id,
@@ -130,16 +201,57 @@ class YoutubeController extends Controller
                         ]);
                     }
                 }
-            }
-                    
+            }  
 
+            if (Storage::exists($sessions->video_path)) {
+                Storage::delete($sessions->video_path);
+                Sessions::destroy($sessions->id);
+            }
             return response()->json([
                 'applicantion' => $application,
                 'video_id'   => $response_yt->getId(),
             ]);
 
+        }else{
 
+            if($request->application_id){
+                $this->application_id = $request->application_id;
+                $this->title = $request->title;
+                $this->tags = $request->tags;
+                $this->description = $request->description;
+                if($request->hasFile('file')){
+                    $this->video_path = $request->file('file')->path();
+                }
+                Session::put('application_id', $this->application_id);
+                Session::put('title', $this->title);
+                Session::put('tags', $this->tags);
+                Session::put('description', $this->description);
+                Session::put('video_path', $this->video_path);
+    
+                // session(['application_id' => $this->application_id]);
+                // session(['title' => $this->title]);
+                // session(['tags' => $this->tags]);
+                // session(['description' => $this->description]);
+                // session(['video_path' => $this->video_path]);
+                
+            }
+
+            $data = [
+                'application_id' => $request->application_id,
+                'title' => $request->title,
+                'tags' => $request->tags,
+                'description' => $request->description,
+                'video_path' => $request->video_path,
+            ];
+    
+            //$authUrl = redirect('/auth/youtube')->with('data', $data);
+            return redirect('/auth/youtube')->with('data', $data);
         }
+        
+
+              
+
+        
 
 
 
