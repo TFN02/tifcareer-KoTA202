@@ -44,13 +44,29 @@ const DetailNotification = (props) => {
 
 
         //pake api
+        const segment = [
+            {
+              segment_title: "segment_1",
+              time_to_jump: "00:00:20",
+            },
+            {
+              segment_title: "segment_2",
+              time_to_jump: "00:00:30",
+            },
+            {
+              segment_title: "segment_3",
+              time_to_jump: "00:00:50",
+            },
+        ];
+
         const formData = new FormData();
         formData.append('file', selectedFile);
         formData.append('application_id', 1);
         formData.append('title', 'Video Tegar');
         formData.append('tags', 'tags');
         formData.append('description', 'desc');
-    
+        formData.append('segment_video', JSON.stringify(segment));
+
          try {
           const response = await axios.get('http://localhost:8000/api/auth/youtube', formData, {
             headers: {
@@ -67,7 +83,7 @@ const DetailNotification = (props) => {
             },
           });
           
-          console.log(response2.data.session)
+          console.log(response2.data.segment)
           window.location.href = response.data.authUrl
         } catch (error) {
           console.error(error);

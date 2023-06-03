@@ -37,6 +37,7 @@ class YoutubeController extends Controller
     public string $tags;
     public string $description;
     public string $video_path;
+    public  $segment_video = [];
     public  $access_token = [];
 
     public function sessionCreate(Request $request)
@@ -46,6 +47,8 @@ class YoutubeController extends Controller
             $this->title = $request->title;
             $this->tags = $request->tags;
             $this->description = $request->description;
+            $this->segment_video = $request->segment_video;
+
             if($request->hasFile('file')){
                 $filename = $request->file('file')->getClientOriginalName();
                 $destinationPath = public_path().'\vid' ;
@@ -59,12 +62,14 @@ class YoutubeController extends Controller
                     'description' => $this->description,
                     'tags' => $this->tags,
                     'video_path' => $this->video_path,
+                    'segment_video' => $this->segment_video,
                 ]
             );
 
         }   
         return response()->json([
             'session' => $sessions,
+            'segment' => $request->segment_video,
         ]);
 
     }
@@ -136,6 +141,8 @@ class YoutubeController extends Controller
             $tags = $sessions->tags;
             $description = $sessions->description;
             $video_path = $sessions->video_path;
+            $segment_video = json_decode($sessions->segment_video, true);
+           
             
 
             $client = new Client();
@@ -193,8 +200,8 @@ class YoutubeController extends Controller
                 $application->video_resume_id = $video_resume->id;
                 $application->save();
 
-                if($request->segment){
-                    foreach($request->segment as $seg){
+                if($segment_video){
+                    foreach($segment_video as $seg){
                         $seg = $video_resume->segmentVideoResume()->create([
                             'segment_title' => $seg['segment_title'],
                             'time_to_jump' => $seg['time_to_jump'],
