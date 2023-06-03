@@ -11,66 +11,79 @@ import { GoogleLogin } from 'react-google-login';
 const DetailNotification = (props) => {
 
     const id = props.idNotif;
-
-    console.log("id",props)
-
     const [selectedFile, setSelectedFile] = useState(null);
-    const [selectedFilePath, setSelectedFilePath] = useState('');
+    const [inputs, setInputs] = useState([{ hour: '', minute: '', second: '' }]);
+
+    console.log("id", props)
+    console.log("inputs", inputs);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file && file.type === 'video/mp4') {
             setSelectedFile(file);
             //setSelectedFilePath(URL.createObjectURL(event.target.files[0]));
-            
+
         } else {
             setSelectedFile(null);
             alert('Mohon pilih file dengan format .mp4');
         }
     };
-    console.log("Path video:", selectedFilePath);
+
+    const handleInputChange = (index, field, value) => {
+        const newInputs = [...inputs];
+        newInputs[index][field] = value;
+        setInputs(newInputs);
+    };
+
+    const addInput = () => {
+        const newInputs = [...inputs, { hour: '', minute: '', second: '' }];
+        setInputs(newInputs);
+    };
+
+    const removeInput = (index) => {
+        const newInputs = [...inputs];
+        newInputs.splice(index, 1);
+        setInputs(newInputs);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // ke router langsung (web.php)
-        // const response = router.post('/api/youtube/upload',{
-        //     application_id: 1,
-        //     title: 'video Tegar',
-        //     tags: 'ini tags',
-        //     description: 'ini description',
-        //     video_path: 'path',
-        // })
-
-
-        //pake api
+        // const formattedData = inputs.map((input) => {
+        //     const { hour, minute, second } = input;
+        //     const totalSeconds = (hour * 3600) + (minute * 60) + parseInt(second);
+        //     return { totalSeconds };
+        //   });
+        
         const formData = new FormData();
         formData.append('file', selectedFile);
-        formData.append('application_id', 1);
+        formData.append('application_id', 2);
         formData.append('title', 'Video Tegar');
         formData.append('tags', 'tags');
         formData.append('description', 'desc');
-    
-         try {
-          const response = await axios.get('http://localhost:8000/api/auth/youtube', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-              //'Content-Type': 'application/json',
-            },
-          });
+        formData.append('time_stamp', inputs);
+
+        try {
+            const response = await axios.get('http://localhost:8000/api/auth/youtube', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    //'Content-Type': 'application/json',
+                },
+            });
 
 
-          const response2 = await axios.post('http://localhost:8000/api/youtube/session', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-              //'Content-Type': 'application/json',
-            },
-          });
-          
-          console.log(response2.data.session)
-          window.location.href = response.data.authUrl
+            const response2 = await axios.post('http://localhost:8000/api/youtube/session', formData, {
+                
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    //'Content-Type': 'application/json',
+                },
+            });
+
+            console.log(response2.data.session)
+            window.location.href = response.data.authUrl
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
 
     };
@@ -127,7 +140,7 @@ const DetailNotification = (props) => {
 
                         <input type="file" accept=".mp4" onChange={handleFileChange} className="file-input file-input-bordered file-input-primary w-full max-w-7xl" />
                         {selectedFile && <p>File yang dipilih: {selectedFile.name}</p>}
-                        <button target="_blank" onClick={handleSubmit}>Submit</button>
+                        
 
                         <div className="card bg-white shadow sm:rounded-lg">
                             <figure>
@@ -143,13 +156,18 @@ const DetailNotification = (props) => {
                                     Dst ...</p>
                                 <strong>Wajib memberikan informasi waktu untuk seluruh pertanyaan !</strong>
                                 <hr />
-                                <DynamicTextInput idVideo={id} />
+                                <DynamicTextInput
+                                    inputs={inputs}
+                                    handleInputChange={handleInputChange}
+                                    addInput={addInput}
+                                    removeInput={removeInput}
+                                />
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="bg-white p-5 flex justify-center">
-                    
+                <button className="btn btn-primary w-full max-w-7xl" onClick={handleSubmit}>Submit</button>
                 </div>
             </div>
         </LayoutPelamar>

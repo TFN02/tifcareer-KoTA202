@@ -3,29 +3,7 @@ import moment from 'moment/moment';
 import React, { useState } from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 
-const DynamicTextInput = ({idVideo}) => {
-  console.log("ada ga", idVideo)
-  const [inputs, setInputs] = useState([{ hour: '', minute: '', second: '' }]);
-  console.log("inputs", inputs)
-
-  const handleInputChange = (index, field, value) => {
-    const newInputs = [...inputs];
-    newInputs[index][field] = value;
-    setInputs(newInputs);
-  };
-
-
-  const addInput = () => {
-    const newInputs = [...inputs, { hour: '', minute: '', second: '' }];
-    setInputs(newInputs);
-  };
-
-  const removeInput = (index) => {
-    const newInputs = [...inputs];
-    newInputs.splice(index, 1);
-    setInputs(newInputs);
-  };
-
+const DynamicTextInput = ({ inputs, handleInputChange, addInput, removeInput }) => {
 
   return (
     <div>
@@ -60,11 +38,14 @@ const DynamicTextInput = ({idVideo}) => {
               <FaTrashAlt />
             </button>
           </div>
-
         </div>
       ))}
       <div className='flex flex-row gap-2'>
-      <button className='btn btn-primary btn-sm text-xs mt-2' onClick={addInput}>Tambah</button>
+        {inputs.length < 5 ?
+          <button className='btn btn-primary btn-sm text-xs mt-2' onClick={addInput}>Tambah</button>
+          :
+          <button className='btn btn-primary btn-sm text-xs mt-2' disabled>Tambah</button>
+        }
       </div>
     </div>
   );
