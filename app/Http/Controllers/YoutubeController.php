@@ -131,6 +131,7 @@ class YoutubeController extends Controller
             $sessions=Sessions::first(); 
 
             $application_id = $sessions->application_id;
+
             $title = $sessions->title;
             $tags = $sessions->tags;
             $description = $sessions->description;
@@ -162,7 +163,7 @@ class YoutubeController extends Controller
             $video->setSnippet($videoSnippet);
             // Membuat objek video status
             $videoStatus = new VideoStatus();
-            $videoStatus->setPrivacyStatus('private');
+            $videoStatus->setPrivacyStatus('public');
             $video->setStatus($videoStatus); 
         
             $chunkSizeBytes = 10 * 10240 * 10240;
@@ -183,9 +184,9 @@ class YoutubeController extends Controller
             if($application->id){
                 $video_resume = VideoResume::create([
                     'application_id' => $application->id,
-                    'title' => $request->input('title'),
-                    'description' => $request->input('description'),
-                    'tags' => $request->input('tags'),
+                    'title' => $title,
+                    'description' => $description,
+                    'tags' => $tags,
                     'category_id' => "27",
                     'youtube_video_id' => $response_yt->getId(),
                 ]); 
