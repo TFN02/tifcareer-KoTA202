@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Notification;
 use App\Models\Company;
-use App\Models\Job;
-use App\Models\Application;
 use App\Models\Applicant;
+use App\Models\Application;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
@@ -19,25 +18,25 @@ class NotificationController extends Controller
 
     public function index(Request $request)
     {
-        $notif = Notification::with('applicant','company');
+        $notif = Notification::with('applicant', 'company');
 
-        if($request->applicant_id){
+        if ($request->applicant_id) {
             $this->applicant_id = $request->applicant_id;
-            $notif = $notif->whereHas('applicant', function($query){
-                            $query->where('applicant_id', $this->applicant_id);
+            $notif = $notif->whereHas('applicant', function ($query) {
+                $query->where('applicant_id', $this->applicant_id);
             });
         }
 
-        if($request->company_id){
+        if ($request->company_id) {
             $this->company_id = $request->company_id;
             $notif = $notif->whereHas('company', function($query){
                             $query->where('company_id', $this->company_id);
             });
         }
 
-        if($request->order_by && $request->order_type){
+        if ($request->order_by && $request->order_type) {
             $notif = $notif->orderBy($request->order_by, $request->order_type);
-        }else{
+        } else {
             $notif = $notif->orderBy('created_at', 'desc');
         }
 
@@ -51,34 +50,49 @@ class NotificationController extends Controller
     {
         $request->validate([
             'company_id' => 'required|int',
-            'message' => 'required|string',
+            'applicant' => 'required|array',
         ]);
 
-        if($request->company_id){
-            $company = Company::find($request->company_id);
-            $company_id = $company->id;
-        }
+        $companyId = $request->company_id;
+        $applicants = $request->applicant;
 
-        $notif = Notification::create([
-            'company_id' => $company_id,
-            'message' => $request->message,
-        ]);
+        foreach ($applicants as $applicantData) {
+            $applicantId = $applicantData['applicant_id'];
+            $applicationStatus = $applicantData['status'];
 
-        if($request->applicant){
-            $applicants = $request->applicant;
-            foreach($applicants as $app){
-                $notif->applicant()->attach($app['applicant_id']);
+            if ($applicationStatus === 'accepted') {
+                // Pelamar lolos, kirim pesan sesuai input perusahaan
+                $message = $request->message; // Mengambil pesan dari input perusahaan
+
+                $notification = new Notification();
+                $notification->company_id = $companyId;
+                $notification->message = $message;
+                $notification->save();
+
+                $notification->applicant()->attach($applicantId);
+            } else {
+                // Pelamar tidak lolos, kirim pesan "Tidak Lolos"
+                $notification = new Notification();
+                $notification->company_id = $companyId;
+                $notification->message = 'Maaf Anda Tidak Lolos';
+                $notification->save();
+
+                $notification->applicant()->attach($applicantId);
             }
         }
+
         return response()->json([
             'success' => true,
-            'data' =>  $notif,
+            'message' => 'Notifikasi berhasil dikirim',
         ]);
     }
 
+
+
+
     public function show($id)
     {
-        $notif = Notification::with('applicant','company')->findOrFail($id);
+        $notif = Notification::with('applicant', 'company')->findOrFail($id);
 
         return response()->json([
             'success' => true,
@@ -90,12 +104,12 @@ class NotificationController extends Controller
     {
         $notif = Notification::findOrFail($id);
 
-        if($request->company_id){
+        if ($request->company_id) {
             $company = Company::find($request->company_id);
             $notif->company_id = $company->id;
         }
 
-        if($request->message){
+        if ($request->message) {
             $notif->message = $request->input('message');
         }
 
@@ -181,8 +195,4 @@ class NotificationController extends Controller
             'data' => $notif,
         ]);
     }
-
-
-
-    
 }

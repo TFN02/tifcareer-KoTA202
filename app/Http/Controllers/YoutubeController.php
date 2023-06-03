@@ -37,6 +37,7 @@ class YoutubeController extends Controller
     public string $tags;
     public string $description;
     public string $video_path;
+    public  $segment_video = [];
     public  $access_token = [];
 
     public function sessionCreate(Request $request)
@@ -46,6 +47,8 @@ class YoutubeController extends Controller
             $this->title = $request->title;
             $this->tags = $request->tags;
             $this->description = $request->description;
+            $this->segment_video = $request->segment_video;
+
             if($request->hasFile('file')){
                 $filename = $request->file('file')->getClientOriginalName();
                 $destinationPath = public_path().'\vid' ;
@@ -59,12 +62,14 @@ class YoutubeController extends Controller
                     'description' => $this->description,
                     'tags' => $this->tags,
                     'video_path' => $this->video_path,
+                    'segment_video' => $this->segment_video,
                 ]
             );
 
         }   
         return response()->json([
             'session' => $sessions,
+            'segment' => $request->segment_video,
         ]);
 
     }
@@ -131,10 +136,13 @@ class YoutubeController extends Controller
             $sessions=Sessions::first(); 
 
             $application_id = $sessions->application_id;
+
             $title = $sessions->title;
             $tags = $sessions->tags;
             $description = $sessions->description;
             $video_path = $sessions->video_path;
+            $segment_video = json_decode($sessions->segment_video, true);
+           
             
 
             $client = new Client();
@@ -162,7 +170,7 @@ class YoutubeController extends Controller
             $video->setSnippet($videoSnippet);
             // Membuat objek video status
             $videoStatus = new VideoStatus();
-            $videoStatus->setPrivacyStatus('private');
+            $videoStatus->setPrivacyStatus('public');
             $video->setStatus($videoStatus); 
         
             $chunkSizeBytes = 10 * 10240 * 10240;
@@ -183,17 +191,17 @@ class YoutubeController extends Controller
             if($application->id){
                 $video_resume = VideoResume::create([
                     'application_id' => $application->id,
-                    'title' => $request->input('title'),
-                    'description' => $request->input('description'),
-                    'tags' => $request->input('tags'),
+                    'title' => $title,
+                    'description' => $description,
+                    'tags' => $tags,
                     'category_id' => "27",
                     'youtube_video_id' => $response_yt->getId(),
                 ]); 
                 $application->video_resume_id = $video_resume->id;
                 $application->save();
 
-                if($request->segment){
-                    foreach($request->segment as $seg){
+                if($segment_video){
+                    foreach($segment_video as $seg){
                         $seg = $video_resume->segmentVideoResume()->create([
                             'segment_title' => $seg['segment_title'],
                             'time_to_jump' => $seg['time_to_jump'],

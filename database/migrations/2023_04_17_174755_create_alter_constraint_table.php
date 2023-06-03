@@ -78,6 +78,7 @@ return new class extends Migration
             $table->foreign('job_id')->references('id')->on('jobs')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('applicant_id')->references('id')->on('applicants')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('video_resume_id')->references('id')->on('video_resumes')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('assignment_video_resume')->references('id')->on('video_resumes')->onDelete('cascade')->onUpdate('cascade');
         });
 
         Schema::table('video_resumes', function (Blueprint $table) {

@@ -20,13 +20,13 @@ use Inertia\Inertia;
 */
 
 
-Route::get('/', function (){
+Route::get('/', function () {
     return Inertia::render('Auth/Login');
 })->middleware(['auth', 'verified'])->name('login');
 
 
 // Route Pelamar
-Route::middleware(['auth', 'verified', ])->group(function () {
+Route::middleware(['auth', 'verified',])->group(function () {
     Route::get('/lowonganKerja', [JobController::class, 'index'])->name('lowonganKerja');
 });
 
@@ -42,11 +42,11 @@ Route::get('/auth/youtube/callback', [YoutubeController::class, 'authCallback'])
 // Route::get('/youtube-auth', [YoutubeController::class, 'youtubeAuth'])->name('auth.google');
 
 //Route Perusahaan
-Route::get('/dashboard-perusahaan', function() {
+Route::get('/dashboard-perusahaan', function () {
     return Inertia::render('Perusahaan/Dashboard-perusahaan');
 })->middleware(['auth', 'verified'])->name('dashboard-perusahaan');
 
-Route::get('/edit-loker', function() {
+Route::get('/edit-loker', function () {
     return Inertia::render('Perusahaan/EditLoker');
 })->middleware(['auth', 'verified'])->name('edit-loker');
 
@@ -73,58 +73,61 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/edit', [ProfileController::class, 'update'])->name('profile.dataDiri.update');
 
     // work experience applicant
-    Route::get('/profile/work-experience/new', function(){
+    Route::get('/profile/work-experience/new', function () {
         return Inertia::render('Profile/Partials/FormNewWorkExperience');
     })->name('profile.new');
     Route::get('/profile/work-experience/edit', [ProfileController::class, 'edit'])->name('profile.edit');
 
     // education applicant
-    Route::get('/profile/education/new', function(){
+    Route::get('/profile/education/new', function () {
         return Inertia::render('Profile/Partials/FormNewEdu');
     })->name('profile.edu.new');
     Route::get('/profile/education/edit', [ProfileController::class, 'editEducation'])->name('profile.edu.edit');
 
     // hardSkill applicant
-    Route::get('/profile/skill/new', function(){
+    Route::get('/profile/skill/new', function () {
         return Inertia::render('Profile/Partials/FormNewSkill');
     })->name('profile.skill.new');
     // Route::get('/profile/skill/new', [ProfileController::class, 'createSkillCategory'])->name('profile.skill.new');
     Route::get('/profile/skill/edit', [ProfileController::class, 'editSkill'])->name('profile.skill.edit');
 
     // interest area applicant
-    Route::get('/profile/interest-area/new', function(){
+    Route::get('/profile/interest-area/new', function () {
         return Inertia::render('Profile/Partials/FormNewInterest');
     })->name('profile.interest.new');
     Route::get('/profile/interest-area/edit', [ProfileController::class, 'editInterestArea'])->name('profile.interest.edit');
 
-     // interest area applicant
-    Route::get('/profile/softSkill/new', function(){
+    // interest area applicant
+    Route::get('/profile/softSkill/new', function () {
         return Inertia::render('Profile/Partials/FormNewSoftSkill');
-        })->name('profile.softSkill.new');
+    })->name('profile.softSkill.new');
     Route::get('/profile/softSkill/edit', [ProfileController::class, 'editSoftSkill'])->name('profile.softSkill.edit');
 
     // certificate applcant
-    Route::get('/profile/certificate/new', function(){
+    Route::get('/profile/certificate/new', function () {
         return Inertia::render('Profile/Partials/FormNewCertificate');
-        })->name('profile.certificate.new');
+    })->name('profile.certificate.new');
     Route::get('/profile/certificate/edit', [ProfileController::class, 'editCertificate'])->name('profile.certificate.edit');
 
     //Notification
     Route::get('/notification/detail', [NotificationController::class, 'detailNotif'])->name('notification.detail');
 
     //Applicant Rank
-    Route::get('/applicant-rank', function(){
-        return Inertia::render('Perusahaan/RankApplicants');
-        })->name('applicants.rank');
+    // Route::get('/applicant-rank', function () {
+    //     return Inertia::render('Perusahaan/RankApplicants');
+    // })->name('applicants.rank');
+
+    Route::get('/applicant-rank', [JobController::class, 'detailJobPerusahaan'])->name('applicants.rank');
 
     //Video Resume
-    Route::get('/video-resume-applicants', function(){
+    Route::get('/video-resume-applicants', function () {
         return Inertia::render('Perusahaan/VideoResumeApplicants');
-        })->name('videoResume');
+    })->name('videoResume');
 
-    Route::get('/video-resume-applicant', function(){
+    Route::get('/video-resume-applicant', function () {
         return Inertia::render('Perusahaan/VideoApplicant');
-        })->name('videoResume.applicant');
+    })->name('videoResume.applicant');
+
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

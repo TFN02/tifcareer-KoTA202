@@ -7,6 +7,7 @@ use App\Models\Question;
 use App\Models\Job;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Application;
 
 class AssignmentVideoResumeController extends Controller
 {
@@ -15,7 +16,7 @@ class AssignmentVideoResumeController extends Controller
 
     public function index(Request $request)
     {
-        $asr = AssignmentVideoResume::with('job', 'question');
+        $asr = AssignmentVideoResume::with('job', 'question', 'application');
 
         if($request->job_id){
             $this->job_id = $request->job_id;
@@ -66,6 +67,15 @@ class AssignmentVideoResumeController extends Controller
                     'assignment_video_resume_id' => $asr->id,
                 ]);
 
+            }
+        }
+
+        if($request->application){
+            $applications = $request->application;
+            foreach($applications as $appl){
+                $application = Application::find($appl['id']);
+                $application->assignment_video_resume_id = $asr->id;
+                $application->save();
             }
         }
 

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('tags')->nullable();
             $table->string('description',255)->nullable();
             $table->string('video_path')->nullable();
+            $table->json('segment_video')->nullable();
             $table->timestamps();
         });
     }

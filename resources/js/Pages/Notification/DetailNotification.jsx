@@ -49,39 +49,48 @@ const DetailNotification = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // const formattedData = inputs.map((input) => {
-        //     const { hour, minute, second } = input;
-        //     const totalSeconds = (hour * 3600) + (minute * 60) + parseInt(second);
-        //     return { totalSeconds };
-        //   });
-        
+        //pake api
+        const segment = [
+            {
+              segment_title: "segment_1",
+              time_to_jump: "00:00:20",
+            },
+            {
+              segment_title: "segment_2",
+              time_to_jump: "00:00:30",
+            },
+            {
+              segment_title: "segment_3",
+              time_to_jump: "00:00:50",
+            },
+        ];
+
         const formData = new FormData();
         formData.append('file', selectedFile);
         formData.append('application_id', 2);
         formData.append('title', 'Video Tegar');
         formData.append('tags', 'tags');
         formData.append('description', 'desc');
-        formData.append('time_stamp', inputs);
+        formData.append('segment_video', JSON.stringify(segment));
 
-        try {
-            const response = await axios.get('http://localhost:8000/api/auth/youtube', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    //'Content-Type': 'application/json',
-                },
-            });
+         try {
+          const response = await axios.get('http://localhost:8000/api/auth/youtube', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+              //'Content-Type': 'application/json',
+            },
+          });
 
 
-            const response2 = await axios.post('http://localhost:8000/api/youtube/session', formData, {
-                
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    //'Content-Type': 'application/json',
-                },
-            });
-
-            console.log(response2.data.session)
-            window.location.href = response.data.authUrl
+          const response2 = await axios.post('http://localhost:8000/api/youtube/session', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+              //'Content-Type': 'application/json',
+            },
+          });
+          
+          console.log(response2.data.segment)
+          window.location.href = response.data.authUrl
         } catch (error) {
             console.error(error);
         }
