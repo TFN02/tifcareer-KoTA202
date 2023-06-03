@@ -270,6 +270,22 @@ class JobController extends Controller
         ]);
     }
 
+    public function getApplicantCount($jobId)
+    {
+        try {
+            $job = Job::findOrFail($jobId);
+            $count = $job->application()->count();
+
+            return response()->json([
+                'count' => $count,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Job not found.',
+            ], 404);
+        }
+    }
+
     public function destroy($id)
     {
         $jobs = Job::find($id);
@@ -283,7 +299,6 @@ class JobController extends Controller
 
     public function getApplicantsByJob($jobId)
     {
-        
         $job = Job::findOrFail($jobId);
 
         $application = $job->application()->orderBy('rank')->get();

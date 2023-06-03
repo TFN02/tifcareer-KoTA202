@@ -97,22 +97,40 @@ class ApplicationController extends Controller
 
     public function update(Request $request, $id)
     {
-        $application = Application::findOrFail($id);
+        try {
+            $application = Application::find($id);
 
-        if ($request->rank) {
-            $application->rank = $request->input('rank');
+            if (!$application) {
+                // Jika tidak ditemukan aplikasi dengan ID yang sesuai, kembalikan respons error
+                return response()->json(['error' => 'Aplikasi tidak ditemukan'], 404);
+            }
+
+            $application->update($request->all());
+
+            // Jika berhasil diperbarui, kirimkan respons dengan aplikasi yang telah diperbarui
+            return response()->json($application);
+        } catch (\Exception $e) {
+            // Tangani kesalahan yang terjadi
+            return response()->json(['error' => 'Terjadi kesalahan'], 500);
         }
-        if ($request->score) {
-            $application->score = $request->input('score');
-        }
-        if ($request->status) {
-            $application->status = $request->input('status');
-        }
-        return response()->json([
-            'success' => false,
-            'data' => $application,
-        ]);
     }
+
+    public function getAcceptedApplications(Request $request)
+    {
+        try {
+            $jobId = $request->input('job_id');
+            $applications = Application::join('applicants', 'applications.applicant_id', '=', 'applicants.id')
+                ->select('applications.*', 'applicants.name as applicant_name')
+                ->where('applications.status', 'accepted')
+                ->where('applications.job_id', $jobId)
+                ->get();
+
+            return response()->json($applications);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Internal server error'], 500);
+        }
+    }
+
 
     public function destroy($id)
     {
@@ -237,7 +255,8 @@ class ApplicationController extends Controller
                 $application->save();
 
                 $applicants[] = [
-                    'id' => $application->applicant->id,
+                    'id' => $application->id,
+                    'applicant_id' => $application->applicant->id,
                     'name' => $application->applicant->name,
                     'score' => $application->score,
                     'rank' => $ranking,
