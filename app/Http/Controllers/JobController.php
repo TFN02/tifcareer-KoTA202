@@ -55,7 +55,12 @@ class JobController extends Controller
             ]);
     }
 
-
+    public function detailJobPerusahaan(Job $jobs , Request $request)
+    {  
+            return Inertia::render('Perusahaan/RankApplicants', [
+                'getIdJobs' => $jobs->find($request->id),
+            ]);
+    }
 
     public function edit(Job $jobs, Request $request)
     {

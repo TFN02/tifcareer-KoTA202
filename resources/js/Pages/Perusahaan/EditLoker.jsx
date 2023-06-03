@@ -25,15 +25,8 @@ export default function EditLoker({ myJobs, applicant }) {
     const [job_category, setJobCategoryId] = useState("");
     const [job_categories, setJobCategories] = useState([]);
 
-    const [selectedCriteria, setSelectedCriteria] = useState("");
-    const [criteriaName, setCriteriaName] = useState("");
-    const [criteriaWeight, setCriteriaWeight] = useState("");
-    const [showVariableInput, setShowVariableInput] = useState(false);
-    const [variableName, setVariableName] = useState("");
-    const [variableWeight, setVariableWeight] = useState("");
-
-    const [weightingCriteria, setWeightingCriteria] = useState([]);
-    const [weightingVariables, setWeightingVariables] = useState([]);
+    const [weighting_criteria, setWeightingCriteria] = useState([]);
+    const [weighting_variable, setWeightingVariable] = useState([]);
 
     const [applications, setApplications] = useState([]);
     const [applicants, setApplicants] = useState([]);
@@ -64,6 +57,8 @@ export default function EditLoker({ myJobs, applicant }) {
             setQualification(datas.qualification);
             setStatus(datas.status);
             setJobDescription(datas.job_desc);
+            setWeightingCriteria(datas.weighting_criteria);
+            setWeightingVariable(datas.weighting_variable);
 
             const response = await axios.get(
                 `http://localhost:8000/api/jobs/${id}/applicants`
@@ -75,74 +70,13 @@ export default function EditLoker({ myJobs, applicant }) {
 
     const handleSubmit = async () => {
         try {
-            await axios.post(`/lowonganKerjaPerusahaan/update`, job);
+          const response = await axios.put(`http://localhost:8000/api/jobs/${id}`);
+          console.log("Response:", response.data); // Tampilkan respons dari server
         } catch (error) {
-            console.error(error);
+          console.error(error);
         }
-    };
-
-    const sendNotification = async (applicantId, message) => {
-        try {
-            const payload = {
-                company_id: company_id,
-                message: message,
-                applicant: [
-                    {
-                        applicant_id: id,
-                    },
-                ],
-            };
-
-            const response = await axios.post(
-                "http://localhost:8000/api/notifications",
-                payload
-            );
-
-            console.log(
-                "Notifikasi terkirim dan pemberitahuan pelamar disimpan:",
-                response.data
-            );
-        } catch (error) {
-            console.error("Gagal mengirim notifikasi:", error);
-        }
-    };
-
-    const handleGenerate = async () => {
-        const selectedApplicantsListLocal = applications
-            .map((applicant, index) => ({
-                ...applicant,
-                rank: index + 1,
-                applicant_id: applicant.id,
-            }))
-            .slice(0, selectedApplicants);
-
-        try {
-            const response = await axios.post(
-                `http://localhost:8000/api/applyJob/${id}`,
-                selectedApplicantsListLocal
-            );
-            const rankedApplicants = response.data;
-            setSelectedApplicantsList(rankedApplicants);
-            console.log("Perangkingan berhasil:", rankedApplicants);
-        } catch (error) {
-            console.error(
-                "Terjadi kesalahan saat melakukan perangkingan:",
-                error
-            );
-        }
-    };
-
-    const handleSendNotification = async () => {
-        setShowMessageInput(true);
-    };
-
-    const handleSendMessage = async () => {
-        for (const applicant of selectedApplicantsList) {
-            // Retrieve the applicant ID
-            await sendNotification(applicant, message); // Pass the applicant ID to the sendNotification function
-        }
-        console.log("Semua notifikasi berhasil terkirim");
-    };
+      };
+      
 
     return (
         <LayoutPerusahaan
@@ -302,132 +236,49 @@ export default function EditLoker({ myJobs, applicant }) {
                         />
                     </div>
                 </div>
+
                 <div className="my-8">
-                    <h3 className="text-xl font-semibold">Applicants</h3>
-                    <table className="table-auto w-full">
-                        <thead>
-                            <tr>
-                                <th className="px-4 py-2">No</th>
-                                <th className="px-4 py-2">Name</th>
-                                <th className="px-4 py-2">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {allApplications.map((applicant, index) => (
-                                <tr key={applicant.id}>
-                                    <td className="border px-4 py-2">
-                                        {index + 1}
-                                    </td>
-                                    <td className="border px-4 py-2">
-                                        {applicant.name}
-                                    </td>
-                                    <td className="border px-4 py-2">
-                                        <Link
-                                            href={``} 
-                                            className="text-blue-500 underline"
+                    <h3 className="text-xl font-semibold">
+                        Weighting Criteria
+                    </h3>
+                    {weighting_criteria.map((criteria, index) => {
+                        return (
+                            <div key={index}>
+                                <div className="border border-gray-400 px-4 py-2">
+                                    <p className="font-semibold">
+                                        {criteria.name}
+                                    </p>
+                                    <p>Weight: {criteria.weight}</p>
+                                </div>
+                                {weighting_variable
+                                    .filter(
+                                        (variable) =>
+                                            variable.weighting_criteria_id ===
+                                            criteria.id
+                                    )
+                                    .map((variable, variableIndex) => (
+                                        <div
+                                            key={variableIndex}
+                                            className="border border-gray-400 px-8 py-2 ml-8"
                                         >
-                                            View
-                                        </Link>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                            <p className="font-semibold">
+                                                {variable.name}
+                                            </p>
+                                            <p>Weight: {variable.weight}</p>
+                                        </div>
+                                    ))}
+                            </div>
+                        );
+                    })}
                 </div>
 
-                <div className="my-8">
-                    <h3 className="text-xl font-semibold">Applicants</h3>
-                    <p>Jumlah Karyawan Diloloskan:</p>
-                    <input
-                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
-                        type="number"
-                        min="0"
-                        max={applications.length}
-                        value={selectedApplicants}
-                        onChange={(e) =>
-                            setSelectedApplicants(parseInt(e.target.value))
-                        }
-                    />
-                    <WarningButton
-                        className="m-2 flex flex-row-reverse"
-                        onClick={handleGenerate}
-                    >
-                        Generate
-                    </WarningButton>
-
-                    {selectedApplicantsList.length > 0 && (
-                        <div className="my-8">
-                            <h3 className="text-xl font-semibold">
-                                Selected Applicants
-                            </h3>
-                            <table className="table-auto w-full">
-                                <thead>
-                                    <tr>
-                                        <th className="px-4 py-2">Rank</th>
-                                        <th className="px-4 py-2">Name</th>
-                                        <th className="px-4 py-2">Score</th>
-                                        <th className="px-4 py-2">
-                                            Id Applicant
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {selectedApplicantsList
-                                        .slice(0, selectedApplicants)
-                                        .map((applicant, index) => (
-                                            <tr key={index}>
-                                                <td className="border px-4 py-2">
-                                                    {index + 1}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {applicant.name}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {applicant.score}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {applicant.applicant_id}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                </tbody>
-                            </table>
-                            <WarningButton
-                                className="m-2 flex flex-row-reverse"
-                                onClick={handleSendNotification}
-                            >
-                                Send Notification
-                            </WarningButton>
-                        </div>
-                    )}
-
-                    {showMessageInput && (
-                        <div className="my-8">
-                            <label className="text-xl font-semibold">
-                                Message to Applicants:
-                            </label>
-                            <textarea
-                                className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                            ></textarea>
-                            <WarningButton
-                                className="m-2 flex flex-row-reverse"
-                                onClick={handleSendMessage}
-                            >
-                                Send
-                            </WarningButton>
-                        </div>
-                    )}
-                </div>
+                <WarningButton
+                    className="m-2 flex flex-row-reverse"
+                    onClick={() => handleSubmit()}
+                >
+                    Update
+                </WarningButton>
             </div>
-
-            <WarningButton
-                className="m-2 flex flex-row-reverse"
-                onClick={() => handleSubmit()}
-            >
-                Update
-            </WarningButton>
         </LayoutPerusahaan>
     );
 }
