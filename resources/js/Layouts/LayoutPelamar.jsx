@@ -59,11 +59,11 @@ export default function LayoutPelamar({ auth, header, children, footer }) {
                                 </label>
                                 <div tabIndex={0} className="mt-3 card card-compact dropdown-content w-72 bg-base-100 shadow">
                                     <div className="card-body">
-                                        <div className='card card-bordered p-3'>
+                                        <div className='card card-bordered p-3 divide divide-y gap-y-3'>
                                             {notification && notification.length > 0 ? notification.map((notif, i) => (
                                                 <div key={i}>
                                                 
-                                                    <h3 className='font-bold'>New Message!</h3>
+                                                    <h3 className='font-bold mt-2'>New Message!</h3>
                                                     <p>{notif.message} ... 
                                                         <Link 
                                                         data={{ id:notif.id }}

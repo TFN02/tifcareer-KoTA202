@@ -5,17 +5,30 @@ import { Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { Head, router } from '@inertiajs/react';
 import axios from "axios";
-import { GoogleLogin } from 'react-google-login';
+import moment from 'moment/moment';
 
 
 const DetailNotification = (props) => {
 
-    const id = props.idNotif;
+    const applicantId = props.auth.user.applicant_id;
     const [selectedFile, setSelectedFile] = useState(null);
     const [inputs, setInputs] = useState([{ hour: '', minute: '', second: '' }]);
+   
 
-    console.log("id", props)
+    console.log("applicantId", applicantId);
     console.log("inputs", inputs);
+
+    // useEffect(() => {
+    //     axios.get('https://api.example.com/data')
+    //       .then(response => {
+    //         // Tangani respons API di sini
+    //         console.log(response.data);
+    //       })
+    //       .catch(error => {
+    //         // Tangani kesalahan jika ada
+    //         console.error(error);
+    //       });
+    //   }, []);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -36,34 +49,51 @@ const DetailNotification = (props) => {
     };
 
     const addInput = () => {
-        const newInputs = [...inputs, { hour: '', minute: '', second: '' }];
+        const newInputs = [...inputs, {hour: '', minute: '', second: '' }];
         setInputs(newInputs);
+        
     };
 
     const removeInput = (index) => {
         const newInputs = [...inputs];
         newInputs.splice(index, 1);
         setInputs(newInputs);
+        
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+
+    const handleSubmit = async() => {
+
+        const formattedInputs = inputs.map(input => {
+            const { hour, minute, second } = input;
+            const formattedTime = moment(`${hour}:${minute}:${second}`, 'HH:mm:ss').format('HH:mm:ss');
+            return formattedTime;
+          });
+        
+          const dataToSend = inputs.map((input, index) => {
+            return {
+                segment_title: `Pertanyaan ${index + 1}` ,
+                time_to_jump: formattedInputs[index],
+              
+            };
+          });
+          console.log("dataToSend:", dataToSend)
 
         //pake api
-        const segment = [
-            {
-              segment_title: "segment_1",
-              time_to_jump: "00:00:20",
-            },
-            {
-              segment_title: "segment_2",
-              time_to_jump: "00:00:30",
-            },
-            {
-              segment_title: "segment_3",
-              time_to_jump: "00:00:50",
-            },
-        ];
+        // const segment = [
+        //     {
+        //       segment_title: "segment_1",
+        //       time_to_jump: "00:00:20",
+        //     },
+        //     {
+        //       segment_title: "segment_2",
+        //       time_to_jump: "00:00:30",
+        //     },
+        //     {
+        //       segment_title: "segment_3",
+        //       time_to_jump: "00:00:50",
+        //     },
+        // ];
 
         const formData = new FormData();
         formData.append('file', selectedFile);
@@ -71,7 +101,7 @@ const DetailNotification = (props) => {
         formData.append('title', 'Video Tegar');
         formData.append('tags', 'tags');
         formData.append('description', 'desc');
-        formData.append('segment_video', JSON.stringify(segment));
+        formData.append('segment_video', JSON.stringify(dataToSend));
 
          try {
           const response = await axios.get('http://localhost:8000/api/auth/youtube', formData, {

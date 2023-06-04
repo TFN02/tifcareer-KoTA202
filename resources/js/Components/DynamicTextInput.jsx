@@ -1,16 +1,16 @@
-import axios from 'axios';
-import moment from 'moment/moment';
 import React, { useState } from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 
-const DynamicTextInput = ({ inputs, handleInputChange, addInput, removeInput }) => {
+const DynamicTextInput = ({ inputs, handleInputChange, addInput, removeInput, labelValues }) => {
 
   return (
     <div>
       {inputs.map((input, index) => (
         <div key={index}>
           <div key={index} className='flex flex-row gap-3 py-2'>
-            <label className='py-3'>Pertanyaan {index + 1}:</label>
+            <label className='py-3'>{'Pertanyaan ' + [index+1]} :</label>
+
+
             <div className='flex flex-row gap-3'>
               <input
                 type="number"
@@ -37,6 +37,7 @@ const DynamicTextInput = ({ inputs, handleInputChange, addInput, removeInput }) 
             <button className="btn btn-ghost" onClick={() => removeInput(index)}>
               <FaTrashAlt />
             </button>
+
           </div>
         </div>
       ))}
