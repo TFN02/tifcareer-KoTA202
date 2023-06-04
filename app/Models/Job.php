@@ -15,6 +15,10 @@ class Job extends Model
         return $this->hasOne(AssignmentVideoResume::class,'job_id');
     }
 
+    public function notification(){
+        return $this->hasOne(notification::class,'job_id');
+    }
+
     public function company(){
         return $this->belongsTo(Company::class,'company_id');
     }

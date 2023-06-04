@@ -18,4 +18,8 @@ class Notification extends Model
     public function company(){
         return $this->belongsTo(Company::class);
     }
+
+    public function job(){
+        return $this->belongsTo(JOb::class);
+    }
 }
