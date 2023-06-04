@@ -23,7 +23,7 @@ use Google\Service\YouTube;
 use Google\Service\YouTube\Video;
 use Google\Service\YouTube\VideoSnippet;
 use Google\Service\YouTube\VideoStatus;
-use Google\Http\MediaFileUpload;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
@@ -173,7 +173,7 @@ class YoutubeController extends Controller
             $videoStatus->setPrivacyStatus('public');
             $video->setStatus($videoStatus); 
         
-            $chunkSizeBytes = 10 * 10240 * 10240;
+            //$chunkSizeBytes = 10 * 10240 * 10240;
 
             $response_yt = $youtube->videos->insert(
                 'snippet,status',
@@ -210,11 +210,11 @@ class YoutubeController extends Controller
                     }
                 }
             }  
-
-            if (Storage::exists($sessions->video_path)) {
-                Storage::delete($sessions->video_path);
-                Sessions::destroy($sessions->id);
-            }
+            if(file_exists($sessions->video_path)){
+                unlink($sessions->video_path);
+                Sessions::destroy($sessions->all());
+            } 
+            
             return response()->json([
                 'applicantion' => $application,
                 'video_id'   => $response_yt->getId(),
