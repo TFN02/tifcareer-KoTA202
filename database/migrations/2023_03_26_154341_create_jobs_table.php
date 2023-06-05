@@ -18,13 +18,13 @@ return new class extends Migration
             $table->bigInteger('company_id')->unsigned()->nullable();
             $table->bigInteger('assignment_video_resume_id')->unsigned()->nullable();
             $table->bigInteger('job_category_id')->unsigned()->nullable();
+            $table->bigInteger('notification_id')->unsigned()->nullable();
             $table->string('title',100)->nullable();
             $table->string('job_position')->nullable();
-            $table->longText('qualification')->nullable();
             $table->longText('job_desc')->nullable();
             $table->string('location',150)->nullable();
             $table->string('salary',20)->nullable();
-            $table->string('status',100)->nullable();
+            $table->boolean('is_active',100)->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();

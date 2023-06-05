@@ -11,7 +11,7 @@
         "@tailwindcss/typography": "^0.5.9",
         "@vitejs/plugin-react": "^3.0.0",
         "autoprefixer": "^10.4.12",
-        "axios": "^1.3.6",
+        "axios": "^1.4.0",
         "laravel-vite-plugin": "^0.7.2",
         "lodash": "^4.17.19",
         "postcss": "^8.4.18",
@@ -21,7 +21,14 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@react-icons/all-files": "^4.1.0",
+        "cors": "^2.8.5",
         "daisyui": "^2.51.5",
+        "inertia": "0.0.7",
+        "moment": "^2.29.4",
+        "react-google-login": "^5.2.2",
+        "react-icons": "^4.8.0",
+        "react-player": "^2.12.0",
         "react-router-dom": "^6.11.0"
     }
 }

@@ -22,7 +22,7 @@ use App\Http\Controllers\Api\ScoringVRController;
 use App\Http\Controllers\Api\SegmentVideoResumeController;
 use App\Http\Controllers\Api\SuperAdminController;
 use App\Http\Controllers\Api\VideoResumeController;
-
+use App\Http\Controllers\YoutubeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -65,3 +65,31 @@ Route::apiResource('notifications', NotificationController::class);
 Route::apiResource('superAdmins', SuperAdminController::class);
 Route::apiResource('segmentVideoResumes', SegmentVideoResumeController::class);
 Route::put('scoring', [ScoringVRController::class, 'updateScore']);
+Route::put('saw',[ApplicationController::class, 'applyJob']);
+
+Route::get('/jobs/{jobId}/applicants',[JobController::class, 'getApplicantsByJob']);
+Route::get('/jobs/{jobId}/applicants/count',[JobController::class, 'getApplicantCount']);
+
+Route::post('/applyJob/{id}', [ApplicationController::class, 'applyJob']);
+Route::get('/application/{applicant_id}/{job_id}', [ApplicationController::class, 'getIdByApplyed']);
+
+Route::get('/myJobs/{company_id}', [JobController::class, 'getMyJobs']);
+
+Route::get('/applicationsAccepted', [ApplicationController::class, 'getAcceptedApplications']);
+
+
+
+
+Route::post('/notifications/send', [NotificationController::class, 'sendNotification']);
+
+Route::post('/notification/sendNotifSaw', [NotificationController::class, 'sendNotifSAW']);
+
+// Route::get('/my-Jobs', [JobController::class, 'getMyJobs'])->middleware('auth:api');
+
+Route::get('/auth/youtube', [YoutubeController::class, 'auth']);
+Route::post('/youtube/upload', [YoutubeController::class, 'uploadVideo']);
+Route::post('/youtube/session', [YoutubeController::class, 'sessionCreate']);
+Route::get('/youtube/upload', [YoutubeController::class, 'uploadVideo']);
+
+
+// Route::post('/notification/sendNotifSaw', [NotificationController::class, 'sendNotifSAW']);

@@ -1,13 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import { IoNotifications } from "react-icons/io5";
 import { Link } from '@inertiajs/react';
 
 export default function LayoutPelamar({ auth, header, children, footer }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-   
+
+    const id = auth.user.applicant_id;
+    const[notification, setNotification] = useState([]);
+
+    useEffect(() => {
+        const getNotification = async() => {
+            const { data } = await axios.get(`http://localhost:8000/api/notifications?applicant_id=${id}`);
+            const datas = data.data.data;
+
+            setNotification(datas);
+            console.log("apa aja", datas);
+        }
+        getNotification();
+    },[id])
+
     return (
         <div className="min-h-screen bg-gray-100">
             <nav className="bg-white border-b border-gray-100">
@@ -27,14 +42,40 @@ export default function LayoutPelamar({ auth, header, children, footer }) {
                                 <NavLink>
                                     MyCareer
                                 </NavLink>
-                                <NavLink>
-                                    Notifikasi
-                                </NavLink>
                             </div>
                         </div>
 
                         <div className="hidden sm:flex sm:items-center sm:ml-6">
+                            
+                            <div className="dropdown dropdown-end">
+                                <label tabIndex={0} className="btn btn-ghost btn-circle">
+                                    <div className="indicator">
+                                    <IoNotifications className='badge badge-outline w-9 h-9'/>
+                                        <span className="badge badge-sm indicator-item mr-1 mt-2">8</span>
+                                    </div>
+                                </label>
+                                <div tabIndex={0} className="mt-3 card card-compact dropdown-content w-72 bg-base-100 shadow">
+                                    <div className="card-body">
+                                        <div className='card card-bordered p-3 divide divide-y gap-y-3'>
+                                            {notification && notification.length > 0 ? notification.map((notif, i) => (
+                                                <div key={i}>
+                                                
+                                                    <h3 className='font-bold mt-2'>New Message!</h3>
+                                                    <p>{notif.message} ... 
+                                                        <Link 
+                                                        data={{ id:notif.id }}
+                                                        href={route('notification.detail')}
+                                                        className="underline text-primary">show more</Link>
+                                                    </p> 
+
+                                                </div>
+                                            )): <h3>Kotak Notifikasi masih kosong</h3>}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="ml-3 relative">
+
                                 <Dropdown>
                                     <Dropdown.Trigger>
                                         <span className="inline-flex rounded-md">
@@ -130,8 +171,8 @@ export default function LayoutPelamar({ auth, header, children, footer }) {
             <main>{children}</main>
             {footer && (
                 <footer className="bg-white shadow">
-                <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{footer}</div>
-            </footer>
+                    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{footer}</div>
+                </footer>
             )}
         </div>
     );

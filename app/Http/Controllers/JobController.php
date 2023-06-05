@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Application;
 use App\Models\Job;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Resources\JobsCollection;
+use Illuminate\Support\Facades\Auth;
 
 class JobController extends Controller
 {
@@ -13,8 +15,8 @@ class JobController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->keyword;
-        $jobs = Job::with('company','assignmentVideoResume','jobCategory')->where('job_position','LIKE', '%'.$keyword.'%')->OrderByDesc('updated_at')->paginate(9);
-        
+        $jobs = Job::with('company', 'assignmentVideoResume', 'jobCategory')->where('job_position', 'LIKE', '%' . $keyword . '%')->OrderByDesc('updated_at')->paginate(9);
+
         $jobs = new JobsCollection($jobs);
 
         return inertia::render('Pelamar/LowonganKerja', [
@@ -34,16 +36,44 @@ class JobController extends Controller
         $jobs->jenisPekerjaan = $request->jenisPekerjaan;
         $jobs->lokasi = $request->lokasi;
         $jobs->gajih = $request->gajih;
-        $jobs->author = auth()->user()->name;
+        $jobs->author = auth()->user()->company_id;
         $jobs->save();
         return redirect()->back()->with('message', 'Lowongan Kerja Berhasil di Upload');
     }
 
     public function show(Job $jobs)
     {
-        $myJobs = $jobs::where('author',auth()->user()->name)->get();
+        $myJobs = $jobs::where('company_id', auth()->user()->company_id)->get();
         return inertia::render('Perusahaan/LowonganKerjaPerusahaan', [
             'myJobs' => $myJobs,
+        ]);
+    }
+
+    public function detailJobs(Job $jobs , Request $request)
+    {  
+            return Inertia::render('Jobs/DetailJobs', [
+                'getIdJobs' => $jobs->find($request->id),
+            ]);
+    }
+
+    public function detailJobPerusahaan(Job $jobs , Request $request)
+    {  
+            return Inertia::render('Perusahaan/RankApplicants', [
+                'getIdJobs' => $jobs->find($request->id),
+            ]);
+    }
+
+    public function listVideoResume(Job $jobs, Request $request)
+    {
+        return Inertia::render('Perusahaan/VideoResumeApplicants',[
+            'getIdJobs' => $jobs->find($request->id),
+        ]);
+    }
+
+    public function videoApplicant(Application $application, Request $request)
+    {
+        return Inertia::render('Perusahaan/VideoApplicant',[
+            'getIdApplication' => $application->find($request->id),
         ]);
     }
 
