@@ -3,9 +3,17 @@ import PrimaryButton from "../PrimaryButton"
 
 
 const isJobs = (jobs) => {
-    
-    return jobs.map((data, i) => {
-        console.log("data card", jobs);
+
+    const currentDate = new Date();
+
+    const filteredJobs = jobs.filter((data) => {
+        const endDate = new Date(data.end_date); 
+
+        return endDate >= currentDate;
+    });
+
+    return filteredJobs.map((data, i) => {
+        console.log("data card", filteredJobs);
 
         return (
             <div key={i} className="card w-full lg:w-96 bg-white shadow-xl">
@@ -40,7 +48,7 @@ const noJobs = () => {
 }
 
 const CardJobs = ({ jobs }) => {
-    return !jobs ? noJobs() : isJobs(jobs)
-}
+    return !jobs || jobs.length === 0 ? noJobs() : isJobs(jobs);
+};
 
 export default CardJobs

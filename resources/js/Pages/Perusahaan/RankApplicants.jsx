@@ -38,6 +38,11 @@ export default function RankApplicants({ getIdJobs, application }) {
 
     const [message, setMessage] = useState("");
 
+    const [questions, setQuestions] = useState([]);
+    const [startDate, setStartDateAsr] = useState("");
+    const [endDate, setEndDateAsr] = useState("");
+    const [technicalRequirement, setTechnicalRequirement] = useState("");
+
     useEffect(() => {
         const getDataDetailJobs = async () => {
             const { data } = await axios.get(
@@ -140,32 +145,60 @@ export default function RankApplicants({ getIdJobs, application }) {
         }
     };
 
+    const addQuestion = () => {
+        setQuestions([...questions, { question: "" }]);
+    };
+
+    const removeQuestion = (index) => {
+        const updatedQuestions = [...questions];
+        updatedQuestions.splice(index, 1);
+        setQuestions(updatedQuestions);
+    };
+
     const handleSendMessage = async () => {
         try {
-          const applicants = applications.map((application) => ({
-            applicant_id: application.applicant_id,
-            status: application.status,
-          }));
+            const applicants = applications.map((application) => ({
+                applicant_id: application.applicant_id,
+                status: application.status,
+            }));
 
-          const requestData = {
-            company_id: company_id,
-            message: message,
-            applicant: applicants,
-          };
+            const requestData = {
+                company_id: company_id,
+                message: message,
+                applicant: applicants,
+                job_id : jobId, 
+            };
 
-          const response = await axios.post(
-            "http://localhost:8000/api/notifications",
-            requestData
-          );
+            const response = await axios.post(
+                "http://localhost:8000/api/notifications",
+                requestData
+            );
 
-          console.log("Response:", response.data);
+            console.log("Response:", response.data);
 
-          setMessage("");
+            const videoResumeData = {
+                job_id: jobId,
+                start_date: startDate, // Ubah dengan nilai start_date yang diperoleh dari input pengguna
+                end_date: endDate,
+                technical_requirement: technicalRequirement, // Ubah dengan nilai end_date yang diperoleh dari input pengguna
+                question: questions, // Ubah dengan nilai array questions yang diperoleh dari input pengguna
+            };
+
+            const assignmentVideoResumeResponse = await axios.post(
+                "http://localhost:8000/api/assignmentvideoresume",
+                videoResumeData
+            );
+
+            console.log(
+                "Response Video Resume:",
+                assignmentVideoResumeResponse.data
+            );
+
+            setMessage("");
         } catch (error) {
-          console.error("Gagal mengirim pesan:", error);
-          console.log("Response:", applications);
+            console.error("Gagal mengirim pesan:", error);
         }
-      };
+    };
 
     return (
         <LayoutPerusahaan auth={user.auth} errors={user.errors}>
@@ -261,6 +294,40 @@ export default function RankApplicants({ getIdJobs, application }) {
                 <div className="card w-full bg-base-100 shadow-xl">
                     <figure>
                         <p className="font-bold text-lg text-white bg-violet-700 w-full p-5">
+                            Perangkingan Pelamar
+                        </p>
+                    </figure>
+                    <div className="card-body">
+                        <table className="table-auto">
+                            <thead>
+                                <tr>
+                                    <th className="border px-4 py-2">Rank</th>
+                                    <th className="border px-4 py-2">Name</th>
+                                    <th className="border px-4 py-2">Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {allApplications.map((application) => (
+                                    <tr key={application.id}>
+                                        <td className="border text-center px-4 py-2">
+                                            {application.rank}
+                                        </td>
+                                        <td className="border px-4 py-2">
+                                            {application.name}
+                                        </td>
+                                        <td className="border text-center px-4 py-2">
+                                            {application.score}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div className="card w-full bg-base-100 shadow-xl">
+                    <figure>
+                        <p className="font-bold text-lg text-white bg-violet-700 w-full p-5">
                             Pelamar Yang Lolos
                         </p>
                     </figure>
@@ -268,21 +335,25 @@ export default function RankApplicants({ getIdJobs, application }) {
                         <table className="table-auto">
                             <thead>
                                 <tr>
-                                    <th className="px-4 py-2">Name</th>
-                                    <th className="px-4 py-2">Score</th>
-                                    <th className="px-4 py-2">Status</th>
+                                    <th className="border px-4 py-2">Rank</th>
+                                    <th className="border px-4 py-2">Name</th>
+                                    <th className="border px-4 py-2">Score</th>
+                                    <th className="border px-4 py-2">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {acceptedApplications.map((application) => (
                                     <tr key={application.id}>
-                                        <td className="border px-4 py-2">
+                                        <td className="border text-center px-4 py-2">
+                                            {application.rank}
+                                        </td>
+                                        <td className="border text-center px-4 py-2">
                                             {application.applicant_name}
                                         </td>
-                                        <td className="border px-4 py-2">
+                                        <td className="border text-center px-4 py-2">
                                             {application.score}
                                         </td>
-                                        <td className="border px-4 py-2">
+                                        <td className="border text-center px-4 py-2">
                                             {application.status}
                                         </td>
                                     </tr>
@@ -369,13 +440,117 @@ export default function RankApplicants({ getIdJobs, application }) {
                         </p>
                     </figure>
                     <div className="card-body">
-                        <input
-                            id="message"
-                            type="text"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            className="mt-1 block p-3 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        />
+                        <div>
+                            <label
+                                htmlFor="startDate"
+                                className="text-sm font-medium text-gray-500 p-3"
+                            >
+                                Message
+                            </label>
+                            <textarea
+                                id="message"
+                                type="text"
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                className="mt-1 block p-3 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                htmlFor="startDate"
+                                className="text-sm font-medium text-gray-500 p-3"
+                            >
+                                Tanggal Mulai
+                            </label>
+                            <input
+                                id="startDate"
+                                type="date"
+                                value={startDate}
+                                onChange={(e) =>
+                                    setStartDateAsr(e.target.value)
+                                }
+                                className="mt-1 block p-3 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                htmlFor="endDate"
+                                className="text-sm font-medium text-gray-500 p-3"
+                            >
+                                Tanggal Selesai
+                            </label>
+                            <input
+                                id="endDate"
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDateAsr(e.target.value)}
+                                className="mt-1 block p-3 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                htmlFor="technicalRequirement"
+                                className="text-sm font-medium text-gray-500 p-3"
+                            >
+                                Persyaratan Teknis
+                            </label>
+                            <input
+                                id="technicalRequirement"
+                                type="text"
+                                value={technicalRequirement}
+                                onChange={(e) =>
+                                    setTechnicalRequirement(e.target.value)
+                                }
+                                className="mt-1 block p-3 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                        </div>
+                        <div>
+                            {questions.map((question, index) => (
+                                <div key={index} className="mt-4">
+                                    <label
+                                        htmlFor={`question-${index + 1}`}
+                                        className="block font-medium text-gray-700"
+                                    >
+                                        Pertanyaan {index + 1}
+                                    </label>
+                                    <div className="flex items-center">
+                                        <input
+                                            id={`question-${index + 1}`}
+                                            type="text"
+                                            value={question.question}
+                                            onChange={(e) => {
+                                                const updatedQuestions = [
+                                                    ...questions,
+                                                ];
+                                                updatedQuestions[
+                                                    index
+                                                ].question = e.target.value;
+                                                setQuestions(updatedQuestions);
+                                            }}
+                                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                removeQuestion(index)
+                                            }
+                                            className="ml-2 px-3 py-1 text-sm font-medium text-red-500 hover:text-red-700"
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                            <div className="mt-4">
+                                <button
+                                    type="button"
+                                    onClick={addQuestion}
+                                    className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600"
+                                >
+                                    Add Question
+                                </button>
+                            </div>
+                        </div>
                         <button
                             onClick={handleSendMessage}
                             className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600"

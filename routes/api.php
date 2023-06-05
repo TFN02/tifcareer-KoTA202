@@ -76,6 +76,9 @@ Route::get('/myJobs/{company_id}', [JobController::class, 'getMyJobs']);
 
 Route::get('/applicationsAccepted', [ApplicationController::class, 'getAcceptedApplications']);
 
+Route::get('/applicationsApply', [ApplicationController::class, 'getApplications']);
+
+
 
 
 

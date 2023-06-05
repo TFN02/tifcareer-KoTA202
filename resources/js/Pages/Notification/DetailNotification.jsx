@@ -11,6 +11,7 @@ const DetailNotification = (props) => {
     console.log("ambil detail", id);
 
     const [selectedFile, setSelectedFile] = useState(null);
+    
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];

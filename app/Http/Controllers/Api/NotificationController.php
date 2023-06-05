@@ -28,7 +28,7 @@ class NotificationController extends Controller
 
         if ($request->company_id) {
             $this->company_id = $request->company_id;
-            $notif = $notif->whereHas('comapany', function ($query) {
+            $notif = $notif->whereHas('company', function ($query) {
                 $query->where('company_id', $this->company_id);
             });
         }
@@ -50,9 +50,11 @@ class NotificationController extends Controller
         $request->validate([
             'company_id' => 'required|int',
             'applicant' => 'required|array',
+            'job_id' => 'required|int',
         ]);
 
         $companyId = $request->company_id;
+        $jobId = $request->job_id;
         $applicants = $request->applicant;
 
         foreach ($applicants as $applicantData) {
@@ -60,8 +62,7 @@ class NotificationController extends Controller
             $applicationStatus = $applicantData['status'];
 
             if ($applicationStatus === 'accepted') {
-                // Pelamar lolos, kirim pesan sesuai input perusahaan
-                $message = $request->message; // Mengambil pesan dari input perusahaan
+                $message = $request->message;
 
                 $notification = new Notification();
                 $notification->company_id = $companyId;
@@ -70,7 +71,6 @@ class NotificationController extends Controller
 
                 $notification->applicant()->attach($applicantId);
             } else {
-                // Pelamar tidak lolos, kirim pesan "Tidak Lolos"
                 $notification = new Notification();
                 $notification->company_id = $companyId;
                 $notification->message = 'Maaf Anda Tidak Lolos';
@@ -85,8 +85,6 @@ class NotificationController extends Controller
             'message' => 'Notifikasi berhasil dikirim',
         ]);
     }
-
-
 
 
     public function show($id)
