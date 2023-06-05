@@ -4,18 +4,16 @@ import { Head, Link, usePage } from "@inertiajs/react";
 import PrimaryButton from "@/Components/PrimaryButton";
 import WarningButton from "@/Components/WarningButton";
 import axios from "axios";
+import AssignmentForm from "@/Components/AssignmentForm";
 
 export default function RankApplicants({ getIdJobs, application }) {
-    // const job = props.myJobs;
-    // console.log("data job", props);
     const user = usePage().props;
     const company_id = usePage().props.auth.user.company_id;
-
-    // console.log("data di carddetail", myJobs);
 
     console.log("data di carddetail", getIdJobs);
 
     const jobId = getIdJobs.id;
+    console.log(jobId);
 
     const [title, setTitle] = useState("");
     const [job_position, setJobPosition] = useState("");
@@ -28,15 +26,17 @@ export default function RankApplicants({ getIdJobs, application }) {
     const [end_date, setEndDate] = useState("");
     const [job_category, setJobCategoryId] = useState("");
     const [job_categories, setJobCategories] = useState([]);
-
     const [applications, setApplications] = useState([]);
     const [allApplications, setAllApplications] = useState([]);
-
     const [numSelectedApplicants, setNumSelectedApplicants] = useState(0);
-
     const [acceptedApplications, setAcceptedApplications] = useState([]);
-
     const [message, setMessage] = useState("");
+
+    const [inputs, setInputs] = useState([{ question: '' }]);
+    const [requirements, setRequirements] = useState('');
+
+    console.log(inputs);
+    console.log(message);
 
     useEffect(() => {
         const getDataDetailJobs = async () => {
@@ -140,6 +140,26 @@ export default function RankApplicants({ getIdJobs, application }) {
         }
     };
 
+    // Assignment Video Resume
+    const handleInputChange = (index, field, value) => {
+        const newInputs = [...inputs];
+        newInputs[index][field] = value;
+        setInputs(newInputs);
+    };
+
+    const addInput = () => {
+        const newInputs = [...inputs, { question: ''}];
+        setInputs(newInputs);
+
+    };
+
+    const removeInput = (index) => {
+        const newInputs = [...inputs];
+        newInputs.splice(index, 1);
+        setInputs(newInputs);
+
+    };
+
     const handleSendMessage = async () => {
         try {
             const applicants = applications.map((application) => ({
@@ -149,6 +169,7 @@ export default function RankApplicants({ getIdJobs, application }) {
 
             const requestData = {
                 company_id: company_id,
+                job_id: jobId,
                 message: message,
                 applicant: applicants,
             };
@@ -158,9 +179,21 @@ export default function RankApplicants({ getIdJobs, application }) {
                 requestData
             );
 
-            console.log("Response:", response.data);
+            const response2 = await axios.post(
+                'http://localhost:8000/api/assignmentVideoResumes',{
+                job_id: jobId,
+                start_date: start_date,
+                end_date: end_date,
+                technical_requirement: requirements,
+                question: inputs,
+                }
+            )
+            console.log("response 2:", response2);
+            console.log("Response:", response);
 
             setMessage("");
+            setRequirements("");
+            // setInputs("");
         } catch (error) {
             console.error("Gagal mengirim pesan:", error);
             console.log("Response:", applications);
@@ -369,16 +402,35 @@ export default function RankApplicants({ getIdJobs, application }) {
                 <div className="card w-full bg-base-100 shadow-xl">
                     <figure>
                         <p className="font-bold text-lg text-white bg-violet-700 w-full p-5">
-                            Pesan Untuk Pelamar Yang Lolos
+                            Pesan dan Persyaratan Assignment Video Resume
                         </p>
                     </figure>
                     <div className="card-body">
+                        <label className="mt-1">Pesan Notifikasi :</label>
                         <input
                             id="message"
                             type="text"
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Selamat Anda lolos ke tahap video resume"
                             className="mt-1 block p-3 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
+
+                        <label className="mt-1">Persyaratan Video Resume :</label>
+                        <textarea
+                            type="text"
+                            value={requirements}
+                            onChange={(e) => setRequirements(e.target.value)}
+                            placeholder="Contoh: Latar Berwarna Hijau (greenscreen)"
+                            className="mt-1 block p-3 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
+
+                        <AssignmentForm
+                            inputs={inputs}
+                            requirements={requirements}
+                            handleInputChange={handleInputChange}
+                            addInput={addInput}
+                            removeInput={removeInput}
                         />
                         <button
                             onClick={handleSendMessage}

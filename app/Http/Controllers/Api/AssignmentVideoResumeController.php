@@ -61,6 +61,7 @@ class AssignmentVideoResumeController extends Controller
 
         if($request->question){
             $questions = $request->question;
+            // dd($questions);
             foreach($questions as $que){
                 $asr->question()->create([
                     'question' => $que['question'],

@@ -136,6 +136,7 @@ class YoutubeController extends Controller
             $sessions=Sessions::first(); 
 
             $application_id = $sessions->application_id;
+            // dd($application_id);
 
             $title = $sessions->title;
             $tags = $sessions->tags;
@@ -253,7 +254,7 @@ class YoutubeController extends Controller
             ];
     
             //$authUrl = redirect('/auth/youtube')->with('data', $data);
-            return redirect('/auth/youtube')->with('data', $data);
+            return redirect('/lowonganKerja');
         }
         
 

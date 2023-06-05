@@ -19,7 +19,7 @@ class NotificationController extends Controller
 
     public function index(Request $request)
     {
-        $notif = Notification::with('applicant', 'company');
+        $notif = Notification::with('applicant', 'company', 'job');
 
         if ($request->applicant_id) {
             $this->applicant_id = $request->applicant_id;
@@ -32,6 +32,13 @@ class NotificationController extends Controller
             $this->company_id = $request->company_id;
             $notif = $notif->whereHas('company', function($query){
                             $query->where('company_id', $this->company_id);
+            });
+        }
+
+        if ($request->job_id) {
+            $this->job_id = $request->job_id;
+            $notif = $notif->whereHas('job', function ($query) {
+                $query->where('job_id', $this->job_id);
             });
         }
 
@@ -51,11 +58,13 @@ class NotificationController extends Controller
     {
         $request->validate([
             'company_id' => 'required|int',
+            'job_id' => 'required|int',
             'applicant' => 'required|array',
         ]);
 
         $companyId = $request->company_id;
         $applicants = $request->applicant;
+        $jobId = $request->job_id;
 
         foreach ($applicants as $applicantData) {
             $applicantId = $applicantData['applicant_id'];
@@ -68,6 +77,7 @@ class NotificationController extends Controller
                 $notification = new Notification();
                 $notification->company_id = $companyId;
                 $notification->message = $message;
+                $notification->job_id = $jobId;
                 $notification->save();
 
                 $notification->applicant()->attach($applicantId);
@@ -75,6 +85,7 @@ class NotificationController extends Controller
                 // Pelamar tidak lolos, kirim pesan "Tidak Lolos"
                 $notification = new Notification();
                 $notification->company_id = $companyId;
+                $notification->job_id = $jobId;
                 $notification->message = 'Maaf Anda Tidak Lolos';
                 $notification->save();
 

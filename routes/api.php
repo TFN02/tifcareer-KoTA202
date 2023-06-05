@@ -92,4 +92,4 @@ Route::post('/youtube/session', [YoutubeController::class, 'sessionCreate']);
 Route::get('/youtube/upload', [YoutubeController::class, 'uploadVideo']);
 
 
-Route::post('/notification/sendNotifSaw', [NotificationController::class, 'sendNotifSAW']);
+// Route::post('/notification/sendNotifSaw', [NotificationController::class, 'sendNotifSAW']);

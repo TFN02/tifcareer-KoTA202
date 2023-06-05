@@ -42,9 +42,6 @@ export default function LayoutPelamar({ auth, header, children, footer }) {
                                 <NavLink>
                                     MyCareer
                                 </NavLink>
-                                <NavLink>
-                                    Notifikasi
-                                </NavLink>
                             </div>
                         </div>
 
