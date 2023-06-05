@@ -23,8 +23,13 @@ class Application extends Model
         return $this->hasOne(VideoResume::class);
     }
 
+<<<<<<< HEAD
     public function application(){
         return $this->hasMany(Question::class, 'assignment_video_resume_id');
+=======
+    public function assignementVideoResume(){
+        return $this->belongsTo(AssignmentVideoResume::class, 'assignment_video_resume_id');
+>>>>>>> cc55993f9389a53ee80122fd7eb2cd554ab39533
     }
 
     public function weightingCriteria()

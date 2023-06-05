@@ -4,18 +4,16 @@ import { Head, Link, usePage } from "@inertiajs/react";
 import PrimaryButton from "@/Components/PrimaryButton";
 import WarningButton from "@/Components/WarningButton";
 import axios from "axios";
+import AssignmentForm from "@/Components/AssignmentForm";
 
 export default function RankApplicants({ getIdJobs, application }) {
-    // const job = props.myJobs;
-    // console.log("data job", props);
     const user = usePage().props;
     const company_id = usePage().props.auth.user.company_id;
-
-    // console.log("data di carddetail", myJobs);
 
     console.log("data di carddetail", getIdJobs);
 
     const jobId = getIdJobs.id;
+    console.log(jobId);
 
     const [title, setTitle] = useState("");
     const [job_position, setJobPosition] = useState("");
@@ -28,20 +26,24 @@ export default function RankApplicants({ getIdJobs, application }) {
     const [end_date, setEndDate] = useState("");
     const [job_category, setJobCategoryId] = useState("");
     const [job_categories, setJobCategories] = useState([]);
-
     const [applications, setApplications] = useState([]);
     const [allApplications, setAllApplications] = useState([]);
-
     const [numSelectedApplicants, setNumSelectedApplicants] = useState(0);
-
     const [acceptedApplications, setAcceptedApplications] = useState([]);
-
     const [message, setMessage] = useState("");
 
+<<<<<<< HEAD
     const [questions, setQuestions] = useState([]);
     const [startDate, setStartDateAsr] = useState("");
     const [endDate, setEndDateAsr] = useState("");
     const [technicalRequirement, setTechnicalRequirement] = useState("");
+=======
+    const [inputs, setInputs] = useState([{ question: '' }]);
+    const [requirements, setRequirements] = useState('');
+
+    console.log(inputs);
+    console.log(message);
+>>>>>>> cc55993f9389a53ee80122fd7eb2cd554ab39533
 
     useEffect(() => {
         const getDataDetailJobs = async () => {
@@ -145,6 +147,7 @@ export default function RankApplicants({ getIdJobs, application }) {
         }
     };
 
+<<<<<<< HEAD
     const addQuestion = () => {
         setQuestions([...questions, { question: "" }]);
     };
@@ -153,6 +156,26 @@ export default function RankApplicants({ getIdJobs, application }) {
         const updatedQuestions = [...questions];
         updatedQuestions.splice(index, 1);
         setQuestions(updatedQuestions);
+=======
+    // Assignment Video Resume
+    const handleInputChange = (index, field, value) => {
+        const newInputs = [...inputs];
+        newInputs[index][field] = value;
+        setInputs(newInputs);
+    };
+
+    const addInput = () => {
+        const newInputs = [...inputs, { question: ''}];
+        setInputs(newInputs);
+
+    };
+
+    const removeInput = (index) => {
+        const newInputs = [...inputs];
+        newInputs.splice(index, 1);
+        setInputs(newInputs);
+
+>>>>>>> cc55993f9389a53ee80122fd7eb2cd554ab39533
     };
 
     const handleSendMessage = async () => {
@@ -161,6 +184,7 @@ export default function RankApplicants({ getIdJobs, application }) {
                 applicant_id: application.applicant_id,
                 status: application.status,
             }));
+<<<<<<< HEAD
 
             const requestData = {
                 company_id: company_id,
@@ -197,6 +221,39 @@ export default function RankApplicants({ getIdJobs, application }) {
             setMessage("");
         } catch (error) {
             console.error("Gagal mengirim pesan:", error);
+=======
+
+            const requestData = {
+                company_id: company_id,
+                job_id: jobId,
+                message: message,
+                applicant: applicants,
+            };
+
+            const response = await axios.post(
+                "http://localhost:8000/api/notifications",
+                requestData
+            );
+
+            const response2 = await axios.post(
+                'http://localhost:8000/api/assignmentVideoResumes',{
+                job_id: jobId,
+                start_date: start_date,
+                end_date: end_date,
+                technical_requirement: requirements,
+                question: inputs,
+                }
+            )
+            console.log("response 2:", response2);
+            console.log("Response:", response);
+
+            setMessage("");
+            setRequirements("");
+            // setInputs("");
+        } catch (error) {
+            console.error("Gagal mengirim pesan:", error);
+            console.log("Response:", applications);
+>>>>>>> cc55993f9389a53ee80122fd7eb2cd554ab39533
         }
     };
 
@@ -335,15 +392,23 @@ export default function RankApplicants({ getIdJobs, application }) {
                         <table className="table-auto">
                             <thead>
                                 <tr>
+<<<<<<< HEAD
                                     <th className="border px-4 py-2">Rank</th>
                                     <th className="border px-4 py-2">Name</th>
                                     <th className="border px-4 py-2">Score</th>
                                     <th className="border px-4 py-2">Status</th>
+=======
+                                    <th className="px-4 py-2">Ranking</th>
+                                    <th className="px-4 py-2">Name</th>
+                                    <th className="px-4 py-2">Score</th>
+                                    <th className="px-4 py-2">Status</th>
+>>>>>>> cc55993f9389a53ee80122fd7eb2cd554ab39533
                                 </tr>
                             </thead>
                             <tbody>
-                                {acceptedApplications.map((application) => (
+                                {acceptedApplications.map((application, index) => (
                                     <tr key={application.id}>
+<<<<<<< HEAD
                                         <td className="border text-center px-4 py-2">
                                             {application.rank}
                                         </td>
@@ -351,6 +416,15 @@ export default function RankApplicants({ getIdJobs, application }) {
                                             {application.applicant_name}
                                         </td>
                                         <td className="border text-center px-4 py-2">
+=======
+                                        <td className="border px-4 py-2 text-center">
+                                            {index + 1}
+                                        </td>
+                                        <td className="border px-4 py-2">
+                                            {application.applicant_name}
+                                        </td>
+                                        <td className="border px-4 py-2 text-center">
+>>>>>>> cc55993f9389a53ee80122fd7eb2cd554ab39533
                                             {application.score}
                                         </td>
                                         <td className="border text-center px-4 py-2">
@@ -436,10 +510,11 @@ export default function RankApplicants({ getIdJobs, application }) {
                 <div className="card w-full bg-base-100 shadow-xl">
                     <figure>
                         <p className="font-bold text-lg text-white bg-violet-700 w-full p-5">
-                            Pesan Untuk Pelamar Yang Lolos
+                            Pesan dan Persyaratan Assignment Video Resume
                         </p>
                     </figure>
                     <div className="card-body">
+<<<<<<< HEAD
                         <div>
                             <label
                                 htmlFor="startDate"
@@ -551,6 +626,34 @@ export default function RankApplicants({ getIdJobs, application }) {
                                 </button>
                             </div>
                         </div>
+=======
+                        <label className="mt-1">Pesan Notifikasi :</label>
+                        <input
+                            id="message"
+                            type="text"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Selamat Anda lolos ke tahap video resume"
+                            className="mt-1 block p-3 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
+
+                        <label className="mt-1">Persyaratan Video Resume :</label>
+                        <textarea
+                            type="text"
+                            value={requirements}
+                            onChange={(e) => setRequirements(e.target.value)}
+                            placeholder="Contoh: Latar Berwarna Hijau (greenscreen)"
+                            className="mt-1 block p-3 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
+
+                        <AssignmentForm
+                            inputs={inputs}
+                            requirements={requirements}
+                            handleInputChange={handleInputChange}
+                            addInput={addInput}
+                            removeInput={removeInput}
+                        />
+>>>>>>> cc55993f9389a53ee80122fd7eb2cd554ab39533
                         <button
                             onClick={handleSendMessage}
                             className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600"
@@ -563,7 +666,9 @@ export default function RankApplicants({ getIdJobs, application }) {
                 <div className="card bg-base-100 shadow-xl">
                     <div className="card-body">
                         <div className="card-actions justify-end">
-                            <Link href={route("videoResume")}>
+                            <Link
+                                data={{ id: jobId }}
+                                href={route("videoResume")}>
                                 <PrimaryButton>
                                     Go to Video Resume
                                 </PrimaryButton>

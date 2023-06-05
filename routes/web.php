@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\YoutubeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,7 +24,6 @@ Route::get('/', function () {
     return Inertia::render('Auth/Login');
 })->middleware(['auth', 'verified'])->name('login');
 
-// ROUTE PEMISAH JUGA TAPI INI GATAU BEST PRACTICE GATAU ENGGA
 
 // Route Pelamar
 Route::middleware(['auth', 'verified',])->group(function () {
@@ -33,6 +33,13 @@ Route::middleware(['auth', 'verified',])->group(function () {
 Route::get('/register-pelamar', function () {
     return Inertia::render('Auth/Register');
 });
+
+// Youtube API
+Route::get('/youtube/upload', [YoutubeController::class, 'uploadVideo'])->name('uploadVideo');
+// routes/web.php
+Route::post('/auth/youtube', [YoutubeController::class, 'auth'])->name('youtube.auth');
+Route::get('/auth/youtube/callback', [YoutubeController::class, 'authCallback'])->name('youtube.callback');
+// Route::get('/youtube-auth', [YoutubeController::class, 'youtubeAuth'])->name('auth.google');
 
 //Route Perusahaan
 Route::get('/dashboard-perusahaan', function () {
@@ -113,13 +120,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/applicant-rank', [JobController::class, 'detailJobPerusahaan'])->name('applicants.rank');
 
     //Video Resume
-    Route::get('/video-resume-applicants', function () {
-        return Inertia::render('Perusahaan/VideoResumeApplicants');
-    })->name('videoResume');
+    Route::get('/video-resume', [JobController::class, 'listVideoResume'])->name('videoResume');
+    Route::get('/video-resume-applicants', [JobController::class, 'videoApplicant'])->name('videoResume.applicant');
 
-    Route::get('/video-resume-applicant', function () {
-        return Inertia::render('Perusahaan/VideoApplicant');
-    })->name('videoResume.applicant');
+    // Route::get('/video-applicant', function () {
+    //     return Inertia::render('Perusahaan/VideoApplicant');
+    // })->name('videoResume.applicant');
 
 });
 

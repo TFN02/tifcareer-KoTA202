@@ -246,4 +246,12 @@ class ApplicationController extends Controller
 
         return $applicants;
     }
+
+    public function getIdByApplyed($applicant_id, $job_id){ 
+        $application = Application::where('applicant_id', $applicant_id)->where('job_id',$job_id)->first();
+        return response()->json([
+            'success' => true,
+            'application_id' => $application->id,
+        ]);
+    }
 }

@@ -61,7 +61,12 @@ class AssignmentVideoResumeController extends Controller
 
         if ($request->question) {
             $questions = $request->question;
+<<<<<<< HEAD
             foreach ($questions as $que) {
+=======
+            // dd($questions);
+            foreach($questions as $que){
+>>>>>>> cc55993f9389a53ee80122fd7eb2cd554ab39533
                 $asr->question()->create([
                     'question' => $que['question'],
                     'assignment_video_resume_id' => $asr->id,
@@ -72,6 +77,15 @@ class AssignmentVideoResumeController extends Controller
         if ($request->application) {
             $applications = $request->application;
             foreach ($applications as $appl) {
+                $application = Application::find($appl['id']);
+                $application->assignment_video_resume_id = $asr->id;
+                $application->save();
+            }
+        }
+
+        if($request->application){
+            $applications = $request->application;
+            foreach($applications as $appl){
                 $application = Application::find($appl['id']);
                 $application->assignment_video_resume_id = $asr->id;
                 $application->save();

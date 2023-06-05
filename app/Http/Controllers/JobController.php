@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Application;
 use App\Models\Job;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -60,6 +61,20 @@ class JobController extends Controller
             return Inertia::render('Perusahaan/RankApplicants', [
                 'getIdJobs' => $jobs->find($request->id),
             ]);
+    }
+
+    public function listVideoResume(Job $jobs, Request $request)
+    {
+        return Inertia::render('Perusahaan/VideoResumeApplicants',[
+            'getIdJobs' => $jobs->find($request->id),
+        ]);
+    }
+
+    public function videoApplicant(Application $application, Request $request)
+    {
+        return Inertia::render('Perusahaan/VideoApplicant',[
+            'getIdApplication' => $application->find($request->id),
+        ]);
     }
 
     public function edit(Job $jobs, Request $request)

@@ -16,6 +16,10 @@ class Notification extends Model
     }
 
     public function company(){
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Company::class, 'company_id');
+    }
+
+    public function job(){
+        return $this->belongsTo(Job::class,'job_id');
     }
 }

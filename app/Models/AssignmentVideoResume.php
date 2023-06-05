@@ -28,4 +28,7 @@ class AssignmentVideoResume extends Model
         return $this->belongsTo(Application::class);
     }
     
+    public function application(){
+        return $this->hasMany(Question::class, 'assignment_video_resume_id');
+    }
 }

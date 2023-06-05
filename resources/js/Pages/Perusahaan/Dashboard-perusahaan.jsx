@@ -224,12 +224,12 @@ const Dashboard = ({ auth }) => {
                             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 m-3 border bg-slate-100">
                                 <div>
                                     <label className="label" htmlFor={title}>
-                                        <span class="label-text mt-3">
+                                        <span className="label-text mt-3">
                                             Job Title
                                         </span>
                                     </label>
                                     <input
-                                        class="input input-bordered w-full m-0 mb-3 bg-slate-200 text-black"
+                                        className="input input-bordered w-full m-0 mb-3 bg-slate-200 text-black"
                                         type="text"
                                         id="title"
                                         value={title}
@@ -240,8 +240,8 @@ const Dashboard = ({ auth }) => {
                                 </div>
 
                                 <div>
-                                    <label class="label" htmlFor={job_position}>
-                                        <span class="label-text">
+                                    <label className="label" htmlFor={job_position}>
+                                        <span className="label-text">
                                             Job Position
                                         </span>
                                     </label>
@@ -257,8 +257,8 @@ const Dashboard = ({ auth }) => {
                                 </div>
 
                                 <div>
-                                    <label class="label" htmlFor={job_desc}>
-                                        <span class="label-text">
+                                    <label className="label" htmlFor={job_desc}>
+                                        <span className="label-text">
                                             Job Description
                                         </span>
                                     </label>
@@ -274,8 +274,8 @@ const Dashboard = ({ auth }) => {
                                 </div>
 
                                 <div>
-                                    <label class="label" htmlFor={job_category}>
-                                        <span class="label-text">
+                                    <label className="label" htmlFor={job_category}>
+                                        <span className="label-text">
                                             Job Category
                                         </span>
                                     </label>
@@ -302,8 +302,8 @@ const Dashboard = ({ auth }) => {
                                 </div>
 
                                 <div>
-                                    <label class="label" htmlFor={location}>
-                                        <span class="label-text">
+                                    <label className="label" htmlFor={location}>
+                                        <span className="label-text">
                                             Job Location
                                         </span>
                                     </label>
@@ -319,8 +319,8 @@ const Dashboard = ({ auth }) => {
                                 </div>
 
                                 <div>
-                                    <label class="label" htmlFor={salary}>
-                                        <span class="label-text">
+                                    <label className="label" htmlFor={salary}>
+                                        <span className="label-text">
                                             Job Salary
                                         </span>
                                     </label>
@@ -337,10 +337,10 @@ const Dashboard = ({ auth }) => {
 
                                 <div>
                                     <label
-                                        class="label"
+                                        className="label"
                                         htmlFor={qualification}
                                     >
-                                        <span class="label-text">
+                                        <span className="label-text">
                                             Job Qualification
                                         </span>
                                     </label>
@@ -356,8 +356,8 @@ const Dashboard = ({ auth }) => {
                                 </div>
 
                                 <div>
-                                    <label class="label" htmlFor={status}>
-                                        <span class="label-text">
+                                    <label className="label" htmlFor={status}>
+                                        <span className="label-text">
                                             Job Status
                                         </span>
                                     </label>
@@ -371,13 +371,13 @@ const Dashboard = ({ auth }) => {
                                         }
                                     />
                                 </div>
-                                <div class="flex space-x-4">
-                                    <div class="w-1/2">
+                                <div className="flex space-x-4">
+                                    <div className="w-1/2">
                                         <label
-                                            class="label"
+                                            className="label"
                                             htmlFor={start_date}
                                         >
-                                            <span class="label-text">
+                                            <span className="label-text">
                                                 Job Opening
                                             </span>
                                         </label>
@@ -390,9 +390,9 @@ const Dashboard = ({ auth }) => {
                                         />
                                     </div>
 
-                                    <div class="w-1/2">
-                                        <label class="label" htmlFor={end_date}>
-                                            <span class="label-text">
+                                    <div className="w-1/2">
+                                        <label className="label" htmlFor={end_date}>
+                                            <span className="label-text">
                                                 Job Closed
                                             </span>
                                         </label>
@@ -581,7 +581,7 @@ const Dashboard = ({ auth }) => {
                                 <button
                                     type="button"
                                     onClick={handleAddCriteria}
-                                    class="btn btn-active btn-sm mb-3"
+                                    className="btn btn-active btn-sm mb-3"
                                 >
                                     Add Criteria
                                 </button>
