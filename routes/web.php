@@ -120,13 +120,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/applicant-rank', [JobController::class, 'detailJobPerusahaan'])->name('applicants.rank');
 
     //Video Resume
-    Route::get('/video-resume-applicants', function () {
-        return Inertia::render('Perusahaan/VideoResumeApplicants');
-    })->name('videoResume');
+    Route::get('/video-resume', [JobController::class, 'listVideoResume'])->name('videoResume');
+    Route::get('/video-resume-applicants', [JobController::class, 'videoApplicant'])->name('videoResume.applicant');
 
-    Route::get('/video-resume-applicant', function () {
-        return Inertia::render('Perusahaan/VideoApplicant');
-    })->name('videoResume.applicant');
+    // Route::get('/video-applicant', function () {
+    //     return Inertia::render('Perusahaan/VideoApplicant');
+    // })->name('videoResume.applicant');
 
 });
 

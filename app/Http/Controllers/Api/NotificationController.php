@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Job;
 use App\Models\Notification;
 use App\Models\Company;
 use App\Models\Applicant;
@@ -121,10 +122,12 @@ class NotificationController extends Controller
         ]);
     }
 
-    public function detailNotif(Notification $notif, Request $request)
+    public function detailNotif(Notification $notif,Job $job,Request $request)
     {
+        
         return Inertia::render('Notification/DetailNotification', [
             'idNotif' => $notif->find($request->id),
+            'job' => $job,
         ]);
     }
 

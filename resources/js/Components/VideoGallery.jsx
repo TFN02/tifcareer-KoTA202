@@ -1,53 +1,40 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ReactPlayer from 'react-player';
 
-const VideoGallery = () => {
+const VideoGallery = ({idVideo}) => {
+
+  // const [sourceVideo, setSourceVideo] = useState('');
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const videos = [
-    {
-      id: 1,
-      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      thumbnail: 'https://i3.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-      timestamp: "60", // Menit ke-2
-    },
-    {
-        id: 2,
-        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        thumbnail: 'https://i3.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-        timestamp: 90, // Menit ke-
-    },
-    {
-        id: 3,
-        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        thumbnail: 'https://i3.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-        timestamp: 200, // Menit ke-3
-    },
-    {
-        id: 4,
-        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        thumbnail: 'https://i3.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-        timestamp: 20, // Menit ke-3
-    },
-    {
-        id: 5,
-        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        thumbnail: 'https://i3.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-        timestamp: 20, // Menit ke-3
-    },
-    {
-        id: 6,
-        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        thumbnail: 'https://i3.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-        timestamp: 20, // Menit ke-3
-    },
-    {
-        id: 7,
-        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        thumbnail: 'https://i3.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-        timestamp: 20, // Menit ke-3
-    },
- 
-  ];
+  const [videos, setVideos] = useState([]);
+  
+  useEffect(() => {
+    const getSourceVideo = async () => {
+        try {
+            const res = await axios.get(
+                `http://localhost:8000/api/videoResumes/${idVideo}`
+            );
+            setVideos(prevVideos => [
+              ...prevVideos,
+              {
+                id: 1,
+                url: `https://www.youtube.com/watch?v=${res.data.data.youtube_video_id}`,
+                thumbnail: 'https://i3.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
+                timestamp: "20",
+              }
+              // Add more video objects based on the number of timestamps from the API response
+            ]);
+
+        } catch (err) {
+            console.err(
+                "Gagal mengambil data pelamar yang diterima:",
+                err
+            );
+        }
+    };
+
+    getSourceVideo();
+}, [idVideo]);
+
   const playerRef = useRef(null);
 
   const handleVideoClick = (video) => {

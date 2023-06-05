@@ -142,30 +142,30 @@ export default function RankApplicants({ getIdJobs, application }) {
 
     const handleSendMessage = async () => {
         try {
-          const applicants = applications.map((application) => ({
-            applicant_id: application.applicant_id,
-            status: application.status,
-          }));
+            const applicants = applications.map((application) => ({
+                applicant_id: application.applicant_id,
+                status: application.status,
+            }));
 
-          const requestData = {
-            company_id: company_id,
-            message: message,
-            applicant: applicants,
-          };
+            const requestData = {
+                company_id: company_id,
+                message: message,
+                applicant: applicants,
+            };
 
-          const response = await axios.post(
-            "http://localhost:8000/api/notifications",
-            requestData
-          );
+            const response = await axios.post(
+                "http://localhost:8000/api/notifications",
+                requestData
+            );
 
-          console.log("Response:", response.data);
+            console.log("Response:", response.data);
 
-          setMessage("");
+            setMessage("");
         } catch (error) {
-          console.error("Gagal mengirim pesan:", error);
-          console.log("Response:", applications);
+            console.error("Gagal mengirim pesan:", error);
+            console.log("Response:", applications);
         }
-      };
+    };
 
     return (
         <LayoutPerusahaan auth={user.auth} errors={user.errors}>
@@ -268,18 +268,22 @@ export default function RankApplicants({ getIdJobs, application }) {
                         <table className="table-auto">
                             <thead>
                                 <tr>
+                                    <th className="px-4 py-2">Ranking</th>
                                     <th className="px-4 py-2">Name</th>
                                     <th className="px-4 py-2">Score</th>
                                     <th className="px-4 py-2">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {acceptedApplications.map((application) => (
+                                {acceptedApplications.map((application, index) => (
                                     <tr key={application.id}>
+                                        <td className="border px-4 py-2 text-center">
+                                            {index + 1}
+                                        </td>
                                         <td className="border px-4 py-2">
                                             {application.applicant_name}
                                         </td>
-                                        <td className="border px-4 py-2">
+                                        <td className="border px-4 py-2 text-center">
                                             {application.score}
                                         </td>
                                         <td className="border px-4 py-2">
@@ -388,7 +392,9 @@ export default function RankApplicants({ getIdJobs, application }) {
                 <div className="card bg-base-100 shadow-xl">
                     <div className="card-body">
                         <div className="card-actions justify-end">
-                            <Link href={route("videoResume")}>
+                            <Link
+                                data={{ id: jobId }}
+                                href={route("videoResume")}>
                                 <PrimaryButton>
                                     Go to Video Resume
                                 </PrimaryButton>

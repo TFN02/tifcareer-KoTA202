@@ -13,22 +13,23 @@ const DetailNotification = (props) => {
     const applicantId = props.auth.user.applicant_id;
     const [selectedFile, setSelectedFile] = useState(null);
     const [inputs, setInputs] = useState([{ hour: '', minute: '', second: '' }]);
+    const [applicationId, setApplicationId] = useState('');
    
 
     console.log("applicantId", applicantId);
     console.log("inputs", inputs);
 
-    // useEffect(() => {
-    //     axios.get('https://api.example.com/data')
-    //       .then(response => {
-    //         // Tangani respons API di sini
-    //         console.log(response.data);
-    //       })
-    //       .catch(error => {
-    //         // Tangani kesalahan jika ada
-    //         console.error(error);
-    //       });
-    //   }, []);
+    useEffect(() => {
+        axios.get(`http://localhost:8000/api/application/${applicantId}/1005`)
+          .then(response => {
+            setApplicationId(response.data.application_id);
+            console.log("application id",applicationId);
+          })
+          .catch(error => {
+            // Tangani kesalahan jika ada
+            console.error(error);
+          });
+      }, []);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -97,7 +98,7 @@ const DetailNotification = (props) => {
 
         const formData = new FormData();
         formData.append('file', selectedFile);
-        formData.append('application_id', 2);
+        formData.append('application_id', applicationId);
         formData.append('title', 'Video Tegar');
         formData.append('tags', 'tags');
         formData.append('description', 'desc');

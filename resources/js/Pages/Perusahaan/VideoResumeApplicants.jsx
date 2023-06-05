@@ -1,35 +1,40 @@
-import CardDetailJobs from "@/Components/Perusahaan/CardDetailJobs"
-import PrimaryButton from "@/Components/PrimaryButton"
 import LayoutPerusahaan from "@/Layouts/LayoutPerusahaan"
 import { Link } from "@inertiajs/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const VideoResumeApplicants = (props) => {
-    const [videos, setVideos] = useState([]);
+const VideoResumeApplicants = ({auth, errors, getIdJobs}) => {
+    const jobId = getIdJobs.id;
 
-    const handleFileChange = (event) => {
-        const fileList = event.target.files;
-        const newVideos = [];
+    const [acceptedApplications, setAcceptedApplications] = useState([]);
+    console.log(acceptedApplications);
 
-        for (let i = 0; i < fileList.length; i++) {
-            const file = fileList[i];
-            if (file.type === 'video/mp4') {
-                newVideos.push(file);
+    useEffect(() => {
+        const getAcceptedApplications = async () => {
+            try {
+                const response = await axios.get(
+                    `http://localhost:8000/api/applicationsAccepted?status=accepted&job_id=${jobId}`
+                );
+                if (response.data) {
+                    const sortedData = response.data.sort(
+                        (a, b) => a.rank - b.rank
+                    );
+                    setAcceptedApplications(sortedData);
+                }
+            } catch (error) {
+                console.error(
+                    "Gagal mengambil data pelamar yang diterima:",
+                    error
+                );
             }
-        }
+        };
 
-        setVideos([...videos, ...newVideos]);
-    };
+        getAcceptedApplications();
+    }, [jobId]);
 
-    const handleRemoveVideo = (index) => {
-        const newVideos = [...videos];
-        newVideos.splice(index, 1);
-        setVideos(newVideos);
-    };
     return (
         <LayoutPerusahaan
-            auth={props.auth}
-            errors={props.errors}
+            auth={auth}
+            errors={errors}
             header={<h3 className="font-bold">Tahap Video Resume</h3>}
         >
             <div className="p-5">
@@ -39,34 +44,44 @@ const VideoResumeApplicants = (props) => {
                     <div className="card-body">
                         <table className="table table-compact">
                             <thead>
-                                <th>Nama</th>
-                                <th>Domisili</th>
-                                <th>Score</th>
-                                <th>Rank</th>
-                                <th>Terima &nbsp;- &nbsp; Tolak</th>
-                                <th>Aksi</th>
+                                <tr>
+
+                                <th className="text-center">Nama</th>
+                                <th className="text-center">Score</th>
+                                <th className="text-center">Rank</th>
+                                <th className="text-center">Terima &nbsp;- &nbsp; Tolak</th>
+                                <th className="text-center">Aksi</th>
+                                </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Tegar Faris Nurhakim</td>
-                                    <td>Bandung</td>
-                                    <td>9.0</td>
-                                    <td>1</td>
-                                    <td>
-                                        <div className="grid grid-cols-3 max-w-xs gap-5">
-                                            <input type="radio" name="radio-5" className="radio radio-success" checked />
+                            {acceptedApplications.map((application, index) => (
+                                    <tr key={application.id}>
+                                        <td className="px-4 py-2">
+                                            {application.applicant_name}
+                                        </td>
+                                        <td className="text-center px-4 py-2">
+                                            {application.score}
+                                        </td>
+                                        <td className="text-center px-4 py-2">
+                                            {index + 1}
+                                        </td>
+                                        <td>
+                                        <div className="flex justify-center items-center gap-x-10">
+                                            <input type="radio" name="radio-5" className="radio radio-success" defaultChecked />
                                             <input type="radio" name="radio-5" className="radio radio-success" />
                                             
                                         </div>
                                     </td>
-                                    <td>
+                                    <td className="flex justify-center items-center">
                                     <Link 
+                                    data={{ id: application.id}}
                                     href={route("videoResume.applicant")}
                                     >
                                     <button className="btn btn-primary btn-xs">View Video</button>
                                     </Link>
                                     </td>
-                                </tr>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
