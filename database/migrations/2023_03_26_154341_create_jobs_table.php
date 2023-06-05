@@ -18,6 +18,7 @@ return new class extends Migration
             $table->bigInteger('company_id')->unsigned()->nullable();
             $table->bigInteger('assignment_video_resume_id')->unsigned()->nullable();
             $table->bigInteger('job_category_id')->unsigned()->nullable();
+            $table->bigInteger('notification_id')->unsigned()->nullable();
             $table->string('title',100)->nullable();
             $table->string('job_position')->nullable();
             $table->longText('job_desc')->nullable();
