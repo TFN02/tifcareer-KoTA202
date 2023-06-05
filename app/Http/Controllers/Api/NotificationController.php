@@ -174,6 +174,7 @@ class NotificationController extends Controller
                                     })->orderBy('rank', 'desc')->limit(count($application)-$request->total_pass)->get();
             $notif = Notification::create([
                 'company_id' => $company_id,
+                'job_id' => $request->job_id,
                 'message' => 'Maaf anda belum lolos',
             ]);
             foreach($application_loss as $appl){
