@@ -11,7 +11,6 @@ export default function LowonganKerja(props) {
         <LayoutPelamar
             auth={props.auth}
             errors={props.errors}
-            footer={<h5 className="text-center">Copyright KoTA 202 ©️ All Reserved</h5>}
         >
             <Head title="Lowongan Kerja" />
 

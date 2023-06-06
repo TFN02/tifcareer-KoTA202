@@ -41,11 +41,11 @@ const FormWorkExperience = (props, errors) => {
     return (
         <>
             <div className="card bg-white shadow sm:rounded-lg">
-                <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Pengalaman Kerja</h1></figure>
-                <div className="card-body ">
+                <figure><h1 className='text-lg bg-violet-700 text-white w-full p-5'>Pengalaman Kerja</h1></figure>
+                <div className="card-bod ">
                     <form onSubmit={handleSubmit}>
 
-                        <div>
+                        <div className='flex flex-col gap-y-2'>
                             <InputLabel htmlFor="position" value="Posisi Kerja" />
 
                             <TextInput

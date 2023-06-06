@@ -5,7 +5,7 @@ import { router, usePage } from "@inertiajs/react";
 import axios from "axios";
 import { Await } from "react-router-dom";
 
-const Dashboard = ({ auth }) => {
+const DashboardPerusahaan = ({ auth }) => {
     const company_id = usePage().props.auth.user.company_id;
     const user = usePage();
 
@@ -25,6 +25,7 @@ const Dashboard = ({ auth }) => {
 
     const [weighting_criteria, setWeightingCriteria] = useState([]);
     const [weighting_variable, setWeightingVariable] = useState([]);
+    const [isDataSent, setIsDataSent] = useState(false);
 
     const handleAddCriteria = () => {
         setWeightingCriteria([
@@ -147,7 +148,7 @@ const Dashboard = ({ auth }) => {
                 );
 
                 console.log("Job berhasil dibuat:", response.data);
-
+                setIsDataSent(true);
                 setTitle("");
                 setJobPosition("");
                 setJobDescription("");
@@ -210,18 +211,17 @@ const Dashboard = ({ auth }) => {
             auth={auth}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Formulir Unggahan Lowongan Pekerjaan
+                    Halaman Rincian Lowongan Pekerjaan
                 </h2>
             }
         >
-            <div className="py-5">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="p-6 bg-white border-b border-gray-200">
+                    <div className="p-6 border-b border-gray-200">
                         <form onSubmit={handleSubmit}>
-                            <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                                Rincian Lowongan Pekerjaan
+                            <h2 className="font-semibold text-xl text-gray-800 leading-tight ml-2 p-2">
+                                Formulir Unggahan Lowongan Kerja
                             </h2>
-                            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 m-3 border bg-slate-100">
+                            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 m-3 border bg-white rounded-lg">
                                 <div>
                                     <label className="label" htmlFor={title}>
                                         <span className="label-text mt-3">
@@ -229,7 +229,7 @@ const Dashboard = ({ auth }) => {
                                         </span>
                                     </label>
                                     <input
-                                        className="input input-bordered w-full m-0 mb-3 bg-slate-200 text-black"
+                                        className="input input-info w-full m-0 mb-3 text-black"
                                         type="text"
                                         id="title"
                                         value={title}
@@ -246,7 +246,7 @@ const Dashboard = ({ auth }) => {
                                         </span>
                                     </label>
                                     <input
-                                        className="input input-bordered w-full m-0 mb-3 bg-slate-200 text-black"
+                                        className="input input-info w-full m-0 mb-3 text-black"
                                         type="text"
                                         id="job_position"
                                         value={job_position}
@@ -263,7 +263,7 @@ const Dashboard = ({ auth }) => {
                                         </span>
                                     </label>
                                     <textarea
-                                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                                        className="m-0 input input-info w-full mb-3 text-black"
                                         type="text"
                                         id="job_desc"
                                         value={job_desc}
@@ -280,7 +280,7 @@ const Dashboard = ({ auth }) => {
                                         </span>
                                     </label>
                                     <select
-                                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                                        className="m-0 input input-info w-full mb-3 text-black"
                                         id="job_category"
                                         value={job_category}
                                         onChange={(e) =>
@@ -308,7 +308,7 @@ const Dashboard = ({ auth }) => {
                                         </span>
                                     </label>
                                     <input
-                                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                                        className="m-0 input input-info w-full mb-3 text-black"
                                         type="text"
                                         id="location"
                                         value={location}
@@ -325,7 +325,7 @@ const Dashboard = ({ auth }) => {
                                         </span>
                                     </label>
                                     <input
-                                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                                        className="m-0 input input-info w-full mb-3 text-black"
                                         type="text"
                                         id="salary"
                                         value={salary}
@@ -345,7 +345,7 @@ const Dashboard = ({ auth }) => {
                                         </span>
                                     </label>
                                     <input
-                                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                                        className="m-0 input input-info w-full mb-3 text-black"
                                         type="text"
                                         id="salary"
                                         value={qualification}
@@ -362,7 +362,7 @@ const Dashboard = ({ auth }) => {
                                         </span>
                                     </label>
                                     <input
-                                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                                        className="m-0 input input-info w-full mb-3 text-black"
                                         type="text"
                                         id="status"
                                         value={status}
@@ -382,7 +382,7 @@ const Dashboard = ({ auth }) => {
                                             </span>
                                         </label>
                                         <input
-                                            className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                                            className="m-0 input input-info w-full mb-3 text-black"
                                             type="date"
                                             id="start_date"
                                             value={start_date}
@@ -397,7 +397,7 @@ const Dashboard = ({ auth }) => {
                                             </span>
                                         </label>
                                         <input
-                                            className="m-0 input input-bordered w-full mb-5 bg-slate-200 text-black"
+                                            className="m-0 input input-info w-full mb-5 text-black"
                                             type="date"
                                             id="end_date"
                                             value={end_date}
@@ -407,10 +407,10 @@ const Dashboard = ({ auth }) => {
                                 </div>
                             </div>
 
-                            <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                            <h2 className="font-semibold text-xl text-gray-800 leading-tight ml-2">
                                 Persyaratan
                             </h2>
-                            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 m-3 border bg-slate-100">
+                            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 m-3 border bg-white rounded-lg">
                                 <h2 className="text-lg font-medium mb-2 mt-3">
                                     Weighting Criteria
                                 </h2>
@@ -451,6 +451,7 @@ const Dashboard = ({ auth }) => {
                                                     Interest Area
                                                 </option>
                                             </select>
+                                            <label>Bobot Kriteria</label>
                                             <input
                                                 type="number"
                                                 value={criteria.weight * 100}
@@ -469,7 +470,7 @@ const Dashboard = ({ auth }) => {
                                                         updatedCriteria
                                                     );
                                                 }}
-                                                placeholder="Criteria Weight"
+                                                placeholder="Skala Bobot Kriteria: 1 - 100"
                                                 className="block w-full border border-gray-300 rounded py-2 px-3"
                                                 min={0}
                                                 max={100}
@@ -529,7 +530,7 @@ const Dashboard = ({ auth }) => {
                                                                     updatedCriteria
                                                                 );
                                                             }}
-                                                            placeholder="Variable Weight"
+                                                            placeholder="Skala Bobot Kriteria: 1 - 100"
                                                             className="block w-1/2 border border-gray-300 rounded py-2 px-3 ml-2"
                                                             min={0}
                                                             max={100}
@@ -559,7 +560,7 @@ const Dashboard = ({ auth }) => {
                                                         criteriaIndex
                                                     )
                                                 }
-                                                className="btn btn-active btn-xs mt-3"
+                                                className="btn btn-active btn-xs mt-3 text-xs mr-2"
                                             >
                                                 Add Variable
                                             </button>
@@ -571,7 +572,7 @@ const Dashboard = ({ auth }) => {
                                                         criteriaIndex
                                                     )
                                                 }
-                                                className="btn btn-error btn-xs mt-3"
+                                                className="btn btn-error btn-xs mt-3 text-xs"
                                             >
                                                 Remove Criteria
                                             </button>
@@ -581,21 +582,29 @@ const Dashboard = ({ auth }) => {
                                 <button
                                     type="button"
                                     onClick={handleAddCriteria}
-                                    className="btn btn-active btn-sm mb-3"
+                                    className="btn btn-active btn-sm mb-3 text-sm"
                                 >
                                     Add Criteria
                                 </button>
                             </div>
 
                             {/* BATAS BAWAH EDIT */}
+                            <div className="flex flex-row gap-3">
 
-                            <PrimaryButton type="submit">Submit</PrimaryButton>
+                                <PrimaryButton type="submit" className="btn-md w-full max-w-2lg flex justify-center">Submit</PrimaryButton>
+                                {isDataSent && (
+                                    <div className="alert bg-violet-500 flex justify-center items-center w-full p-2 text-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-5 w-5" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                        <span>Lowongan Kerja Berhasil Dibuat !</span>
+                                    </div>
+                                )}
+                            </div>
                         </form>
                     </div>
                 </div>
-            </div>
+            
         </LayoutPerusahaan>
     );
 };
 
-export default Dashboard;
+export default DashboardPerusahaan;

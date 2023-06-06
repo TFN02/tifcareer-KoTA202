@@ -55,17 +55,17 @@ const FormNewWorkExperience = ({ auth, getId, processing, className, errors, Tra
             <div className="p-5">
 
                 <div className="card bg-white shadow sm:rounded-lg">
-                    <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Pengalaman Kerja</h1></figure>
+                    <figure><h1 className='text-lg bg-violet-700 text-white w-full p-5'>Pengalaman Kerja</h1></figure>
                     <div className="card-body divide-y divide-double">
                         <form onSubmit={submit} className="space-y-6">
-                            <div className='pt-3'>
+                            <div className='flex flex-col gap-y-2'>
                                 <InputLabel htmlFor={'position'} value="Posisi Kerja" />
 
                                 <TextInput
 
                                     id="position"
                                     name="position"
-                                    className="mt-1 block text-black w-full max-w-xl"
+                                    className="mt-1 block text-black w-full max-w-7xl"
                                     value={position}
                                     onChange={(e) => setPosition(e.target.value)}
                                     type="text"
@@ -82,7 +82,7 @@ const FormNewWorkExperience = ({ auth, getId, processing, className, errors, Tra
                                 <TextInput
                                     id="work_institution"
                                     name="work_institution"
-                                    className="mt-1 block text-black w-full max-w-xl"
+                                    className="mt-1 block text-black w-full max-w-7xl"
                                     defaultValue={work_institution}
                                     onChange={(e) => setWorkInstitution(e.target.value)}
                                     type="text"
@@ -150,20 +150,7 @@ const FormNewWorkExperience = ({ auth, getId, processing, className, errors, Tra
                                 />
 
                                 <InputError className="mt-2" message={errors.description} />
-                                <PrimaryButton disable={processing}>Save</PrimaryButton>
-                                {/* <Link route={route('profile.show')}>Back</Link> */}
-                                <div className="flex items-center gap-4">
-
-
-                                    {/* <Transition
-                                        show={show}
-                                        enterFrom="opacity-0"
-                                        leaveTo="opacity-0"
-                                        className="transition ease-in-out"
-                                    >
-                                        <p className="text-sm text-gray-600">Saved.</p>
-                                    </Transition> */}
-                                </div>
+                                <PrimaryButton disable={processing} className="justify-center">Save</PrimaryButton>
                             </div>
                         </form>
                     </div>

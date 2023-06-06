@@ -263,9 +263,9 @@ class YoutubeController extends Controller
         
 
 
-
-        return response()->json([
-            'result' => null,
-        ]);
+        return redirect_to('/lowonganKerja');
+        // return response()->json([
+        //     'result' => null,
+        // ]);
     }      
 }

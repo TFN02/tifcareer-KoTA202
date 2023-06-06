@@ -26,12 +26,6 @@ const VideoGallery = ({ idVideo }) => {
 
     getSourceVideo();
   }, [idVideo]);
-  // {
-  //   id: 1,
-  //   url: `https://www.youtube.com/watch?v=${res.data.data.youtube_video_id}`,
-  //   thumbnail: 'https://i3.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-  //   timestamp: "20",
-  // }
 
   const playerRef = useRef(null);
 
@@ -51,23 +45,26 @@ const VideoGallery = ({ idVideo }) => {
     <div className="video-gallery flex flex-row gap-4">
       <div className="video-player">
         {selectedVideo ? (
-          <ReactPlayer ref={playerRef} url={`https://www.youtube.com/watch?v=${videos[0].video_resume.youtube_video_id}`} width={"700px"} controls />
+          <ReactPlayer ref={playerRef} url={`https://www.youtube.com/watch?v=${videos[0].video_resume.youtube_video_id}`} width={"700px"} playing={true} />
         ) : (
-          <p>Pilih video untuk diputar</p>
+          <p className='font-bold text-lg'>Pilih video untuk diputar</p>
         )}
       </div>
-      <div className="thumbnail-list flex flex-col gap-4 overflow-auto h-80 p-5 m-5 bg-slate-100">
+      <div className="thumbnail-list flex flex-col gap-y-4 overflow-auto h-80 p-5 m-5 bg-white shadow shadow-lg  rounded text-black divide divide-y ">
         {videos.map((video, index) => (
           <div
             key={video.id}
             className={`thumbnail ${selectedVideo === video ? 'selected' : ''}`}
             onClick={() => handleVideoClick(video)}
           >
-            <div className='flex flex-row gap-x-3'>
+            <div className='flex flex-row gap-x-3 mt-3'>
 
               <img src={video.thumbnail} alt="Thumbnail" width={"40%"} />
-              <p>From {video.time_to_jump}</p>
-              <p>Pertanyaan ke-{index + 1}</p>
+              <div className='flex flex-cols'>
+
+                <p>From {video.time_to_jump}</p>
+                <p>Pertanyaan ke-{index + 1}</p>
+              </div>
             </div>
 
           </div>

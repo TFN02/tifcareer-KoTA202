@@ -11,7 +11,7 @@ const isJobs = (jobs) => {
             <div key={i} className="card w-full lg:w-96 bg-white shadow-xl">
                 <div className="card-body">
                     <h4 className="card-title text-black h-9">
-                        <div className="avatar shadow shadow-sm shadow-black mr-2 mt-8">
+                        <div className="avatar shadow mr-2 mt-8">
                             <div className="w-16">
                                 <img src="/img/jayandraLogo.png" alt="Tailwind-CSS-Avatar-component" />
                             </div>
@@ -24,7 +24,7 @@ const isJobs = (jobs) => {
                         <p className="text-black badge badge-outline">{data.job_position}</p>
                         <p className="text-black">Gajih: Rp. {data.salary} /bln</p>
                         <div className="card-actions justify-end">
-                            <Link href={route('job.detail')} data={{ id: data.id }} ><button className="btn btn-primary">View Detail</button></Link>
+                            <Link href={route('job.detail')} data={{ id: data.id }} ><PrimaryButton className="mt-5">View Detail</PrimaryButton></Link>
                         </div>
                     </div>
                 </div>

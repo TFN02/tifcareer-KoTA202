@@ -42,8 +42,9 @@ Route::get('/auth/youtube/callback', [YoutubeController::class, 'authCallback'])
 // Route::get('/youtube-auth', [YoutubeController::class, 'youtubeAuth'])->name('auth.google');
 
 //Route Perusahaan
+
 Route::get('/dashboard-perusahaan', function () {
-    return Inertia::render('Perusahaan/Dashboard-perusahaan');
+    return Inertia::render('Perusahaan/DashboardPerusahaan');
 })->middleware(['auth', 'verified'])->name('dashboard-perusahaan');
 
 Route::get('/edit-loker', function () {
@@ -71,6 +72,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/show', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'editDataDiri'])->name('profile.dataDiri.edit');
     Route::patch('/profile/edit', [ProfileController::class, 'update'])->name('profile.dataDiri.update');
+
+    //profil perusahaan
+    Route::get('/profile/company/show', [ProfileController::class, 'companyShow'])->name('profile.company.show');
 
     // work experience applicant
     Route::get('/profile/work-experience/new', function () {

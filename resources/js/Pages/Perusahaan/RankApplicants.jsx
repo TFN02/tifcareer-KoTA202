@@ -34,9 +34,7 @@ export default function RankApplicants({ getIdJobs, application }) {
 
     const [inputs, setInputs] = useState([{ question: '' }]);
     const [requirements, setRequirements] = useState('');
-
-    console.log(inputs);
-    console.log(message);
+    const [isDataSent, setIsDataSent] = useState(false);
 
     useEffect(() => {
         const getDataDetailJobs = async () => {
@@ -191,6 +189,7 @@ export default function RankApplicants({ getIdJobs, application }) {
             console.log("response 2:", response2);
             console.log("Response:", response);
 
+            setIsDataSent(true);
             setMessage("");
             setRequirements("");
             // setInputs("");
@@ -390,12 +389,8 @@ export default function RankApplicants({ getIdJobs, application }) {
                                 />
                             </div>
                         </div>
-                        <button
-                            onClick={handleGenerate}
-                            className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600"
-                        >
-                            Generate Peringkat
-                        </button>
+                        
+                        <PrimaryButton onClick={handleGenerate} className="flex justify-center">Generate Ranking Applicants</PrimaryButton>
                     </div>
                 </div>
 
@@ -432,12 +427,14 @@ export default function RankApplicants({ getIdJobs, application }) {
                             addInput={addInput}
                             removeInput={removeInput}
                         />
-                        <button
-                            onClick={handleSendMessage}
-                            className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600"
-                        >
-                            Kirim Pesan
-                        </button>
+                        
+                        <PrimaryButton onClick={handleSendMessage} className="flex justify-center">Submit</PrimaryButton>
+                        {isDataSent && (
+                                    <div className="alert bg-violet-500 flex justify-center items-center w-full p-2 text-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-5 w-5" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                        <span>Pesan Dan Persyaratan Berhasil Terkirim !</span>
+                                    </div>
+                                )}
                     </div>
                 </div>
 

@@ -65,10 +65,10 @@ const FormNewSkill = ({ auth, getIdCategory, processing, className, errors, Tran
             <div className="p-5">
 
                 <div className="card bg-white shadow sm:rounded-lg">
-                    <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Hard Skill</h1></figure>
+                    <figure><h1 className='text-lg bg-violet-700 text-white w-full p-5'>Hard Skill</h1></figure>
                     <div className="card-body divide-y divide-double">
                         <form onSubmit={submit} className="space-y-6">
-                            <div className='pt-3'>
+                            <div className='flex flex-col gap-y-2'>
 
                                 <label htmlFor="dropdown">Kategori Skill:</label>
                                 <select className="select select-primary w-full max-w-xs" id="dropdown" 
@@ -88,7 +88,7 @@ const FormNewSkill = ({ auth, getIdCategory, processing, className, errors, Tran
 
                                     id="name"
                                     name="name"
-                                    className="mt-1 block text-black w-full max-w-xl"
+                                    className="mt-1 block text-black w-full max-w-7xl"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     type="text"
@@ -98,19 +98,10 @@ const FormNewSkill = ({ auth, getIdCategory, processing, className, errors, Tran
 
                                 <InputError className="mt-2" message={errors.name} />
 
-                                <PrimaryButton disable={processing}>Save</PrimaryButton>
+                                <PrimaryButton disable={processing} className="justify-center">Save</PrimaryButton>
                                 {/* <Link route={route('profile.show')}>Back</Link> */}
                                 <div className="flex items-center gap-4">
 
-
-                                    {/* <Transition
-                                        show={show}
-                                        enterFrom="opacity-0"
-                                        leaveTo="opacity-0"
-                                        className="transition ease-in-out"
-                                    >
-                                        <p className="text-sm text-gray-600">Saved.</p>
-                                    </Transition> */}
                                 </div>
                             </div>
                         </form>

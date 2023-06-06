@@ -38,17 +38,17 @@ const FormUpdateSoftSkill = ({ auth, getIdSoftSkill, processing, className, erro
             <div className="p-5">
 
                 <div className="card bg-white shadow sm:rounded-lg">
-                    <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Soft Skill</h1></figure>
+                    <figure><h1 className='text-lg bg-violet-700 text-white w-full p-5'>Soft Skill</h1></figure>
                     <div className="card-body divide-y divide-double">
                         <form onSubmit={submit} className="space-y-6">
-                            <div className='pt-3'>
+                            <div className='flex flex-col gap-y-2'>
                                 <InputLabel htmlFor={'name'} value="Soft Skill" />
 
                                 <TextInput
 
                                     id="name"
                                     name="name"
-                                    className="mt-1 block text-black w-full max-w-xl"
+                                    className="mt-1 block text-black w-full max-w-7xl"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     type="text"

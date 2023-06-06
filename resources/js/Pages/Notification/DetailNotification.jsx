@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Head, router } from '@inertiajs/react';
 import axios from "axios";
 import moment from 'moment/moment';
+import { format } from 'date-fns';
 
 
 const DetailNotification = (props) => {
@@ -15,8 +16,11 @@ const DetailNotification = (props) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [inputs, setInputs] = useState([{ hour: '', minute: '', second: '' }]);
     const [applicationId, setApplicationId] = useState('');
+    const [deadline, setDeadline] = useState('');
     const [technicalRequirement, setTechnicalRequirement] = useState(['']);
     const [question, setQuestion] = useState(['']);
+    const [isDataSent, setIsDataSent] = useState(false);
+
 
     useEffect(() => {
         const getApplicationId = () => {
@@ -34,8 +38,10 @@ const DetailNotification = (props) => {
             axios.get(`http://localhost:8000/api/assignmentVideoResumes?job_id=${jobId}`)
                 .then(response => {
                     const datas = response.data.data.data;
+                    const deadlineAssignment = datas[0].end_date; 
                     const requirement = datas[0].technical_requirement;
                     const dataQuestions = datas[0].question;
+                    setDeadline(deadlineAssignment);
                     setTechnicalRequirement(requirement);
                     setQuestion(dataQuestions);
                     console.log("data response", datas)
@@ -92,23 +98,6 @@ const DetailNotification = (props) => {
 
             };
         });
-        console.log("dataToSend:", dataToSend)
-
-        //pake api
-        // const segment = [
-        //     {
-        //       segment_title: "segment_1",
-        //       time_to_jump: "00:00:20",
-        //     },
-        //     {
-        //       segment_title: "segment_2",
-        //       time_to_jump: "00:00:30",
-        //     },
-        //     {
-        //       segment_title: "segment_3",
-        //       time_to_jump: "00:00:50",
-        //     },
-        // ];
 
         const formData = new FormData();
         formData.append('file', selectedFile);
@@ -133,7 +122,7 @@ const DetailNotification = (props) => {
                     //'Content-Type': 'application/json',
                 },
             });
-
+            setIsDataSent(true);
             console.log(response2.data.segment)
             window.location.href = response.data.authUrl
         } catch (error) {
@@ -190,7 +179,7 @@ const DetailNotification = (props) => {
                                 </tbody>
                             </table>
                         </div>
-                        <p className="font-bold">Batas waktu pengumpulan video resume: 13 Desember 2023</p>
+                        <p>Batas waktu pengumpulan video resume: <strong>{deadline}</strong></p>
 
                         <input type="file" accept=".mp4" onChange={handleFileChange} className="file-input file-input-bordered file-input-primary w-full max-w-7xl" />
                         {selectedFile && <p>File yang dipilih: {selectedFile.name}</p>}
@@ -221,7 +210,13 @@ const DetailNotification = (props) => {
                     </div>
                 </div>
                 <div className="bg-white p-5 flex justify-center">
-                    <button className="btn btn-primary w-full max-w-7xl" onClick={handleSubmit}>Submit</button>
+                    <PrimaryButton className="justify-center w-full max-w-7xl" onClick={handleSubmit}>Submit</PrimaryButton>
+                    {isDataSent && (
+                                    <div className="alert bg-violet-500 flex justify-center items-center w-full p-2 text-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-5 w-5" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                        <span>Pesan Dan Persyaratan Berhasil Terkirim !</span>
+                                    </div>
+                                )}
                 </div>
             </div>
         </LayoutPelamar>

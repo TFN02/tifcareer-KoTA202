@@ -39,17 +39,17 @@ const FormNewCertificate = ({ auth, processing, errors, Transition }) => {
             <div className="p-5">
 
                 <div className="card bg-white shadow sm:rounded-lg">
-                    <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Sertifikat Pendukung</h1></figure>
+                    <figure><h1 className='text-lg bg-violet-700 text-white w-full p-5'>Sertifikat Pendukung</h1></figure>
                     <div className="card-body divide-y divide-double">
                         <form onSubmit={submit} className="space-y-6">
-                            <div className='pt-3'>
+                            <div className='flex flex-col gap-y-2'>
                                 <InputLabel htmlFor={'title'} value="Judul Sertifikat" />
 
                                 <TextInput
 
                                     id="title"
                                     name="title"
-                                    className="mt-1 block text-black w-full max-w-xl"
+                                    className="mt-1 block text-black w-full max-w-7xl"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
                                     type="text"
@@ -66,7 +66,7 @@ const FormNewCertificate = ({ auth, processing, errors, Transition }) => {
                                 <TextInput
                                     id="description"
                                     name="description"
-                                    className="mt-1 block text-black w-full max-w-xl"
+                                    className="mt-1 block text-black w-full max-w-7xl"
                                     defaultValue={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     type="text"
@@ -81,7 +81,7 @@ const FormNewCertificate = ({ auth, processing, errors, Transition }) => {
                                 <TextInput
                                     id="no_certificate"
                                     name="no_certificate"
-                                    className="mt-1 block text-black w-full max-w-xl"
+                                    className="mt-1 block text-black w-full max-w-7xl"
                                     defaultValue={no_certificate}
                                     onChange={(e) => setNoCertificate(e.target.value)}
                                     type="text"

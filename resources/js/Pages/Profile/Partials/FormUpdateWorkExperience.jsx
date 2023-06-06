@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 
 
-const FormUpdateWorkExperience = ({ auth, getId, processing, className, errors, Transition }) => {
+const FormUpdateWorkExperience = ({ auth, getId, processing, errors }) => {
 
     const workId = getId;
     console.log('id WE yang ke get:', auth.user);
@@ -38,7 +38,7 @@ const FormUpdateWorkExperience = ({ auth, getId, processing, className, errors, 
                     is_add: true,
                 }
             ]
-        }).then(res => console.log('data res-2', res))
+        }).then(res => console.log(res))
             .catch(err => console.log(err));
 
     };
@@ -51,10 +51,10 @@ const FormUpdateWorkExperience = ({ auth, getId, processing, className, errors, 
             <div className="p-5">
 
                 <div className="card bg-white shadow sm:rounded-lg">
-                    <figure><h1 className='text-lg bg-slate-200 w-full p-5'>Pengalaman Kerja</h1></figure>
+                    <figure><h1 className='text-lg bg-violet-700 text-white w-full p-5'>Pengalaman Kerja</h1></figure>
                     <div className="card-body divide-y divide-double">
                         <form onSubmit={submit} className="space-y-6">
-                            <div className='pt-3'>
+                            <div className='flex flex-col gap-y-2'>
                                 <InputLabel htmlFor={'position'} value="Posisi Kerja" />
 
                                 <TextInput
@@ -146,19 +146,9 @@ const FormUpdateWorkExperience = ({ auth, getId, processing, className, errors, 
                                 />
 
                                 <InputError className="mt-2" message={errors.description} />
-                                <PrimaryButton disable={processing}>Save</PrimaryButton>
+                                <PrimaryButton disable={processing} className="justify-center">Save</PrimaryButton>
                                 {/* <Link route={route('profile.show')}>Back</Link> */}
                                 <div className="flex items-center gap-4">
-
-
-                                    {/* <Transition
-                                        show={show}
-                                        enterFrom="opacity-0"
-                                        leaveTo="opacity-0"
-                                        className="transition ease-in-out"
-                                    >
-                                        <p className="text-sm text-gray-600">Saved.</p>
-                                    </Transition> */}
                                 </div>
                             </div>
                         </form>

@@ -167,7 +167,10 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
                                     </h1>
                                 </figure>
                                 <div className="card-body flex flex-row gap-10">
+                                    <div>
+
                                     <img className='avatar rounded w-24' src={fotoTegar} alt="foto tegar" />
+                                    </div>
                                     <table className='table '>
                                         <tbody>
                                         <tr>

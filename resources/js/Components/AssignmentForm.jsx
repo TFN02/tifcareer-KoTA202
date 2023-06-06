@@ -27,9 +27,9 @@ const AssignmentForm = ({ inputs, handleInputChange, addInput, removeInput }) =>
             ))}
             <div className='flex flex-row gap-2'>
                 {inputs.length < 20 ?
-                    <button className='btn btn-primary btn-sm text-xs mt-2' onClick={addInput}>Tambah</button>
+                    <button className='btn btn-primary btn-sm text-xs mt-2' onClick={addInput}>Tambah Pertanyaan</button>
                     :
-                    <button className='btn btn-primary btn-sm text-xs mt-2' disabled>Tambah</button>
+                    <button className='btn btn-primary btn-sm text-xs mt-2' disabled>Telah mencapai batas maksimal</button>
                 }
             </div>
         </div>
