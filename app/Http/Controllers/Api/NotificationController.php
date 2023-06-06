@@ -30,10 +30,6 @@ class NotificationController extends Controller
 
         if ($request->company_id) {
             $this->company_id = $request->company_id;
-<<<<<<< HEAD
-            $notif = $notif->whereHas('company', function ($query) {
-                $query->where('company_id', $this->company_id);
-=======
             $notif = $notif->whereHas('company', function($query){
                             $query->where('company_id', $this->company_id);
             });
@@ -43,7 +39,6 @@ class NotificationController extends Controller
             $this->job_id = $request->job_id;
             $notif = $notif->whereHas('job', function ($query) {
                 $query->where('job_id', $this->job_id);
->>>>>>> cc55993f9389a53ee80122fd7eb2cd554ab39533
             });
         }
 
@@ -138,7 +133,7 @@ class NotificationController extends Controller
 
     public function detailNotif(Notification $notif,Job $job,Request $request)
     {
-        
+
         return Inertia::render('Notification/DetailNotification', [
             'idNotif' => $notif->find($request->id),
             'job' => $job,
@@ -147,7 +142,7 @@ class NotificationController extends Controller
 
     public function sendNotifSAW(Request $request)
     {
-       
+
         if($request){
             $request->validate([
                 'company_id' => 'required|int',
@@ -179,7 +174,7 @@ class NotificationController extends Controller
             $notif = Notification::create([
                 'company_id' => $company_id,
                 'message' => $request->message,
-            ]);          
+            ]);
             foreach($application_pass as $appl){
                 $notif->applicant()->attach($appl['applicant_id']);
             }
@@ -200,7 +195,7 @@ class NotificationController extends Controller
             'message' => 'Notification  sended',
             'data' => $notif,
         ]);
-        
+
     }
 
     public function destroy($id)

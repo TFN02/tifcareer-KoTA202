@@ -19,15 +19,6 @@ class AssignmentVideoResume extends Model
         return $this->hasMany(Question::class, 'assignment_video_resume_id');
     }
 
-    public function assignementVideoResume(){
-        return $this->belongsTo(AssignmentVideoResume::class, 'assignment_video_resume_id');
-    }
-
-    public function application()
-    {
-        return $this->belongsTo(Application::class);
-    }
-    
     public function application(){
         return $this->hasMany(Question::class, 'assignment_video_resume_id');
     }

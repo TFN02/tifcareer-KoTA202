@@ -13,9 +13,6 @@ const DetailNotification = (props) => {
     const applicantId = props.auth.user.applicant_id;
     const jobId = props.idNotif.job_id;
     const [selectedFile, setSelectedFile] = useState(null);
-<<<<<<< HEAD
-    
-=======
     const [inputs, setInputs] = useState([{ hour: '', minute: '', second: '' }]);
     const [applicationId, setApplicationId] = useState('');
     const [technicalRequirement, setTechnicalRequirement] = useState(['']);
@@ -145,7 +142,6 @@ const DetailNotification = (props) => {
 
     };
 
->>>>>>> cc55993f9389a53ee80122fd7eb2cd554ab39533
 
 
     return (
@@ -169,12 +165,12 @@ const DetailNotification = (props) => {
                                     Persyaratan Video Resume
                                 </h1>
                             </figure>
-                            
+
 
                                 <div className="card-body flex flex-row gap-10">
                                     <p>{technicalRequirement}</p>
                                 </div>
-                            
+
                         </div>
                         <div className="card mb-3 bg-white shadow sm:rounded-lg">
                             <figure>
