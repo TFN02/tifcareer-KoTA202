@@ -70,13 +70,14 @@ export default function EditLoker({ myJobs, applicant }) {
 
     const handleSubmit = async () => {
         try {
-          const response = await axios.put(`http://localhost:8000/api/jobs/${id}`);
-          console.log("Response:", response.data); // Tampilkan respons dari server
+            const response = await axios.put(
+                `http://localhost:8000/api/jobs/${id}`
+            );
+            console.log("Response:", response.data); // Tampilkan respons dari server
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
-      };
-      
+    };
 
     return (
         <LayoutPerusahaan
@@ -238,39 +239,75 @@ export default function EditLoker({ myJobs, applicant }) {
                 </div>
 
                 <div className="my-8">
-                    <h3 className="text-xl font-semibold">
-                        Weighting Criteria
-                    </h3>
-                    {weighting_criteria.map((criteria, index) => {
-                        return (
-                            <div key={index}>
-                                <div className="border border-gray-400 px-4 py-2">
-                                    <p className="font-semibold">
-                                        {criteria.name}
-                                    </p>
-                                    <p>Weight: {criteria.weight}</p>
-                                </div>
-                                {weighting_variable
-                                    .filter(
-                                        (variable) =>
-                                            variable.weighting_criteria_id ===
-                                            criteria.id
-                                    )
-                                    .map((variable, variableIndex) => (
-                                        <div
-                                            key={variableIndex}
-                                            className="border border-gray-400 px-8 py-2 ml-8"
-                                        >
-                                            <p className="font-semibold">
-                                                {variable.name}
-                                            </p>
-                                            <p>Weight: {variable.weight}</p>
-                                        </div>
-                                    ))}
-                            </div>
-                        );
-                    })}
-                </div>
+  <h3 className="text-xl font-semibold">Weighting Criteria</h3>
+  {weighting_criteria.map((criteria, criteriaIndex) => {
+    return (
+      <div key={criteriaIndex}>
+        <div className="border border-gray-400 px-4 py-2">
+          <input
+            type="text"
+            value={criteria.name}
+            onChange={(e) => {
+              const updatedCriteria = [...weighting_criteria];
+              updatedCriteria[criteriaIndex].name = e.target.value;
+              setWeightingCriteria(updatedCriteria);
+            }}
+            placeholder="Criteria Name"
+            className="block w-full border border-gray-300 rounded py-2 px-3"
+          />
+          <input
+            type="text"
+            value={criteria.weight}
+            onChange={(e) => {
+              const updatedCriteria = [...weighting_criteria];
+              updatedCriteria[criteriaIndex].weight = e.target.value;
+              setWeightingCriteria(updatedCriteria);
+            }}
+            placeholder="Criteria Weight"
+            className="block w-full border border-gray-300 rounded py-2 px-3 mt-2"
+          />
+        </div>
+        {weighting_variable
+          .filter((variable) => variable.weighting_criteria_id === criteria.id)
+          .map((variable, variableIndex) => (
+            <div
+              key={variableIndex}
+              className="border border-gray-400 px-8 py-2 ml-8"
+            >
+              <input
+                type="text"
+                value={variable.name}
+                onChange={(e) => {
+                  const updatedVariables = [...weighting_variable];
+                  updatedVariables
+                    .filter(
+                      (v) => v.weighting_criteria_id === criteria.id
+                    )
+                    .find((v) => v.id === variable.id).name = e.target.value;
+                  setWeightingVariable(updatedVariables);
+                }}
+                placeholder="Variable Name"
+                className="block w-full border border-gray-300 rounded py-2 px-3"
+              />
+              <input
+                type="text"
+                value={variable.weight}
+                onChange={(e) => {
+                  const updatedVariables = [...weighting_variable];
+                  updatedVariables.find((v) => v.id === variable.id).weight =
+                    e.target.value;
+                  setWeightingVariable(updatedVariables);
+                }}
+                placeholder="Variable Weight"
+                className="block w-full border border-gray-300 rounded py-2 px-3 mt-2"
+              />
+            </div>
+          ))}
+      </div>
+    );
+  })}
+</div>
+
 
                 <WarningButton
                     className="m-2 flex flex-row-reverse"

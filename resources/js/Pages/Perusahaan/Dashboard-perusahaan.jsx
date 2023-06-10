@@ -25,6 +25,12 @@ const Dashboard = ({ auth }) => {
 
     const [weighting_criteria, setWeightingCriteria] = useState([]);
     const [weighting_variable, setWeightingVariable] = useState([]);
+    const [availableCriteriaOptions, setAvailableCriteriaOptions] = useState([
+        { value: "education", label: "Education" },
+        { value: "skill", label: "Skill" },
+        { value: "work_experience", label: "Work Experience" },
+        { value: "interest_area", label: "Interest Area" },
+    ]);
 
     const handleAddCriteria = () => {
         setWeightingCriteria([
@@ -39,12 +45,31 @@ const Dashboard = ({ auth }) => {
         setWeightingCriteria(updatedCriteria);
     };
 
+
+
     const handleAddVariable = (criteriaIndex) => {
         const updatedCriteria = [...weighting_criteria];
-        updatedCriteria[criteriaIndex].weighting_variable.push({
-            name: "",
-            weight: 0,
-        });
+        if (updatedCriteria[criteriaIndex].name === "education") {
+            updatedCriteria[criteriaIndex].weighting_variable.push({
+                name: { level: "", major: "" },
+                weight: 0,
+            });
+        } else if (updatedCriteria[criteriaIndex].name === "skill") {
+            updatedCriteria[criteriaIndex].weighting_variable.push({
+                name: { nameSkill: "" },
+                weight: 0,
+            });
+        } else if (updatedCriteria[criteriaIndex].name === "work_experience") {
+            updatedCriteria[criteriaIndex].weighting_variable.push({
+                name: { position: "", year: "" },
+                weight: 0,
+            });
+        } else if (updatedCriteria[criteriaIndex].name === "interest_area") {
+            updatedCriteria[criteriaIndex].weighting_variable.push({
+                name: { nameOfInterest: "" },
+                weight: 0,
+            });
+        }
         setWeightingCriteria(updatedCriteria);
     };
 
@@ -55,6 +80,19 @@ const Dashboard = ({ auth }) => {
             1
         );
         setWeightingCriteria(updatedCriteria);
+    };
+
+    const handleCriteriaChange = (criteriaIndex, selectedValue) => {
+        const updatedCriteria = [...weighting_criteria];
+        updatedCriteria[criteriaIndex].name = selectedValue;
+
+        // Remove the selected option from the available options
+        const updatedAvailableOptions = availableCriteriaOptions.filter(
+            (option) => option.value !== selectedValue
+        );
+
+        setWeightingCriteria(updatedCriteria);
+        setAvailableCriteriaOptions(updatedAvailableOptions);
     };
 
     const handleStartDateChange = (e) => {
@@ -240,7 +278,10 @@ const Dashboard = ({ auth }) => {
                                 </div>
 
                                 <div>
-                                    <label className="label" htmlFor={job_position}>
+                                    <label
+                                        className="label"
+                                        htmlFor={job_position}
+                                    >
                                         <span className="label-text">
                                             Job Position
                                         </span>
@@ -274,7 +315,10 @@ const Dashboard = ({ auth }) => {
                                 </div>
 
                                 <div>
-                                    <label className="label" htmlFor={job_category}>
+                                    <label
+                                        className="label"
+                                        htmlFor={job_category}
+                                    >
                                         <span className="label-text">
                                             Job Category
                                         </span>
@@ -391,7 +435,10 @@ const Dashboard = ({ auth }) => {
                                     </div>
 
                                     <div className="w-1/2">
-                                        <label className="label" htmlFor={end_date}>
+                                        <label
+                                            className="label"
+                                            htmlFor={end_date}
+                                        >
                                             <span className="label-text">
                                                 Job Closed
                                             </span>
@@ -422,34 +469,49 @@ const Dashboard = ({ auth }) => {
                                         >
                                             <select
                                                 value={criteria.name}
-                                                onChange={(e) => {
-                                                    const updatedCriteria = [
-                                                        ...weighting_criteria,
-                                                    ];
-                                                    updatedCriteria[
-                                                        criteriaIndex
-                                                    ].name = e.target.value;
-                                                    setWeightingCriteria(
-                                                        updatedCriteria
-                                                    );
-                                                }}
+                                                onChange={(e) =>
+                                                    handleCriteriaChange(
+                                                        criteriaIndex,
+                                                        e.target.value
+                                                    )
+                                                }
                                                 className="block w-full border border-gray-300 rounded py-2 px-3 mb-2"
                                             >
-                                                <option value="">
-                                                    Pilih Kriteria
-                                                </option>
-                                                <option value="education">
-                                                    Education
-                                                </option>
-                                                <option value="skill">
-                                                    Skill
-                                                </option>
-                                                <option value="work_experience">
-                                                    Work Experience
-                                                </option>
-                                                <option value="interest_area">
-                                                    Interest Area
-                                                </option>
+                                                {criteria.name ? (
+                                                    <option
+                                                        value={criteria.name}
+                                                    >
+                                                        {criteria.name}
+                                                    </option>
+                                                ) : (
+                                                    <option value="">
+                                                        Pilih Kriteria
+                                                    </option>
+                                                )}
+                                                {availableCriteriaOptions.map(
+                                                    (option) => {
+                                                        if (
+                                                            option.value !==
+                                                            criteria.name
+                                                        ) {
+                                                            return (
+                                                                <option
+                                                                    key={
+                                                                        option.value
+                                                                    }
+                                                                    value={
+                                                                        option.value
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        option.label
+                                                                    }
+                                                                </option>
+                                                            );
+                                                        }
+                                                        return null; // Hide the selected option from the dropdown
+                                                    }
+                                                )}
                                             </select>
                                             <input
                                                 type="number"
@@ -482,33 +544,193 @@ const Dashboard = ({ auth }) => {
                                                         key={variableIndex}
                                                         className="flex items-center mt-2"
                                                     >
-                                                        <input
-                                                            type="text"
-                                                            value={
-                                                                variable.name
-                                                            }
-                                                            onChange={(e) => {
-                                                                const updatedCriteria =
-                                                                    [
-                                                                        ...weighting_criteria,
-                                                                    ];
-                                                                updatedCriteria[
-                                                                    criteriaIndex
-                                                                ].weighting_variable[
-                                                                    variableIndex
-                                                                ].name =
-                                                                    e.target.value;
-                                                                setWeightingCriteria(
-                                                                    updatedCriteria
-                                                                );
-                                                            }}
-                                                            placeholder="Variable Name"
-                                                            className="block w-1/2 border border-gray-300 rounded py-2 px-3"
-                                                        />
+                                                        {criteria.name ===
+                                                            "education" && (
+                                                            <div className="flex">
+                                                                <input
+                                                                    type="text"
+                                                                    value={
+                                                                        variable
+                                                                            .name
+                                                                            .level
+                                                                    }
+                                                                    onChange={(
+                                                                        e
+                                                                    ) => {
+                                                                        const updatedCriteria =
+                                                                            [
+                                                                                ...weighting_criteria,
+                                                                            ];
+                                                                        updatedCriteria[
+                                                                            criteriaIndex
+                                                                        ].weighting_variable[
+                                                                            variableIndex
+                                                                        ].name.level =
+                                                                            e.target.value;
+                                                                        setWeightingCriteria(
+                                                                            updatedCriteria
+                                                                        );
+                                                                    }}
+                                                                    placeholder="Level"
+                                                                    className="block w-1/2 border border-gray-300 rounded py-2 px-3"
+                                                                />
+                                                                <input
+                                                                    type="text"
+                                                                    value={
+                                                                        variable
+                                                                            .name
+                                                                            .major
+                                                                    }
+                                                                    onChange={(
+                                                                        e
+                                                                    ) => {
+                                                                        const updatedCriteria =
+                                                                            [
+                                                                                ...weighting_criteria,
+                                                                            ];
+                                                                        updatedCriteria[
+                                                                            criteriaIndex
+                                                                        ].weighting_variable[
+                                                                            variableIndex
+                                                                        ].name.major =
+                                                                            e.target.value;
+                                                                        setWeightingCriteria(
+                                                                            updatedCriteria
+                                                                        );
+                                                                    }}
+                                                                    placeholder="Major"
+                                                                    className="block w-1/2 border border-gray-300 rounded py-2 px-3 ml-2"
+                                                                />
+                                                            </div>
+                                                        )}
+
+                                                        {criteria.name ===
+                                                            "skill" && (
+                                                            <input
+                                                                type="text"
+                                                                value={
+                                                                    variable
+                                                                        .name
+                                                                        .nameSkill
+                                                                }
+                                                                onChange={(
+                                                                    e
+                                                                ) => {
+                                                                    const updatedCriteria =
+                                                                        [
+                                                                            ...weighting_criteria,
+                                                                        ];
+                                                                    updatedCriteria[
+                                                                        criteriaIndex
+                                                                    ].weighting_variable[
+                                                                        variableIndex
+                                                                    ].name.nameSkill =
+                                                                        e.target.value;
+                                                                    setWeightingCriteria(
+                                                                        updatedCriteria
+                                                                    );
+                                                                }}
+                                                                placeholder="Skill Name"
+                                                                className="block w-1/2 border border-gray-300 rounded py-2 px-3"
+                                                            />
+                                                        )}
+
+                                                        {criteria.name ===
+                                                            "work_experience" && (
+                                                            <div className="flex">
+                                                                <input
+                                                                    type="text"
+                                                                    value={
+                                                                        variable
+                                                                            .name
+                                                                            .position
+                                                                    }
+                                                                    onChange={(
+                                                                        e
+                                                                    ) => {
+                                                                        const updatedCriteria =
+                                                                            [
+                                                                                ...weighting_criteria,
+                                                                            ];
+                                                                        updatedCriteria[
+                                                                            criteriaIndex
+                                                                        ].weighting_variable[
+                                                                            variableIndex
+                                                                        ].name.position =
+                                                                            e.target.value;
+                                                                        setWeightingCriteria(
+                                                                            updatedCriteria
+                                                                        );
+                                                                    }}
+                                                                    placeholder="Position"
+                                                                    className="block w-1/2 border border-gray-300 rounded py-2 px-3"
+                                                                />
+                                                                <input
+                                                                    type="text"
+                                                                    value={
+                                                                        variable
+                                                                            .name
+                                                                            .year
+                                                                    }
+                                                                    onChange={(
+                                                                        e
+                                                                    ) => {
+                                                                        const updatedCriteria =
+                                                                            [
+                                                                                ...weighting_criteria,
+                                                                            ];
+                                                                        updatedCriteria[
+                                                                            criteriaIndex
+                                                                        ].weighting_variable[
+                                                                            variableIndex
+                                                                        ].name.year =
+                                                                            e.target.value;
+                                                                        setWeightingCriteria(
+                                                                            updatedCriteria
+                                                                        );
+                                                                    }}
+                                                                    placeholder="Year"
+                                                                    className="block w-1/2 border border-gray-300 rounded py-2 px-3 ml-2"
+                                                                />
+                                                            </div>
+                                                        )}
+
+                                                        {criteria.name ===
+                                                            "interest_area" && (
+                                                            <input
+                                                                type="text"
+                                                                value={
+                                                                    variable
+                                                                        .name
+                                                                        .nameOfInterest
+                                                                }
+                                                                onChange={(
+                                                                    e
+                                                                ) => {
+                                                                    const updatedCriteria =
+                                                                        [
+                                                                            ...weighting_criteria,
+                                                                        ];
+                                                                    updatedCriteria[
+                                                                        criteriaIndex
+                                                                    ].weighting_variable[
+                                                                        variableIndex
+                                                                    ].name.nameOfInterest =
+                                                                        e.target.value;
+                                                                    setWeightingCriteria(
+                                                                        updatedCriteria
+                                                                    );
+                                                                }}
+                                                                placeholder="Interest Area Name"
+                                                                className="block w-1/2 border border-gray-300 rounded py-2 px-3"
+                                                            />
+                                                        )}
+
                                                         <input
                                                             type="number"
                                                             value={
-                                                                variable.weight * 100
+                                                                variable.weight *
+                                                                100
                                                             }
                                                             onChange={(e) => {
                                                                 const updatedValue =
@@ -578,6 +800,7 @@ const Dashboard = ({ auth }) => {
                                         </div>
                                     )
                                 )}
+
                                 <button
                                     type="button"
                                     onClick={handleAddCriteria}
