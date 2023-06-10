@@ -253,8 +253,8 @@ class YoutubeController extends Controller
                 'video_path' => $request->video_path,
             ];
     
-            //$authUrl = redirect('/auth/youtube')->with('data', $data);
-            return redirect('/lowonganKerja');
+            // $authUrl = redirect('/auth/youtube')->with('data', $data);
+            // return redirect('/lowonganKerja');
         }
         
 
@@ -263,7 +263,8 @@ class YoutubeController extends Controller
         
 
 
-        return redirect_to('/lowonganKerja');
+        // return redirect('/lowonganKerja');
+        return to_route('lowonganKerja');
         // return response()->json([
         //     'result' => null,
         // ]);

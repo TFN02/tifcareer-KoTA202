@@ -5,17 +5,26 @@ import LayoutPerusahaan from "@/Layouts/LayoutPerusahaan";
 import { Head, Link, usePage } from "@inertiajs/react";
 import DangerButton from "@/Components/DangerButton";
 import WarningButton from "@/Components/WarningButton";
+import Modal from "@/Components/Modal";
+import SecondaryButton from "@/Components/SecondaryButton";
 
-const LowonganKerjaPerusahaan = ({ auth }) => {
+const LowonganKerjaPerusahaan = ({ auth, processing }) => {
     const company_id = usePage().props.auth.user.company_id;
-    const user = usePage();
-
-    console.log(user);
-
     const [myJobs, setMyJobs] = useState([]);
-    const [editJobId, setEditJobId] = useState(null);
+    // const [editJobId, setEditJobId] = useState(null);
     const [filter, setFilter] = useState("semua");
     const [applicantCounts, setApplicantCounts] = useState({});
+    const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
+
+    const confirmUserDeletion = () => {
+        setConfirmingUserDeletion(true);
+    };
+
+    const closeModal = () => {
+        setConfirmingUserDeletion(false);
+
+        // reset();
+    };
 
     useEffect(() => {
         const getMyJobs = async () => {
@@ -78,6 +87,7 @@ const LowonganKerjaPerusahaan = ({ auth }) => {
         try {
             await axios.delete(`http://localhost:8000/api/jobs/${id}`);
             setMyJobs(myJobs.filter((job) => job.id !== id));
+            closeModal();
         } catch (error) {
             console.error(error);
         }
@@ -163,12 +173,30 @@ const LowonganKerjaPerusahaan = ({ auth }) => {
                                 </p>
                                 <div className="flex flex-row-reverse gap-2 mt-4">
 
-                                    <DangerButton
+                                    {/* <DangerButton
                                         className="rounded-full"
                                         onClick={() => handleDelete(job.id)}
                                     >
                                         <Link>Delete</Link>
-                                    </DangerButton>
+                                    </DangerButton> */}
+                                    <DangerButton onClick={confirmUserDeletion}>Delete</DangerButton>
+                                    <Modal show={confirmingUserDeletion} onClose={closeModal}>
+                                        <div className="p-6">
+                                            <h2 className="text-lg font-medium text-gray-900">
+                                                Apakah anda yakin ingin menghapus data ini?
+                                            </h2>
+                                            <p className="mt-1 text-sm text-gray-600">
+                                                Semua data akan terhapus secara permanen ketika menekan tombol delete.
+                                            </p>
+                                            <div className="mt-6 flex justify-end">
+                                                <SecondaryButton onClick={closeModal}>Cancel</SecondaryButton>
+
+                                                <DangerButton onClick={() => handleDelete(job.id)} className="ml-3" disabled={processing}>
+                                                    Confirm Delete !
+                                                </DangerButton>
+                                            </div>
+                                        </div>
+                                    </Modal>
                                     <WarningButton className="rounded-full">
                                         <Link
                                             href={route(
@@ -192,9 +220,12 @@ const LowonganKerjaPerusahaan = ({ auth }) => {
                         </div>
                     ))
                 ) : (
-                    <p className="text-black">
-                        Anda Belum Memiliki Lowongan Kerja Aktif
-                    </p>
+
+                    <div className="my-10 bg-white p-7 rounded-lg w-full max-w-7xl flex flex-col justify-center items-center">
+                        <p>Anda Belum Memiliki Lowongan Kerja Aktif !! </p>
+                        <p>Buat Lowongan Kerja pada Halaman "Buat Lowongan Kerja"</p>
+                    </div>
+
                 )}
             </div>
         </LayoutPerusahaan>
