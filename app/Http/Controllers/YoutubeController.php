@@ -216,57 +216,12 @@ class YoutubeController extends Controller
                 Sessions::destroy($sessions->all());
             } 
             
-            return response()->json([
-                'applicantion' => $application,
-                'video_id'   => $response_yt->getId(),
-            ]);
+            return redirect('/lowonganKerja');
 
         }else{
 
-            if($request->application_id){
-                $this->application_id = $request->application_id;
-                $this->title = $request->title;
-                $this->tags = $request->tags;
-                $this->description = $request->description;
-                if($request->hasFile('file')){
-                    $this->video_path = $request->file('file')->path();
-                }
-                Session::put('application_id', $this->application_id);
-                Session::put('title', $this->title);
-                Session::put('tags', $this->tags);
-                Session::put('description', $this->description);
-                Session::put('video_path', $this->video_path);
-    
-                // session(['application_id' => $this->application_id]);
-                // session(['title' => $this->title]);
-                // session(['tags' => $this->tags]);
-                // session(['description' => $this->description]);
-                // session(['video_path' => $this->video_path]);
-                
-            }
-
-            $data = [
-                'application_id' => $request->application_id,
-                'title' => $request->title,
-                'tags' => $request->tags,
-                'description' => $request->description,
-                'video_path' => $request->video_path,
-            ];
-    
-            // $authUrl = redirect('/auth/youtube')->with('data', $data);
-            // return redirect('/lowonganKerja');
+            return redirect('api/auth/youtube');
         }
         
-
-              
-
-        
-
-
-        // return redirect('/lowonganKerja');
-        return to_route('lowonganKerja');
-        // return response()->json([
-        //     'result' => null,
-        // ]);
     }      
 }

@@ -63,11 +63,9 @@ class JobController extends Controller
 
     public function store(Request $request)
     {
-
         $company = Company::class;
 
         if ($request->company_id) {
-
             $company = Company::find($request->company_id);
             if ($company != null) {
                 $request->validate([
@@ -80,10 +78,12 @@ class JobController extends Controller
                     'start_date' => 'required|date',
                     'end_date' => 'required|date',
                 ]);
+
                 $job_category = JobCategory::where('name', '=', $request->job_category)->get();
                 foreach ($job_category as $jb) {
                     $job_category_id = $jb->id;
                 }
+
                 if (count($job_category) == 1) {
                     $jobs = Job::create([
                         'company_id' => $company->id,
@@ -100,29 +100,23 @@ class JobController extends Controller
 
                     $weighting_criterias = $request->weighting_criteria;
                     foreach ($weighting_criterias as $criteria) {
-                        $criteria = $jobs->weightingCriteria()->create([
+                        $createdCriteria = $jobs->weightingCriteria()->create([
                             'name' => $criteria['name'],
                             'weight' => $criteria['weight'],
                             'job_id' => $jobs->id,
                         ]);
-                    }
 
-                    $weighting_variable = $request->weighting_variable;
-                    foreach ($weighting_variable as $variable) {
-                        $criteria_v = WeightingCriteria::where([
-                            ['name', '=', $variable['criteria']],
-                            ['job_id', '=', $jobs->id],
-                        ])->get();
-                        $criteria_id = 0;
-                        foreach ($criteria_v as $c) {
-                            $criteria_id = $c->id;
+                        $variables = $request->input('weighting_variable');
+                        foreach ($variables as $variable) {
+                            if ($variable['criteria'] === $criteria['name']) {
+                                $createdCriteria->weightingVariable()->create([
+                                    'criteria' => $variable['criteria'],
+                                    'name' => json_encode($variable['name']),
+                                    'weight' => $variable['weight'],
+                                    'job_id' => $jobs->id,
+                                ]);
+                            }
                         }
-                        $variable = $jobs->weightingVariable()->create([
-                            'name' => $variable['name'],
-                            'weight' => $variable['weight'],
-                            'weighting_criteria_id' => $criteria_id,
-                            'job_id' => $jobs->id,
-                        ]);
                     }
 
                     return response()->json([
@@ -131,20 +125,20 @@ class JobController extends Controller
                     ]);
                 } else {
                     return response()->json([
-                        'success' => true,
-                        'data' =>  "Job Category not found",
+                        'success' => false,
+                        'message' => "Job Category not found",
                     ]);
                 }
             } else {
                 return response()->json([
-                    'success' => true,
-                    'data' =>  "Company not found",
+                    'success' => false,
+                    'message' => "Company not found",
                 ]);
             }
         } else {
             return response()->json([
-                'success' => true,
-                'data' =>  "Company Id is Required",
+                'success' => false,
+                'message' => "Company Id is Required",
             ]);
         }
     }

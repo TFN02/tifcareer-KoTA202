@@ -16,10 +16,10 @@ export default function EditLoker({ myJobs, applicant }) {
     const [title, setTitle] = useState("");
     const [job_position, setJobPosition] = useState("");
     const [job_desc, setJobDescription] = useState("");
-    const [qualification, setQualification] = useState("");
+    // const [qualification, setQualification] = useState("");
     const [location, setLocation] = useState("");
     const [salary, setSalary] = useState("");
-    const [status, setStatus] = useState("");
+    // const [status, setStatus] = useState("");
     const [start_date, setStartDate] = useState("");
     const [end_date, setEndDate] = useState("");
     const [job_category, setJobCategoryId] = useState("");
@@ -54,8 +54,8 @@ export default function EditLoker({ myJobs, applicant }) {
             setSalary(datas.salary);
             setStartDate(datas.start_date);
             setEndDate(datas.end_date);
-            setQualification(datas.qualification);
-            setStatus(datas.status);
+            // setQualification(datas.qualification);
+            // setStatus(datas.status);
             setJobDescription(datas.job_desc);
             setWeightingCriteria(datas.weighting_criteria);
             setWeightingVariable(datas.weighting_variable);
@@ -70,13 +70,23 @@ export default function EditLoker({ myJobs, applicant }) {
 
     const handleSubmit = async () => {
         try {
-          const response = await axios.put(`http://localhost:8000/api/jobs/${id}`);
-          console.log("Response:", response.data); // Tampilkan respons dari server
+            const data = {
+                title: title,
+                job_position: job_position,
+                job_desc: job_desc,
+                location: location,
+                salary: salary,
+                start_date: start_date,
+                end_date: end_date
+            };
+
+            const response = await axios.put(`http://localhost:8000/api/jobs/${id}`, data);
+            console.log("Response:", response.data); // Tampilkan respons dari server
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
-      };
-      
+    };
+
 
     return (
         <LayoutPerusahaan
@@ -102,7 +112,7 @@ export default function EditLoker({ myJobs, applicant }) {
                         <span class="label-text mt-3">Job Title</span>
                     </label>
                     <input
-                        class="input input-bordered w-full m-0 mb-3 bg-slate-200 text-black"
+                        class="input input-bordered w-full m-0 mb-3 bg-bright text-black"
                         type="text"
                         id="title"
                         value={title}
@@ -115,7 +125,7 @@ export default function EditLoker({ myJobs, applicant }) {
                         <span class="label-text">Job Position</span>
                     </label>
                     <input
-                        className="input input-bordered w-full m-0 mb-3 bg-slate-200 text-black"
+                        className="input input-bordered w-full m-0 mb-3 bg-bright text-black"
                         type="text"
                         id="job_position"
                         value={job_position}
@@ -128,7 +138,7 @@ export default function EditLoker({ myJobs, applicant }) {
                         <span class="label-text">Job Description</span>
                     </label>
                     <textarea
-                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                        className="m-0 input input-bordered w-full mb-3 bg-bright text-black"
                         type="text"
                         id="job_desc"
                         value={job_desc}
@@ -141,7 +151,7 @@ export default function EditLoker({ myJobs, applicant }) {
                         <span class="label-text">Job Category</span>
                     </label>
                     <select
-                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                        className="m-0 input input-bordered w-full mb-3 bg-bright text-black"
                         id="job_category"
                         value={job_category}
                         onChange={(e) => setJobCategoryId(e.target.value)}
@@ -163,7 +173,7 @@ export default function EditLoker({ myJobs, applicant }) {
                         <span class="label-text">Job Location</span>
                     </label>
                     <input
-                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                        className="m-0 input input-bordered w-full mb-3 bg-bright text-black"
                         type="text"
                         id="location"
                         value={location}
@@ -176,7 +186,7 @@ export default function EditLoker({ myJobs, applicant }) {
                         <span class="label-text">Job Salary</span>
                     </label>
                     <input
-                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                        className="m-0 input input-bordered w-full mb-3 bg-bright text-black"
                         type="text"
                         id="salary"
                         value={salary}
@@ -184,38 +194,38 @@ export default function EditLoker({ myJobs, applicant }) {
                     />
                 </div>
 
-                <div>
+                {/* <div>
                     <label class="label" htmlFor={qualification}>
                         <span class="label-text">Job Qualification</span>
                     </label>
                     <input
-                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                        className="m-0 input input-bordered w-full mb-3 bg-bright text-black"
                         type="text"
                         id="salary"
                         value={qualification}
                         onChange={(e) => setQualification(e.target.value)}
                     />
-                </div>
+                </div> */}
 
-                <div>
+                {/* <div>
                     <label class="label" htmlFor={status}>
                         <span class="label-text">Job Status</span>
                     </label>
                     <input
-                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                        className="m-0 input input-bordered w-full mb-3 bg-bright text-black"
                         type="text"
                         id="status"
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
                     />
-                </div>
+                </div> */}
                 <div class="flex space-x-4">
                     <div class="w-1/2">
                         <label class="label" htmlFor={start_date}>
                             <span class="label-text">Job Opening</span>
                         </label>
                         <input
-                            className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
+                            className="m-0 input input-bordered w-full mb-3 bg-bright text-black"
                             type="date"
                             id="start_date"
                             value={start_date}
@@ -228,7 +238,7 @@ export default function EditLoker({ myJobs, applicant }) {
                             <span class="label-text">Job Closed</span>
                         </label>
                         <input
-                            className="m-0 input input-bordered w-full mb-5 bg-slate-200 text-black"
+                            className="m-0 input input-bordered w-full mb-5 bg-bright text-black"
                             type="date"
                             id="end_date"
                             value={end_date}
@@ -238,17 +248,49 @@ export default function EditLoker({ myJobs, applicant }) {
                 </div>
 
                 <div className="my-8">
-                    <h3 className="text-xl font-semibold">
+                    <h3 className="text-xl font-semibold mb-3">
                         Weighting Criteria
                     </h3>
-                    {weighting_criteria.map((criteria, index) => {
+                    {weighting_criteria.map((criteria, criteriaIndex) => {
                         return (
-                            <div key={index}>
-                                <div className="border border-gray-400 px-4 py-2">
-                                    <p className="font-semibold">
-                                        {criteria.name}
-                                    </p>
-                                    <p>Weight: {criteria.weight}</p>
+                            <div className="border px-4 py-5 m-5" key={criteriaIndex}>
+                                <div className="border px-4 py-2">
+                                    <input
+                                        type="text"
+                                        value={criteria.name}
+                                        onChange={(e) => {
+                                            const updatedCriteria = [
+                                                ...weighting_criteria,
+                                            ];
+                                            updatedCriteria[
+                                                criteriaIndex
+                                            ].name = e.target.value;
+                                            setWeightingCriteria(
+                                                updatedCriteria
+                                            );
+                                        }}
+                                        readOnly
+                                        placeholder="Criteria Name"
+                                        className="block w-full border border-gray-300 rounded py-2 px-3 bg-slate-200"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={criteria.weight}
+                                        onChange={(e) => {
+                                            const updatedCriteria = [
+                                                ...weighting_criteria,
+                                            ];
+                                            updatedCriteria[
+                                                criteriaIndex
+                                            ].weight = e.target.value;
+                                            setWeightingCriteria(
+                                                updatedCriteria
+                                            );
+                                        }}
+                                        readOnly
+                                        placeholder="Criteria Weight"
+                                        className="block w-full border border-gray-300 rounded py-2 px-3 mt-2 bg-slate-200"
+                                    />
                                 </div>
                                 {weighting_variable
                                     .filter(
@@ -259,12 +301,53 @@ export default function EditLoker({ myJobs, applicant }) {
                                     .map((variable, variableIndex) => (
                                         <div
                                             key={variableIndex}
-                                            className="border border-gray-400 px-8 py-2 ml-8"
+                                            className="px-8 py-2 ml-8"
                                         >
-                                            <p className="font-semibold">
-                                                {variable.name}
-                                            </p>
-                                            <p>Weight: {variable.weight}</p>
+                                            <input
+                                                type="text"
+                                                value={variable.name}
+                                                onChange={(e) => {
+                                                    const updatedVariables = [
+                                                        ...weighting_variable,
+                                                    ];
+                                                    updatedVariables
+                                                        .filter(
+                                                            (v) =>
+                                                                v.weighting_criteria_id ===
+                                                                criteria.id
+                                                        )
+                                                        .find(
+                                                            (v) =>
+                                                                v.id ===
+                                                                variable.id
+                                                        ).name = e.target.value;
+                                                    setWeightingVariable(
+                                                        updatedVariables
+                                                    );
+                                                }}
+                                                readOnly
+                                                placeholder="Variable Name"
+                                                className="block w-full border border-gray-300 rounded py-2 px-3 bg-slate-200"
+                                            />
+                                            <input
+                                                type="text"
+                                                value={variable.weight}
+                                                onChange={(e) => {
+                                                    const updatedVariables = [
+                                                        ...weighting_variable,
+                                                    ];
+                                                    updatedVariables.find(
+                                                        (v) =>
+                                                            v.id === variable.id
+                                                    ).weight = e.target.value;
+                                                    setWeightingVariable(
+                                                        updatedVariables
+                                                    );
+                                                }}
+                                                readOnly
+                                                placeholder="Variable Weight"
+                                                className="block w-full border border-gray-300 rounded py-2 px-3 mt-2 bg-slate-200"
+                                            />
                                         </div>
                                     ))}
                             </div>
