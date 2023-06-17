@@ -67,9 +67,10 @@ class RegisteredUserController extends Controller
                 $applicant = $existingApplicant;
             }
     
+            $status = true;
             $user->update([
                 'applicant_id' => $applicant->id,
-                
+                'is_active' => $status,
             ]);
         } 
         
@@ -86,9 +87,10 @@ class RegisteredUserController extends Controller
                 $company = $existingCompany;
             }
     
+            $status = false;
             $user->update([
                 'company_id' => $company->id,
-                
+                'is_active' => false,
             ]);
         }
     

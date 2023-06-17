@@ -122,6 +122,15 @@ return new class extends Migration
             $table->foreign('video_resume_id')->references('id')->on('video_resumes')->onDelete('cascade')->onUpdate('cascade');
         });
 
+        Schema::table('question_video_resume', function (Blueprint $table) {
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
+        });
+
+        Schema::table('applicant_interest_area', function (Blueprint $table) {
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
+        });
     }
 
     /**

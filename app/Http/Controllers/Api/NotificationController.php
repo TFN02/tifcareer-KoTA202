@@ -68,9 +68,9 @@ class NotificationController extends Controller
 
         foreach ($applicants as $applicantData) {
             $applicantId = $applicantData['applicant_id'];
-            $applicationStatus = $applicantData['status'];
+            $applicationStatus = $applicantData['is_pass_selection_1'];
 
-            if ($applicationStatus === 'accepted') {
+            if ($applicationStatus === 1) {
                 // Pelamar lolos, kirim pesan sesuai input perusahaan
                 $message = $request->message; // Mengambil pesan dari input perusahaan
 

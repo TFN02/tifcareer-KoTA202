@@ -199,6 +199,8 @@ class YoutubeController extends Controller
                     'youtube_video_id' => $response_yt->getId(),
                 ]); 
                 $application->video_resume_id = $video_resume->id;
+                $application->is_selection_1 = 0;
+                $application->is_selection_2 = 1;
                 $application->save();
 
                 if($segment_video){
@@ -216,7 +218,10 @@ class YoutubeController extends Controller
                 Sessions::destroy($sessions->all());
             } 
             
-            return redirect('/lowonganKerja');
+            return response()->json([
+                'success' => true,
+                'data' => $video_resume,
+            ]);  
 
         }else{
 
