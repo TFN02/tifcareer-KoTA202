@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('applicants', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned()->nullable();
-            $table->string('name',100)->nullable();
-            $table->string('gander',100)->nullable();
-            $table->string('phone_no',100)->nullable();
+            $table->string('name',30)->nullable();
+            $table->string('gander',10)->nullable();
+            $table->string('phone_no',15)->nullable();
             $table->date('birth_of_date')->nullable();
             $table->text('domicile')->nullable();
             $table->text('description')->nullable();

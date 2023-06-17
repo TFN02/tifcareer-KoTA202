@@ -16,11 +16,11 @@ return new class extends Migration
         Schema::create('video_resumes', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('application_id')->unsigned()->nullable();
-            $table->string('youtube_video_id')->nullable();
-            $table->string('category_id')->nullable();
-            $table->string('title',255)->nullable();
+            $table->string('youtube_video_id',10)->nullable();
+            $table->string('category_id',10)->nullable();
+            $table->string('title',30)->nullable();
             $table->text('description')->nullable();
-            $table->string('tags',255)->nullable();
+            $table->string('tags',20)->nullable();
             $table->integer('total_score')->nullable();
             $table->float('avg_score')->nullable();
             $table->timestamps();

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('applicant_id')->unsigned();
             $table->bigInteger('interest_area_id')->unsigned();
+            $table->longText('reason_of_interest')->nullable();
         });
     }
 

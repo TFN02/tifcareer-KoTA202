@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('soft_skills', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('applicant_id')->unsigned()->nullable();
-            $table->string('name',100)->nullable();
+            $table->string('name',30)->nullable();
             $table->timestamps();
         });
     }

@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('educations', function (Blueprint $table) {
             $table->id();
-            $table->string('level',100)->nullable();
-            $table->string('major',255)->nullable();
-            $table->string('educational_institution')->nullable();
+            $table->string('level',10)->nullable();
+            $table->string('major',20)->nullable();
+            $table->string('educational_institution',30)->nullable();
             $table->integer('graduation_year')->nullable();
             $table->timestamps();
         });

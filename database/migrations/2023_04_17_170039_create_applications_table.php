@@ -28,7 +28,6 @@ return new class extends Migration
             $table->json('interest_area')->nullable();
             $table->json('soft_skill')->nullable();
             $table->json('certificate')->nullable();
-            $table->timestamp('send_date')->nullable();
             $table->timestamps();
         });
     }
