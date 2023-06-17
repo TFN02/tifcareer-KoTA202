@@ -21,13 +21,16 @@ return new class extends Migration
             $table->bigInteger('assignment_video_resume_id')->unsigned()->nullable();
             $table->float('score')->nullable();
             $table->integer('rank')->nullable();
-            $table->string('status',100)->nullable();
             $table->json('education')->nullable();
             $table->json('work_experience')->nullable();
             $table->json('skill')->nullable();
             $table->json('interest_area')->nullable();
             $table->json('soft_skill')->nullable();
             $table->json('certificate')->nullable();
+            $table->boolean('is_selection_1')->nullable();
+            $table->boolean('is_pass_selection_1')->nullable();
+            $table->boolean('is_selection_2')->nullable();
+            $table->boolean('is_pass_selection_2')->nullable();
             $table->timestamps();
         });
     }

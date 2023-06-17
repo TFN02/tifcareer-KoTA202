@@ -122,4 +122,31 @@ class VideoResumeController extends Controller
             'data' => $vr,
         ]);
     }
+
+    public function scoringVideoResume(Request $request, $id)
+    {
+        $vr = VideoResume::findOrFail($id); 
+            
+        if($request->application_id){ 
+            $application = Application::find($request->application_id);
+            $vr->application_id = $application->id;
+        }
+
+        if($request->description){
+            $vr->description = $request->input('description');
+        }
+        if($request->link_video){
+            $vr->link_video = $request->input('link_video');
+        }
+        if($request->duration){
+            $vr->duration = $request->input('duration');
+        }
+
+        $vr->save();
+
+        return response()->json([
+            'success' => true,
+            'data' => $vr
+        ]);  
+    }
 }

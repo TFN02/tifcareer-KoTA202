@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('weighting_criterias', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('job_id')->unsigned()->nullable();
-            $table->string('name',30)->nullable();
+            $table->string('name',50)->nullable();
             $table->float('weight')->nullable();
             $table->timestamps();
         });

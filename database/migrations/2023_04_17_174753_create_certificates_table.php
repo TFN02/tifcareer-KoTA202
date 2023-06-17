@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('certificates', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('applicant_id')->unsigned()->nullable();
-            $table->string('title',30)->nullable();
+            $table->string('title',50)->nullable();
             $table->text('description')->nullable();
             $table->string('no_certificate',20)->nullable();
             $table->timestamps();
