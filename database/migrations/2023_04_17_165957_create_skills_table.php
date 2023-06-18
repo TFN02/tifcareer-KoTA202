@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('skills', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('skill_category_id')->unsigned()->nullable();
-            $table->string('name',100)->nullable();
+            $table->string('name',50)->nullable();
             $table->timestamps();
         });
     }

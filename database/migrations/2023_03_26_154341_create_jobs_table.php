@@ -20,11 +20,13 @@ return new class extends Migration
             $table->bigInteger('job_category_id')->unsigned()->nullable();
             $table->bigInteger('notification_id')->unsigned()->nullable();
             $table->string('title',100)->nullable();
-            $table->string('job_position')->nullable();
+            $table->string('job_position',50)->nullable();
             $table->longText('job_desc')->nullable();
             $table->string('location',150)->nullable();
             $table->string('salary',20)->nullable();
-            $table->boolean('is_active',100)->nullable();
+            $table->boolean('is_active')->nullable();
+            $table->boolean('is_selection_1')->nullable();
+            $table->boolean('is_selection_2')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();

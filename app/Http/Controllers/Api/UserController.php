@@ -85,7 +85,10 @@ class UserController extends Controller
                 ]);
                 
 
+                $status = false;
                 $user->applicant_id = $applicant->id;
+                $user->is_active = $status;
+                
                 $user->save();
             
             }else if ($request->role=="admin"){
@@ -96,6 +99,7 @@ class UserController extends Controller
                 ]);
 
                 $user->super_admin_id = $admin->id;
+                $user->is_active = 1;
                 $user->save();
 
             }else if ($request->role=="perusahaan"){
@@ -107,6 +111,7 @@ class UserController extends Controller
                 ]);
 
                 $user->company_id = $company->id;
+                $user->is_active = 0;
                 $user->save();
 
             }
@@ -237,6 +242,20 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'User deleted',
+            'data' => $user,
+        ]);
+    }
+
+    public function updateStatus($id,$status)
+    {
+        $user = User::find($id);
+        if($user != null){
+            $user->is_active = $status;
+            $user->save;
+        }
+
+        return response()->json([
+            'message' => 'User update active status',
             'data' => $user,
         ]);
     }

@@ -76,7 +76,7 @@ class ApplicationController extends Controller
                 'interest_area' => $applicant->interestArea,
                 'soft_skill' => $applicant->softSkill,
                 'certificate' => $applicant->certificate,
-                'send_date' => $currentTime
+                'is_selection_1' => 1,
             ]);
         }
 
@@ -122,7 +122,7 @@ class ApplicationController extends Controller
             $jobId = $request->input('job_id');
             $applications = Application::join('applicants', 'applications.applicant_id', '=', 'applicants.id')
                 ->select('applications.*', 'applicants.name as applicant_name')
-                ->where('applications.status', 'accepted')
+                ->where('applications.is_pass_selection_1', 1)
                 ->where('applications.job_id', $jobId)
                 ->get();
 
@@ -155,7 +155,7 @@ class ApplicationController extends Controller
         ]);
     }
 
-    public function applyJob(Request $request, $id)
+    public function saw(Request $request, $id)
     {
         // Ambil data job berdasarkan job_id
         $job = Job::find($request->id);
@@ -278,6 +278,20 @@ class ApplicationController extends Controller
     public function getIdByApplyed($applicant_id, $job_id)
     {
         $application = Application::where('applicant_id', $applicant_id)->where('job_id', $job_id)->first();
+        return response()->json([
+            'success' => true,
+            'application_id' => $application->id,
+        ]);
+    }
+
+    public function passSelectionVideoResume($id, $status)
+    {
+        $application = Application::find($id);
+        if($application!=null){
+            $application->is_pass_selection_2 = 1;
+            $application->save();
+        }
+       
         return response()->json([
             'success' => true,
             'application_id' => $application->id,

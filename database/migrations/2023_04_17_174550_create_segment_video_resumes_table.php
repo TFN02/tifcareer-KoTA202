@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('video_resume_id')->unsigned()->nullable();
             $table->time('time_to_jump')->nullable();
-            $table->string('segment_title',100)->nullable();
+            $table->string('segment_title',20)->nullable();
             $table->timestamps();
         });
     }

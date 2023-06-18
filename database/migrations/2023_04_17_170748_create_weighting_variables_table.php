@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('job_id')->unsigned()->nullable();
             $table->bigInteger('weighting_criteria_id')->unsigned()->nullable();
-            $table->string('name',100)->nullable();
+            $table->json('name')->nullable();
             $table->float('weight')->nullable();
             $table->timestamps();
         });

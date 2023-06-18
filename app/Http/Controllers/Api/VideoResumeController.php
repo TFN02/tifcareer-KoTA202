@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Models\VideoResume;
 use App\Models\Question;
 use App\Models\Application;
+use App\Models\AssignmentVideoResume;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Question_VideoResume;
 
 class VideoResumeController extends Controller
 {
@@ -89,6 +91,7 @@ class VideoResumeController extends Controller
     {
         $vr = VideoResume::findOrFail($id); 
             
+
         if($request->application_id){ 
             $application = Application::find($request->application_id);
             $vr->application_id = $application->id;
@@ -122,4 +125,48 @@ class VideoResumeController extends Controller
             'data' => $vr,
         ]);
     }
+
+    public function scoringVideoResume(Request $request, $id)
+    {
+        $vr = VideoResume::findOrFail($id); 
+           
+        $scores = $request->score;
+
+        $total_score = 0;
+        $avg_score = 0;
+        if($vr->application_id){ 
+            $application = Application::find($vr->application_id);
+            $application->video_resume_id = $vr->application_id;
+            $assignment_video_resume = AssignmentVideoResume::find($application->assignment_video_resume_id);
+            if($assignment_video_resume->id){
+                $questions = Question::where('assignment_video_resume_id',$assignment_video_resume->id)->get();
+                if($questions!=null && count($questions)==count($scores)){
+                    $i=0;
+                    foreach($questions as $quest){
+                        
+                            $quest = Question_VideoResume::create([
+                                'video_resume_id' => $vr->id,
+                                'question_id' => $quest->id,
+                                'score' => $scores[$i]['question'],
+                            ]);
+                        
+                            $total_score = $total_score + $scores[$i]['question'];
+                            $i+=1;
+                    }
+                    $avg_score = $total_score / count($questions);
+                }
+            }
+        }
+        
+        $vr->total_score = $total_score;
+        $vr->avg_score = $avg_score;
+        $vr->save();
+
+        return response()->json([
+            'success' => true,
+            'data' => $vr
+        ]);  
+    }
+
+
 }

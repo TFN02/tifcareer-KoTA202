@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Applicant_InterestAreaController;
 use App\Models\Applicant;
 use App\Models\User;
 use App\Models\Skill;
 use App\Models\SkillCategory;
 use App\Http\Controllers\Controller;
+use App\Models\Applicant_InterestArea;
 use App\Models\Education;
 use App\Models\SoftSkill;
 use App\Models\WorkExperience;
@@ -42,20 +44,22 @@ class ApplicantController extends Controller
         if($request->user_id){
             $user = User::find($request->user_id);
             if($user != null){
+                
                 $request->validate([
                     'user_id' => 'required|int',
-                    'name' => 'required|string|max:100',
-                    'gander' => 'required|string|max:100',
-                    'phone_no' => 'required|string|max:100',
+                    'name' => 'required|string',
+                    'gender' => 'required|string',
+                    'phone_no' => 'required|string',
                     'birth_of_date' => 'required|date',
                     'domicile' => 'required|string',
                     'description' => 'required|string',
                 ]);
 
+
                 $applicant = Applicant::create([
                     'user_id' => $user->id,
                     'name' => $request->input('name'),
-                    'gander' => $request->input('gander'),
+                    'gender' => $request->input('gender'),
                     'phone_no' => $request->input('phone_no'),
                     'birth_of_date' => $request->input('birth_of_date'),
                     'domicile' => $request->input('domicile'),
@@ -114,13 +118,19 @@ class ApplicantController extends Controller
 
                 if($request->interest_area){
                     $interest_areas = $request->interest_area;
+
                     foreach($interest_areas as $interest){
-                            $interest = $applicant->interestArea()->create([
+                            $inter = $applicant->interestArea()->create([
                                 'name_of_field' => $interest['name_of_field'],
-                                'reason_of_interest' => $interest['reason_of_interest'],
                             ]);
-                            $interest->applicant()->attach($applicant->id);
-                    }
+                            
+                            $applicant_interest = Applicant_InterestArea::where('applicant_id', $applicant->id)
+                                                  ->where('interest_area_id', $inter->id)->first();
+    
+                            $app_int = Applicant_InterestArea::find($applicant_interest->id);
+                            $app_int->reason_of_interest = $interest['reason_of_interest'];
+                            $app_int->save();
+                        }
                 } 
 
                 if($request->soft_skill){

@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\SegmentVideoResumeController;
 use App\Http\Controllers\Api\SuperAdminController;
 use App\Http\Controllers\Api\VideoResumeController;
 use App\Http\Controllers\YoutubeController;
+use App\Models\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -65,12 +66,12 @@ Route::apiResource('notifications', NotificationController::class);
 Route::apiResource('superAdmins', SuperAdminController::class);
 Route::apiResource('segmentVideoResumes', SegmentVideoResumeController::class);
 Route::put('scoring', [ScoringVRController::class, 'updateScore']);
-Route::put('saw',[ApplicationController::class, 'applyJob']);
+Route::put('saw',[ApplicationController::class, 'saw']);
 
 Route::get('/jobs/{jobId}/applicants',[JobController::class, 'getApplicantsByJob']);
 Route::get('/jobs/{jobId}/applicants/count',[JobController::class, 'getApplicantCount']);
 
-Route::post('/applyJob/{id}', [ApplicationController::class, 'applyJob']);
+Route::post('/applyJob/{id}', [ApplicationController::class, 'saw']);
 Route::get('/application/{applicant_id}/{job_id}', [ApplicationController::class, 'getIdByApplyed']);
 
 Route::get('/myJobs/{company_id}', [JobController::class, 'getMyJobs']);
@@ -91,6 +92,10 @@ Route::get('/auth/youtube', [YoutubeController::class, 'auth']);
 Route::post('/youtube/upload', [YoutubeController::class, 'uploadVideo']);
 Route::post('/youtube/session', [YoutubeController::class, 'sessionCreate']);
 Route::get('/youtube/upload', [YoutubeController::class, 'uploadVideo']);
+
+Route::post('/scoringVideoResume/{id}', [VideoResumeController::class, 'scoringVideoResume']);
+Route::put('/users/updateStatus/{id}/{status}', [UserController::class, 'updateStatus']);
+Route::put('/applications/passVideoResume/{id}/{status}', [ApplicationController::class, 'passSelectionVideoResume']);
 
 
 // Route::post('/notification/sendNotifSaw', [NotificationController::class, 'sendNotifSAW']);

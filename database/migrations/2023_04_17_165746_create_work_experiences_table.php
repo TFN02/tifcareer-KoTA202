@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('work_experiences', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('applicant_id')->unsigned()->nullable();
-            $table->string('work_institution',255)->nullable();
-            $table->string('position',150)->nullable();
+            $table->string('work_institution',50)->nullable();
+            $table->string('position',50)->nullable();
             $table->integer('start_year')->nullable();
             $table->integer('end_year')->nullable();
             $table->longText('description')->nullable();

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question_VideoResume extends Model
 {
+    protected $table = 'question_video_resume';
+    protected $fillable = ['video_resume_id', 'question_id', 'score'];
     use HasFactory;
     
 }
