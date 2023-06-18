@@ -25,20 +25,20 @@ class UserTableSeeder extends Seeder
         $admin->save();
         $admin->roles()->attach(Role::where('name','admin')->first());
 
-        $pelamar = new User;
-        $pelamar->name = 'Pelamar';
-        // $pelamar->username = 'pelamar';
-        $pelamar->email = 'pelamar@email.com';
-        $pelamar->password = Hash::make('password');
-        $pelamar->save();
-        $pelamar->roles()->attach(Role::where('name','pelamar')->first());
+        // $pelamar = new User;
+        // $pelamar->name = 'Pelamar';
+        // // $pelamar->username = 'pelamar';
+        // $pelamar->email = 'pelamar@email.com';
+        // $pelamar->password = Hash::make('password');
+        // $pelamar->save();
+        // $pelamar->roles()->attach(Role::where('name','pelamar')->first());
 
-        $perusahaan = new User;
-        $perusahaan->name = 'Perusahaan';
-        // $perusahaan->username = 'perusahaan';
-        $perusahaan->email = 'perusahaan@email.com';
-        $perusahaan->password = Hash::make('password');
-        $perusahaan->save();
-        $perusahaan->roles()->attach(Role::where('name','perusahaan')->first());
+        // $perusahaan = new User;
+        // $perusahaan->name = 'Perusahaan';
+        // // $perusahaan->username = 'perusahaan';
+        // $perusahaan->email = 'perusahaan@email.com';
+        // $perusahaan->password = Hash::make('password');
+        // $perusahaan->save();
+        // $perusahaan->roles()->attach(Role::where('name','perusahaan')->first());
     }
 }
