@@ -102,7 +102,7 @@ const CardDetailJobs = ({ getIdJobs, auth }) => {
 
                 const currentApplicantData = response.data.data;
 
-                // Simpan data pelamar saat ini ke state applicantData
+               
                 setApplicantData(currentApplicantData);
 
                 console.log("Current Applicant", currentApplicantData);
@@ -111,7 +111,7 @@ const CardDetailJobs = ({ getIdJobs, auth }) => {
             }
         };
 
-        // Panggil fungsi getCurrentApplicantData untuk mendapatkan data pelamar saat ini
+        
         getCurrentApplicantData();
     }, [auth.user.applicant_id]);
 

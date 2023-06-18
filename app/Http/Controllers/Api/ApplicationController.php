@@ -178,7 +178,6 @@ class ApplicationController extends Controller
                     $criteriaName = $criteria->name;
                     $criteriaWeight = $criteria->weight;
 
-                    // Periksa data aplikasi berdasarkan kriteria dan variabel bobot
                     if ($criteriaName == 'education') {
                         $applicantEducations = $applicant->education->map(function ($education) {
                             return [
@@ -199,8 +198,6 @@ class ApplicationController extends Controller
                         }
 
                         $totalScore += $educationScore;
-
-                        // return response()->json( $educationScore);
                     } elseif ($criteriaName === 'skill') {
                         $applicantSkills = $applicant->skill->pluck('name')->map('strtolower')->toArray();
 
@@ -210,8 +207,9 @@ class ApplicationController extends Controller
                         });
                         $skillScore = 0;
                         foreach ($skillWeightVariables as $skillWeightVariable) {
-                            $skillScore += $skillWeightVariable->weight * $criteriaWeight;
+                            $skillScore += $skillWeightVariable->weight  * $criteriaWeight;
                         }
+
                         $totalScore += $skillScore;
                     } elseif ($criteriaName === 'work_experience') {
                         $applicantWorkExperiences = $applicant->workExperience->map(function ($workExperience) {
@@ -233,6 +231,7 @@ class ApplicationController extends Controller
                         foreach ($workExperienceWeightingVariables as $workExperienceWeightingVariable) {
                             $workExperienceScore += $workExperienceWeightingVariable->weight * $criteriaWeight;
                         }
+
                         $totalScore += $workExperienceScore;
                     } elseif ($criteriaName === 'interest_area') {
                         $applicantInterestArea = $applicant->interestArea->pluck('name_of_field')->map('strtolower')->toArray();

@@ -99,6 +99,18 @@ class JobController extends Controller
                     ]);
 
                     $weighting_criterias = $request->weighting_criteria;
+
+                    // $totalWeight = 0;
+
+                    // foreach ($weighting_criterias as $criteria) {
+                    //     $totalWeight += $criteria['weight'];
+                    // }
+
+                    // // Periksa apakah total bobot melebihi 100
+                    // if ($totalWeight > 1) {
+                    //     return response()->json(['error' => 'Total bobot kriteria melebihi 100'], 400);
+                    // }
+
                     foreach ($weighting_criterias as $criteria) {
                         $createdCriteria = $jobs->weightingCriteria()->create([
                             'name' => $criteria['name'],

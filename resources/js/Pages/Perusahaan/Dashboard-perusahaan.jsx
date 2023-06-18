@@ -31,13 +31,52 @@ const Dashboard = ({ auth }) => {
         { value: "work_experience", label: "Work Experience" },
         { value: "interest_area", label: "Interest Area" },
     ]);
+    const [totalWeight, setTotalWeight] = useState(0);
+    const [educationOptions, setEducationOptions] = useState([]);
+
+
+  
+    // Convert educationOptions to an array
+    const educationOptionsArray = Object.keys(educationOptions).map((key) => ({
+      value: key,
+      label: educationOptions[key],
+    }));
 
     const handleAddCriteria = () => {
-        setWeightingCriteria([
-            ...weighting_criteria,
-            { name: "", weight: 0, weighting_variable: [] },
-        ]);
+        const updatedCriteria = [...weighting_criteria];
+
+        let totalWeight = 0;
+        updatedCriteria.forEach((criteria) => {
+            totalWeight += criteria.weight;
+        });
+
+        if (totalWeight >= 1) {
+            console.warn("Total bobot kriteria melebihi 100%!");
+            return;
+        }
+
+        updatedCriteria.push({
+            name: "",
+            weight: 0,
+            weighting_variable: [],
+        });
+
+        setWeightingCriteria(updatedCriteria);
+
+        totalWeight += 0; // Tambahkan bobot kriteria baru ke totalWeight
+
+        setTotalWeight(totalWeight);
     };
+
+    const calculateTotalWeight = () => {
+        let totalWeight = 0;
+        weighting_criteria.forEach((criteria) => {
+            totalWeight += criteria.weight;
+        });
+        return totalWeight;
+    };
+
+    const isTotalWeightValid = calculateTotalWeight() === 1;
 
     const handleRemoveCriteria = (index) => {
         const updatedCriteria = [...weighting_criteria];
@@ -45,7 +84,44 @@ const Dashboard = ({ auth }) => {
         setWeightingCriteria(updatedCriteria);
     };
 
+    const getEducationOptions = async () => {
+        try {
+            const response = await axios.get(
+                "http://localhost:8000/api/educations"
+            );
+            const educationOptions = response.data;
+            return educationOptions;
+        } catch (error) {
+            console.error("Error fetching education options:", error);
+            return [];
+        }
+    };
 
+    const getSkillOptions = async () => {
+        try {
+            const response = await axios.get(
+                "http://localhost:8000/api/skills"
+            ); // Ubah URL menjadi endpoint yang sesuai dengan API Anda
+            const skillOptions = response.data; // Ubah bagian ini sesuai dengan format responsenya
+            return skillOptions;
+        } catch (error) {
+            console.error("Error fetching skill options:", error);
+            return [];
+        }
+    };
+
+    const getInterestAreaOptions = async () => {
+        try {
+            const response = await axios.get(
+                "http://localhost:8000/api/interestAreas"
+            ); // Ubah URL menjadi endpoint yang sesuai dengan API Anda
+            const interestAreaOptions = response.data; // Ubah bagian ini sesuai dengan format responsenya
+            return interestAreaOptions;
+        } catch (error) {
+            console.error("Error fetching interest area options:", error);
+            return [];
+        }
+    };
 
     const handleAddVariable = (criteriaIndex) => {
         const updatedCriteria = [...weighting_criteria];
@@ -70,6 +146,55 @@ const Dashboard = ({ auth }) => {
                 weight: 0,
             });
         }
+
+        setWeightingCriteria(updatedCriteria);
+    };
+
+    const handleVariableWeight = (criteriaIndex, variableIndex, weight) => {
+        const updatedCriteria = [...weighting_criteria];
+        const selectedCriteria = updatedCriteria[criteriaIndex];
+
+        // Set bobot variable yang baru
+        selectedCriteria.weighting_variable[variableIndex].weight = weight;
+
+        // Hitung total bobot variable pada kriteria tertentu
+        let variableWeightSum = 0;
+        selectedCriteria.weighting_variable.forEach((variable) => {
+            variableWeightSum += variable.weight;
+        });
+
+        // Periksa apakah total bobot variable melebihi 100
+        if (variableWeightSum > 1) {
+            // Tampilkan peringatan kepada pengguna
+            console.warn("Total bobot variable melebihi 100!");
+
+            // Set bobot variable kembali ke 0 jika melebihi 100
+            selectedCriteria.weighting_variable[variableIndex].weight = 0;
+
+            // Kembalikan state tanpa melakukan perubahan
+            setWeightingCriteria(updatedCriteria);
+            return;
+        }
+
+        // Hitung total bobot kriteria yang ada
+        let totalWeight = 0;
+        updatedCriteria.forEach((criteria) => {
+            criteria.weighting_variable.forEach((variable) => {
+                totalWeight += variable.weight;
+            });
+        });
+
+        // Periksa apakah total bobot kriteria melebihi 100
+        if (totalWeight > 1) {
+            // Tampilkan peringatan kepada pengguna
+            console.warn("Total bobot kriteria melebihi 100!");
+
+            // Kembalikan state tanpa melakukan perubahan
+            setWeightingCriteria(updatedCriteria);
+            return;
+        }
+
+        // Update state dengan bobot variable yang telah diubah
         setWeightingCriteria(updatedCriteria);
     };
 
@@ -79,27 +204,45 @@ const Dashboard = ({ auth }) => {
             variableIndex,
             1
         );
+
+        // Hitung total bobot kriteria yang ada
+        let totalWeight = 0;
+        updatedCriteria.forEach((criteria) => {
+            totalWeight += criteria.weight;
+        });
+
+        // Periksa apakah total bobot melebihi 100
+        if (totalWeight > 1) {
+            // Tampilkan peringatan kepada pengguna
+            console.warn("Total bobot kriteria melebihi 100!");
+            // Anda juga dapat menggunakan notifikasi atau metode lain untuk menampilkan peringatan
+
+            // Kembalikan state tanpa menghapus variabel
+            return;
+        }
+
         setWeightingCriteria(updatedCriteria);
     };
 
-    const handleCriteriaChange = (criteriaIndex, selectedValue) => {
+    const handleCriteriaChange = (criteriaIndex, name, weight) => {
         const updatedCriteria = [...weighting_criteria];
-        updatedCriteria[criteriaIndex].name = selectedValue;
+        updatedCriteria[criteriaIndex].name = name;
+        updatedCriteria[criteriaIndex].weight = weight;
 
-        // Remove the selected option from the available options
-        const updatedAvailableOptions = availableCriteriaOptions.filter(
-            (option) => option.value !== selectedValue
-        );
+        let totalWeight = 0;
+        updatedCriteria.forEach((criteria) => {
+            totalWeight += criteria.weight;
+        });
 
         setWeightingCriteria(updatedCriteria);
-        setAvailableCriteriaOptions(updatedAvailableOptions);
+        setTotalWeight(totalWeight);
     };
 
+    // Pengaturan Start Date Job
     const handleStartDateChange = (e) => {
         const selectedDate = new Date(e.target.value);
         const currentDate = new Date();
 
-        // Mengubah waktu pada tanggal hari ini ke 00:00:00
         currentDate.setHours(0, 0, 0, 0);
 
         if (selectedDate >= currentDate) {
@@ -111,6 +254,7 @@ const Dashboard = ({ auth }) => {
         }
     };
 
+    // Pengaturan End Date Job
     const handleEndDateChange = (e) => {
         const selectedDate = new Date(e.target.value);
         const startDate = new Date(start_date);
@@ -124,6 +268,7 @@ const Dashboard = ({ auth }) => {
         }
     };
 
+    // Submit Jum
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -133,10 +278,8 @@ const Dashboard = ({ auth }) => {
             title &&
             job_position &&
             job_desc &&
-            qualification &&
             location &&
             salary &&
-            status &&
             start_date &&
             end_date &&
             job_category &&
@@ -163,12 +306,34 @@ const Dashboard = ({ auth }) => {
                 updatedWeightingVariable.push(...criteria.weighting_variable);
             });
 
+            // Periksa apakah totalWeight melebihi 100%
+            if (totalWeight > 1) {
+                console.warn("Total bobot kriteria melebihi 100%!");
+                return;
+            } else if (totalWeight < 1) {
+                // Bagikan sisa nilai ke kriteria yang diinputkan
+                const remainingWeight = 1 - totalWeight;
+                const nonZeroCriteriaCount = updatedWeightingCriteria.filter(
+                    (criteria) => criteria.weight !== 0
+                ).length;
+
+                // Bagikan sisa nilai secara merata ke kriteria yang diinputkan
+                const distributedWeight =
+                    remainingWeight / nonZeroCriteriaCount;
+                updatedWeightingCriteria.forEach((criteria) => {
+                    if (criteria.weight !== 0) {
+                        criteria.weight += distributedWeight;
+                    }
+                });
+
+                console.log(distributedWeight);
+            }
+
             jobData = {
                 company_id: company_id,
                 title: title,
                 job_position: job_position,
                 job_desc: job_desc,
-                qualification: qualification,
                 location: location,
                 salary: salary,
                 start_date: start_date,
@@ -186,18 +351,17 @@ const Dashboard = ({ auth }) => {
 
                 console.log("Job berhasil dibuat:", response.data);
 
-                setTitle("");
-                setJobPosition("");
-                setJobDescription("");
-                setQualification("");
-                setLocation("");
-                setSalary("");
-                setStatus("");
-                setStartDate("");
-                setEndDate("");
-                setJobCategoryId("");
-                setWeightingCriteria([]);
-                setWeightingVariable([]);
+                // setTitle("");
+                // setJobPosition("");
+                // setJobDescription("");
+                // setLocation("");
+                // setSalary("");
+                // setStartDate("");
+                // setEndDate("");
+                // setQualification("");
+                // setJobCategoryId("");
+                // setWeightingCriteria([]);
+                // setWeightingVariable([]);
 
                 // router.replace(
                 //     `http://localhost:8000/api/jobs/${response.data.job_id}`
@@ -210,10 +374,8 @@ const Dashboard = ({ auth }) => {
             if (!title) emptyFields.push("Title");
             if (!job_position) emptyFields.push("Job Position");
             if (!job_desc) emptyFields.push("Job Description");
-            if (!qualification) emptyFields.push("Qualification");
             if (!location) emptyFields.push("Location");
             if (!salary) emptyFields.push("Salary");
-            if (!status) emptyFields.push("Status");
             if (!start_date) emptyFields.push("Start Date");
             if (!end_date) emptyFields.push("End Date");
             if (!job_category) emptyFields.push("Job Category");
@@ -229,6 +391,7 @@ const Dashboard = ({ auth }) => {
         }
     };
 
+    // Job Category
     useEffect(() => {
         const getJobCategory = async () => {
             const { data } = await axios.get(
@@ -241,7 +404,30 @@ const Dashboard = ({ auth }) => {
         getJobCategory();
     }, []);
 
+    useEffect(() => {
+        const fetchEducationOptions = async () => {
+          try {
+            const response = await axios.get("http://localhost:8000/api/educations");
+            const data = response.data.data.data;
+            const educationOptions = data.map(option => ({
+              label: option.level
+            }));
+            setEducationOptions(educationOptions);
+          } catch (error) {
+            console.error("Error fetching education options:", error);
+            setEducationOptions([]);
+          }
+        };
+      
+        fetchEducationOptions();
+      }, []);
+      
+
     console.log("cek kategori", job_categories);
+    // const educationOptions = getEducationOptions();
+    console.log("Education Options:", educationOptionsArray);
+    console.log("Education Options - Level:", educationOptionsArray.filter(option => option.label === "level"));
+
 
     return (
         <LayoutPerusahaan
@@ -399,22 +585,6 @@ const Dashboard = ({ auth }) => {
                                     />
                                 </div>
 
-                                <div>
-                                    <label className="label" htmlFor={status}>
-                                        <span className="label-text">
-                                            Job Status
-                                        </span>
-                                    </label>
-                                    <input
-                                        className="m-0 input input-bordered w-full mb-3 bg-slate-200 text-black"
-                                        type="text"
-                                        id="status"
-                                        value={status}
-                                        onChange={(e) =>
-                                            setStatus(e.target.value)
-                                        }
-                                    />
-                                </div>
                                 <div className="flex space-x-4">
                                     <div className="w-1/2">
                                         <label
@@ -461,6 +631,7 @@ const Dashboard = ({ auth }) => {
                                 <h2 className="text-lg font-medium mb-2 mt-3">
                                     Weighting Criteria
                                 </h2>
+                                <div>Total Weight: {totalWeight}</div>
                                 {weighting_criteria.map(
                                     (criteria, criteriaIndex) => (
                                         <div
@@ -472,7 +643,8 @@ const Dashboard = ({ auth }) => {
                                                 onChange={(e) =>
                                                     handleCriteriaChange(
                                                         criteriaIndex,
-                                                        e.target.value
+                                                        e.target.value,
+                                                        criteria.weight
                                                     )
                                                 }
                                                 className="block w-full border border-gray-300 rounded py-2 px-3 mb-2"
@@ -509,7 +681,7 @@ const Dashboard = ({ auth }) => {
                                                                 </option>
                                                             );
                                                         }
-                                                        return null; // Hide the selected option from the dropdown
+                                                        return null;
                                                     }
                                                 )}
                                             </select>
@@ -521,14 +693,10 @@ const Dashboard = ({ auth }) => {
                                                         parseFloat(
                                                             e.target.value
                                                         ) / 100;
-                                                    const updatedCriteria = [
-                                                        ...weighting_criteria,
-                                                    ];
-                                                    updatedCriteria[
-                                                        criteriaIndex
-                                                    ].weight = updatedValue;
-                                                    setWeightingCriteria(
-                                                        updatedCriteria
+                                                    handleCriteriaChange(
+                                                        criteriaIndex,
+                                                        criteria.name,
+                                                        updatedValue
                                                     );
                                                 }}
                                                 placeholder="Criteria Weight"
@@ -547,60 +715,115 @@ const Dashboard = ({ auth }) => {
                                                         {criteria.name ===
                                                             "education" && (
                                                             <div className="flex">
-                                                                <input
-                                                                    type="text"
-                                                                    value={
-                                                                        variable
-                                                                            .name
-                                                                            .level
-                                                                    }
-                                                                    onChange={(
-                                                                        e
-                                                                    ) => {
-                                                                        const updatedCriteria =
-                                                                            [
-                                                                                ...weighting_criteria,
-                                                                            ];
-                                                                        updatedCriteria[
-                                                                            criteriaIndex
-                                                                        ].weighting_variable[
-                                                                            variableIndex
-                                                                        ].name.level =
-                                                                            e.target.value;
-                                                                        setWeightingCriteria(
-                                                                            updatedCriteria
-                                                                        );
-                                                                    }}
-                                                                    placeholder="Level"
-                                                                    className="block w-1/2 border border-gray-300 rounded py-2 px-3"
-                                                                />
-                                                                <input
-                                                                    type="text"
-                                                                    value={
-                                                                        variable
-                                                                            .name
-                                                                            .major
-                                                                    }
-                                                                    onChange={(
-                                                                        e
-                                                                    ) => {
-                                                                        const updatedCriteria =
-                                                                            [
-                                                                                ...weighting_criteria,
-                                                                            ];
-                                                                        updatedCriteria[
-                                                                            criteriaIndex
-                                                                        ].weighting_variable[
-                                                                            variableIndex
-                                                                        ].name.major =
-                                                                            e.target.value;
-                                                                        setWeightingCriteria(
-                                                                            updatedCriteria
-                                                                        );
-                                                                    }}
-                                                                    placeholder="Major"
-                                                                    className="block w-1/2 border border-gray-300 rounded py-2 px-3 ml-2"
-                                                                />
+                                                                {criteria.weighting_variable.map(
+                                                                    (
+                                                                        variable,
+                                                                        variableIndex
+                                                                    ) => (
+                                                                        <div
+                                                                            key={
+                                                                                variableIndex
+                                                                            }
+                                                                            className="flex items-center mt-2"
+                                                                        >
+                                                                            <select
+                value={variable.name.level}
+                onChange={(e) => {
+                  const updatedCriteria = [...weighting_criteria];
+                  updatedCriteria[criteriaIndex].weighting_variable[
+                    variableIndex
+                  ].name.level = e.target.value;
+                  setWeightingCriteria(updatedCriteria);
+                }}
+                className="block w-1/2 border border-gray-300 rounded py-2 px-3"
+              >
+                <option value="">Pilih Level</option>
+                {educationOptions
+                  .filter((option) => option.column === "level")
+                  .map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+              </select>
+                                                                            <input
+                                                                                type="text"
+                                                                                value={
+                                                                                    variable
+                                                                                        .name
+                                                                                        .major
+                                                                                }
+                                                                                onChange={(
+                                                                                    e
+                                                                                ) => {
+                                                                                    const updatedCriteria =
+                                                                                        [
+                                                                                            ...weighting_criteria,
+                                                                                        ];
+                                                                                    updatedCriteria[
+                                                                                        criteriaIndex
+                                                                                    ].weighting_variable[
+                                                                                        variableIndex
+                                                                                    ].name.major =
+                                                                                        e.target.value;
+                                                                                    setWeightingCriteria(
+                                                                                        updatedCriteria
+                                                                                    );
+                                                                                }}
+                                                                                placeholder="Major"
+                                                                                className="block w-1/2 border border-gray-300 rounded py-2 px-3 ml-2"
+                                                                            />
+                                                                            <input
+                                                                                type="number"
+                                                                                value={
+                                                                                    variable.weight *
+                                                                                    100
+                                                                                }
+                                                                                onChange={(
+                                                                                    e
+                                                                                ) => {
+                                                                                    const weight =
+                                                                                        parseFloat(
+                                                                                            e
+                                                                                                .target
+                                                                                                .value
+                                                                                        ) /
+                                                                                        100;
+                                                                                    const updatedCriteria =
+                                                                                        [
+                                                                                            ...weighting_criteria,
+                                                                                        ];
+                                                                                    const updatedCriteriaWithWeight =
+                                                                                        handleVariableWeight(
+                                                                                            updatedCriteria,
+                                                                                            criteriaIndex,
+                                                                                            variableIndex,
+                                                                                            weight
+                                                                                        );
+
+                                                                                    if (
+                                                                                        updatedCriteriaWithWeight
+                                                                                    ) {
+                                                                                        setWeightingCriteria(
+                                                                                            updatedCriteriaWithWeight
+                                                                                        );
+                                                                                    }
+                                                                                }}
+                                                                                placeholder="Variable Weight"
+                                                                                className="block w-1/2 border border-gray-300 rounded py-2 px-3 ml-2"
+                                                                                min={
+                                                                                    0
+                                                                                }
+                                                                                max={
+                                                                                    100
+                                                                                }
+                                                                                step={
+                                                                                    1
+                                                                                }
+                                                                            />
+                                                                        </div>
+                                                                    )
+                                                                )}
                                                             </div>
                                                         )}
 
@@ -733,23 +956,30 @@ const Dashboard = ({ auth }) => {
                                                                 100
                                                             }
                                                             onChange={(e) => {
-                                                                const updatedValue =
+                                                                const weight =
                                                                     parseFloat(
                                                                         e.target
                                                                             .value
-                                                                    ) / 100;
+                                                                    ) / 100; // Mengonversi nilai bobot menjadi tipe float dan membaginya dengan 100
                                                                 const updatedCriteria =
                                                                     [
                                                                         ...weighting_criteria,
                                                                     ];
-                                                                updatedCriteria[
-                                                                    criteriaIndex
-                                                                ].weighting_variable[
-                                                                    variableIndex
-                                                                ].weight = updatedValue;
-                                                                setWeightingCriteria(
-                                                                    updatedCriteria
-                                                                );
+                                                                const updatedCriteriaWithWeight =
+                                                                    handleVariableWeight(
+                                                                        updatedCriteria,
+                                                                        criteriaIndex,
+                                                                        variableIndex,
+                                                                        weight
+                                                                    );
+
+                                                                if (
+                                                                    updatedCriteriaWithWeight
+                                                                ) {
+                                                                    setWeightingCriteria(
+                                                                        updatedCriteriaWithWeight
+                                                                    );
+                                                                }
                                                             }}
                                                             placeholder="Variable Weight"
                                                             className="block w-1/2 border border-gray-300 rounded py-2 px-3 ml-2"
