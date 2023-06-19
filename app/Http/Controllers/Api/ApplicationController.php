@@ -9,6 +9,7 @@ use App\Models\Job;
 use App\Models\WeightingCriteria;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Inertia\Inertia;
 use App\Http\Controllers\Controller;
 
 class ApplicationController extends Controller
@@ -160,7 +161,7 @@ class ApplicationController extends Controller
         // Ambil data job berdasarkan job_id
         $job = Job::find($request->id);
 
-        $applications = Application::where('job_id', $id)
+        $applications = Application::where('job_id', $job->id)
             ->with('applicant', 'applicant.education', 'applicant.skill', 'applicant.workExperience', 'applicant.interestArea')
             ->get();
 
@@ -263,13 +264,18 @@ class ApplicationController extends Controller
                 $applicants[] = [
                     'id' => $application->id,
                     'applicant_id' => $application->applicant->id,
+                    'phone_no' => $application->applicant->phone_no,
+                    'gender' => $application->applicant->gender,
                     'name' => $application->applicant->name,
                     'score' => $application->score,
                     'rank' => $ranking,
+                    'is_pass_selection_1' => $application->is_pass_selection_1,
                 ];
 
                 $ranking++;
             }
+        }else{
+            
         }
 
         return $applicants;

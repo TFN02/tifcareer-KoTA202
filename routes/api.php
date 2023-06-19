@@ -71,7 +71,7 @@ Route::put('saw',[ApplicationController::class, 'saw']);
 Route::get('/jobs/{jobId}/applicants',[JobController::class, 'getApplicantsByJob']);
 Route::get('/jobs/{jobId}/applicants/count',[JobController::class, 'getApplicantCount']);
 
-Route::post('/applyJob/{id}', [ApplicationController::class, 'saw']);
+Route::post('/saw/{id}', [ApplicationController::class, 'saw']);
 Route::get('/application/{applicant_id}/{job_id}', [ApplicationController::class, 'getIdByApplyed']);
 
 Route::get('/myJobs/{company_id}', [JobController::class, 'getMyJobs']);

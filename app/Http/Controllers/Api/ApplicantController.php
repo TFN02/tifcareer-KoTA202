@@ -15,10 +15,19 @@ use App\Models\WorkExperience;
 use App\Models\Certificate;
 use App\Models\InterestArea;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ApplicantController extends Controller
 {
     private int $applicant_id;
+
+    public function detailApplicant(Applicant $applicant , Request $request)
+    {  
+            return Inertia::render('Perusahaan/DetailApplicant', [
+                'getApplicantId' => $applicant->find($request->id),
+            ]);
+    }
+
     public function index(Request $request)
     {
         $applicant = Applicant::with('user','education','workExperience', 'skill', 'interestArea', 

@@ -19,7 +19,7 @@ class JobController extends Controller
 
     public function index(Request $request)
     {
-        $jobs = Job::with('company', 'assignmentVideoResume', 'jobCategory', 'weightingCriteria', 'weightingVariable');
+        $jobs = Job::with('application','company', 'assignmentVideoResume', 'jobCategory', 'weightingCriteria', 'weightingVariable');
 
         if ($request->search != null && $request->job_category == null) {
             $this->keyword = $request->search;
@@ -93,7 +93,7 @@ class JobController extends Controller
                         'job_desc' => $request->input('job_desc'),
                         'location' => $request->input('location'),
                         'salary' => $request->input('salary'),
-                        'status' => 'new',
+                        'is_active' => 1,
                         'start_date' => $request->input('start_date'),
                         'end_date' =>  $request->input('end_date'),
                     ]);
@@ -156,10 +156,12 @@ class JobController extends Controller
     public function getMyJobs($company_id)
     {
         $myJobs = Job::where('company_id', $company_id)->get();
+        
 
         return response()->json($myJobs);
     }
 
+    
 
     public function update(Request $request, $id)
     {
@@ -295,13 +297,23 @@ class JobController extends Controller
     {
         $job = Job::findOrFail($jobId);
 
-        $application = $job->application()->orderBy('rank')->get();
+        $rank = $job->application()->pluck('rank');
+        if($rank!=null){
+            $application = $job->application()->orderBy('rank')->get();
+        }else{
+            $application = $job->application()->orderBy('created_at')->get();
+        }
+        
 
         $applicants = $application->map(function ($application) {
             return [
+                'applicant_id' => $application->applicant->id,
                 'name' => $application->applicant->name,
+                'phone_no' => $application->applicant->phone_no,
+                'gender' => $application->applicant->gender,
                 'score' => $application->score,
                 'rank' => $application->rank,
+                'is_pass_selection_1' => $application->is_pass_selection_1,
             ];
         });
 
