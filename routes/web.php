@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\YoutubeController;
+use App\Http\Controllers\Api\ApplicantController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -131,6 +132,10 @@ Route::middleware('auth')->group(function () {
     //Notification
     Route::get('/notification/detail', [NotificationController::class, 'detailNotif'])->name('notification.detail');
 
+
+    // applcant detail
+    Route::get('/applicant/detail', [ApplicantController::class, 'detailApplicant'])->name('applicant.detail');
+    
     //Applicant Rank
     // Route::get('/applicant-rank', function () {
     //     return Inertia::render('Perusahaan/RankApplicants');

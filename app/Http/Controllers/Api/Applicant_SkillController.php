@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Applicant_Skill;
 use Illuminate\Http\Request;
 
 class Applicant_SkillController extends Controller
 {
+    
+
     public function index()
     {
         //

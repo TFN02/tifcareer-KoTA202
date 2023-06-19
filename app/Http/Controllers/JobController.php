@@ -58,6 +58,11 @@ class JobController extends Controller
 
     public function detailJobPerusahaan(Job $jobs , Request $request)
     {  
+        $job = Job::find($request->id);
+        if($job->has('application')){
+            $job->is_selection_1 = 1;
+            $job->save();
+        }
             return Inertia::render('Perusahaan/RankApplicants', [
                 'getIdJobs' => $jobs->find($request->id),
             ]);

@@ -10,10 +10,8 @@ export default function RankApplicants({ getIdJobs, application }) {
     const user = usePage().props;
     const company_id = usePage().props.auth.user.company_id;
 
-    console.log("data di carddetail", getIdJobs);
 
     const jobId = getIdJobs.id;
-    console.log(jobId);
 
     const [title, setTitle] = useState("");
     const [job_position, setJobPosition] = useState("");
@@ -21,7 +19,7 @@ export default function RankApplicants({ getIdJobs, application }) {
     const [qualification, setQualification] = useState("");
     const [location, setLocation] = useState("");
     const [salary, setSalary] = useState("");
-    const [status, setStatus] = useState("");
+    const [is_selection_1, setIsSelection1] = useState(0);
     const [start_date, setStartDate] = useState("");
     const [end_date, setEndDate] = useState("");
     const [job_category, setJobCategoryId] = useState("");
@@ -35,6 +33,9 @@ export default function RankApplicants({ getIdJobs, application }) {
     const [inputs, setInputs] = useState([{ question: '' }]);
     const [requirements, setRequirements] = useState('');
     const [isDataSent, setIsDataSent] = useState(false);
+    const [isAbleRank, setIsAbleRank] = useState(false);
+    const [isGenerate, setIsGenerate] = useState(false);
+    const [isAfterGenerate, setIsAfterGenerate] = useState(false);
 
     useEffect(() => {
         const getDataDetailJobs = async () => {
@@ -53,13 +54,30 @@ export default function RankApplicants({ getIdJobs, application }) {
             setStartDate(datas.start_date);
             setEndDate(datas.end_date);
             setQualification(datas.qualification);
-            setStatus(datas.status);
+            setIsSelection1(datas.is_selection_1);
             // setJobCategoryId(datas.job_category);
 
             const response = await axios.get(
                 `http://localhost:8000/api/jobs/${jobId}/applicants`
             );
+            
             setAllApplications(response.data.data);
+            if(response.data.data.length!=0){
+                setIsAbleRank(true)
+            }
+        
+            const dateNew = new Date()
+            
+            if (datas.end_date === dateNew.toISOString().slice(0, 10)) {
+                setIsGenerate(true) 
+            }else{
+                setIsGenerate(false) 
+            };
+
+            if(datas.end_date < dateNew.toISOString().slice(0, 10)){
+                setIsGenerate(true) 
+                handleRankSaw()
+            }
         };
         getDataDetailJobs();
     }, [jobId]);
@@ -68,9 +86,9 @@ export default function RankApplicants({ getIdJobs, application }) {
         const getAcceptedApplications = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:8000/api/applicationsAccepted?status=accepted&job_id=${jobId}`
+                    `http://localhost:8000/api/applicationsAccepted?is_pass_selection_1=1&job_id=${jobId}`
                 );
-                console.log("Response:", response.data); // Menampilkan respons dari server
+                
                 if (response.data) {
                     const sortedData = response.data.sort(
                         (a, b) => a.rank - b.rank
@@ -88,52 +106,57 @@ export default function RankApplicants({ getIdJobs, application }) {
         getAcceptedApplications();
     }, [jobId]);
 
-    const handleGenerate = async () => {
-        try {
-            const response = await axios.post(
-                `http://localhost:8000/api/applyJob/${jobId}`
-            );
-            setApplications(response.data);
-
-            // Mengupdate status pelamar berdasarkan peringkat
-            const updatedApplications = response.data.map(
-                (application, index) => {
-                    if (index < numSelectedApplicants) {
-                        return { ...application, status: "accepted" };
-                    } else {
-                        return { ...application, status: "rejected" };
-                    }
-                }
-            );
-            setApplications(updatedApplications);
-
+    const handleRankSaw = async () => {
             try {
-                const updateStatusPromises = updatedApplications.map(
-                    (application) =>
-                        axios.put(
-                            `http://localhost:8000/api/applications/${application.id}`,
-                            { status: application.status }
-                        )
+                const response = await axios.post(
+                    `http://localhost:8000/api/saw/${jobId}`
                 );
-                await Promise.all(updateStatusPromises);
+                setApplications(response.data);
+                setAllApplications(response.data);
+            } catch (error) {
+                console.error(
+                    "Terjadi kesalahan dalam melakukan perangkingan:",
+                    error
+                );
                 console.log(
                     "Status pelamar berhasil diperbarui di server",
                     application
                 );
-            } catch (error) {
-                console.error(
-                    "Gagal memperbarui status pelamar di server:",
-                    error
-                );
             }
-        } catch (error) {
-            console.error(
-                "Terjadi kesalahan dalam melakukan perangkingan:",
-                error
+    };
+
+    const handleGenerate = async () => {
+        // Mengupdate status pelamar berdasarkan peringkat
+        const updatedApplications = applications.map(
+        (application, index) => {
+            if (index < numSelectedApplicants) {
+                return { ...application, is_pass_selection_1: 1};
+            } else {
+                return { ...application, is_pass_selection_1: 0 };
+            }
+        }
+        );
+        setApplications(updatedApplications);
+
+        try {
+            const updateStatusPromises = updatedApplications.map(
+                (application) =>
+                    axios.put(
+                        `http://localhost:8000/api/applications/${application.id}`,
+                        { is_pass_selection_1: application.is_pass_selection_1 }
+                    )
             );
+            await Promise.all(updateStatusPromises);
+            setIsAfterGenerate(true)
+    
             console.log(
                 "Status pelamar berhasil diperbarui di server",
                 application
+            );
+        } catch (error) {
+            console.error(
+                "Gagal memperbarui status pelamar di server:",
+                error
             );
         }
     };
@@ -160,21 +183,54 @@ export default function RankApplicants({ getIdJobs, application }) {
 
     const handleSendMessage = async () => {
         try {
-            const applicants = applications.map((application) => ({
+            console.log("req_appl: ", applications)
+            const applicant_accepted = applications
+            .filter(
+                (application) =>
+                    application.is_pass_selection_1 ===
+                    1
+            )
+            .map((application) => ({
                 applicant_id: application.applicant_id,
-                status: application.status,
+                is_pass_selection_1: application.is_pass_selection_1,
             }));
 
-            const requestData = {
+            const applicant_rejected = applications
+            .filter(
+                (application) =>
+                    application.is_pass_selection_1 ===
+                    0
+            )
+            .map((application) => ({
+                applicant_id: application.applicant_id,
+                is_pass_selection_1: application.is_pass_selection_1,
+            }));
+
+            const requestData_1 = {
                 company_id: company_id,
                 job_id: jobId,
                 message: message,
-                applicant: applicants,
+                applicant: applicant_accepted,
             };
 
-            const response = await axios.post(
+            console.log("req_acc: ", applicant_accepted)
+            const requestData_2 = {
+                company_id: company_id,
+                job_id: jobId,
+                message: "Mohon maaf Anda belum lolos pada tahap ini. Jangan berkecil hati, Anda bisa mencoba melamar kembali pada pekerjaan lain yang sesuai dengan Anda!",
+                applicant: applicant_rejected,
+            };
+
+            console.log("req_reject: ", applicant_rejected)
+
+            const response_acc = await axios.post(
                 "http://localhost:8000/api/notifications",
-                requestData
+                requestData_1
+            );
+
+            const response_reject = await axios.post(
+                "http://localhost:8000/api/notifications",
+                requestData_2
             );
 
             const response2 = await axios.post(
@@ -186,8 +242,7 @@ export default function RankApplicants({ getIdJobs, application }) {
                 question: inputs,
                 }
             )
-            console.log("response 2:", response2);
-            console.log("Response:", response);
+            
 
             setIsDataSent(true);
             setMessage("");
@@ -195,7 +250,6 @@ export default function RankApplicants({ getIdJobs, application }) {
             // setInputs("");
         } catch (error) {
             console.error("Gagal mengirim pesan:", error);
-            console.log("Response:", applications);
         }
     };
 
@@ -216,7 +270,7 @@ export default function RankApplicants({ getIdJobs, application }) {
                                 <>
                                     {job_position}
                                     <div className="badge badge-secondary">
-                                        {status}
+                                        {is_selection_1}
                                     </div>
                                 </>
                             )}
@@ -293,38 +347,64 @@ export default function RankApplicants({ getIdJobs, application }) {
                 <div className="card w-full bg-base-100 shadow-xl">
                     <figure>
                         <p className="font-bold text-lg text-white bg-violet-700 w-full p-5">
-                            Pelamar Yang Lolos
+                            Pelamar Masuk
                         </p>
                     </figure>
                     <div className="card-body">
                         <table className="table-auto">
                             <thead>
                                 <tr>
-                                    <th className="px-4 py-2">Ranking</th>
+                                <th className="px-4 py-2">No</th>
                                     <th className="px-4 py-2">Name</th>
+                                    <th className="px-4 py-2">Phone No</th>
+                                    <th className="px-4 py-2">Gender</th>
                                     <th className="px-4 py-2">Score</th>
-                                    <th className="px-4 py-2">Status</th>
+                                    <th className="px-4 py-2">Rank</th>
+                                    <th className="px-4 py-2">Detail</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {acceptedApplications.map((application, index) => (
-                                    <tr key={application.id}>
+                                
+                                {allApplications.map((application_1, index) => (
+                                    <tr key={application_1.id}>
                                         <td className="border px-4 py-2 text-center">
                                             {index + 1}
                                         </td>
                                         <td className="border px-4 py-2">
-                                            {application.applicant_name}
-                                        </td>
-                                        <td className="border px-4 py-2 text-center">
-                                            {application.score}
+                                            {application_1.name}
                                         </td>
                                         <td className="border px-4 py-2">
-                                            {application.status}
+                                            {application_1.phone_no}
+                                        </td>
+                                        <td className="border px-4 py-2 text-center">
+                                            {application_1.gender}
+                                        </td>
+                                        <td className="border px-4 py-2 text-center">
+                                            {application_1.score}
+                                        </td>
+                                        <td className="border px-4 py-2 text-center">
+                                            {application_1.rank}
+                                        </td>
+                                        <td className="border px-4 py-2 text-center">
+                                        <PrimaryButton className="rounded-full">
+                                        <Link
+                                            href={route(
+                                                "applicant.detail"
+                                            )}
+                                            data={{ id: application_1.applicant_id }}
+                                        >
+                                            Detail
+                                        </Link>
+                                        </PrimaryButton>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
+                        <PrimaryButton onClick={handleRankSaw} 
+                        disabled={!isAbleRank}
+                        className="flex justify-center">{isAbleRank ? "LIHAT HASIL PERANKINGAN" : "BELUM ADA PELAMAR MASUK"}
+                        </PrimaryButton>
                     </div>
                 </div>
 
@@ -348,8 +428,8 @@ export default function RankApplicants({ getIdJobs, application }) {
                                     {applications
                                         .filter(
                                             (application) =>
-                                                application.status ===
-                                                "accepted"
+                                                application.is_pass_selection_1 ===
+                                                1
                                         )
                                         .map((application) => (
                                             <tr key={application.id}>
@@ -360,7 +440,7 @@ export default function RankApplicants({ getIdJobs, application }) {
                                                     {application.score}
                                                 </td>
                                                 <td className="border px-4 py-2">
-                                                    {application.status}
+                                                    {application.is_pass_selection_1}
                                                 </td>
                                             </tr>
                                         ))}
@@ -378,7 +458,8 @@ export default function RankApplicants({ getIdJobs, application }) {
                                 <input
                                     id="numSelectedApplicants"
                                     type="number"
-                                    min="0"
+                                    min={0}
+                                    max={applications.length}
                                     value={numSelectedApplicants}
                                     onChange={(e) =>
                                         setNumSelectedApplicants(
@@ -390,7 +471,51 @@ export default function RankApplicants({ getIdJobs, application }) {
                             </div>
                         </div>
                         
-                        <PrimaryButton onClick={handleGenerate} className="flex justify-center">Generate Ranking Applicants</PrimaryButton>
+                        <PrimaryButton onClick={handleGenerate} disabled={!isGenerate} className="flex justify-center">Generate Ranking Applicants</PrimaryButton>
+                        
+                    </div>
+                </div>
+
+                <div className="card w-full bg-base-100 shadow-xl">
+                    <figure>
+                        <p className="font-bold text-lg text-white bg-violet-700 w-full p-5">
+                            Pelamar Yang Lolos
+                        </p>
+                    </figure>
+                    <div className="card-body">
+                        <table className="table-auto">
+                            <thead>
+                                <tr>
+                                    <th className="px-4 py-2">Ranking</th>
+                                    <th className="px-4 py-2">Name</th>
+                                    <th className="px-4 py-2">Score</th>
+                                    <th className="px-4 py-2">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {acceptedApplications.length !== 0 ? (
+                                acceptedApplications.map((application, index) => (
+                                <tr key={application.id}>
+                                    <td className="border px-4 py-2 text-center">{index + 1}</td>
+                                    <td className="border px-4 py-2">{application.applicant_name}</td>
+                                    <td className="border px-4 py-2 text-center">{application.score}</td>
+                                    <td className="border px-4 py-2">accepted</td>
+                                </tr>
+                                ))
+                            ) : (
+                                applications
+                                .filter((application) => application.is_pass_selection_1 === 1)
+                                .map((application) => (
+                                    <tr key={application.id}>
+                                    <td className="border px-4 py-2 text-center">{application.rank}</td>
+                                    <td className="border px-4 py-2">{application.name}</td>
+                                    <td className="border px-4 py-2">{application.score}</td>
+                                    <td className="border px-4 py-2">accepted</td>
+                                    </tr>
+                                ))
+                            )}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
