@@ -98,7 +98,7 @@ const FormRegisterPelamar = () => {
                     onChange={handleOnChange}
                     required
                 />
-
+                
                 <InputError message={errors.password_confirmation} className="mt-2" />
             </div>
 

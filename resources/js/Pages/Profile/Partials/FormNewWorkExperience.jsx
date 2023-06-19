@@ -95,20 +95,21 @@ const FormNewWorkExperience = ({ auth, getId, processing, className, errors, Tra
 
 
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-x-3">
                                     <div>
 
                                         <InputLabel htmlFor={start_year} value="Tahun Masuk" />
 
-                                        <TextInput
+                                        <input
                                             id="start_year"
                                             name="start_year"
-                                            className="mt-1 block w-full text-black w-full max-w-xl"
+                                            className="mt-1 input input-bordered block text-black w-full input-sm"
                                             value={start_year}
+                                            min="2000"
                                             onChange={(e) => setStartYear(e.target.value)}
                                             type="number"
                                             required
-                                            autoComplete="start_year"
+                                            // autoComplete="start_year"
                                         />
 
                                         <InputError className="mt-2" message={errors.start_year} />
@@ -119,10 +120,10 @@ const FormNewWorkExperience = ({ auth, getId, processing, className, errors, Tra
 
                                         <InputLabel htmlFor={end_year} value="Tahun Keluar" />
 
-                                        <TextInput
+                                        <input
                                             id="end_year"
                                             name="end_year"
-                                            className="mt-1 block w-full text-black w-full max-w-xl"
+                                            className="mt-1 input input-bordered block text-black w-full input-sm"
                                             value={end_year}
                                             onChange={(e) => setEndYear(e.target.value)}
                                             type="number"
@@ -141,7 +142,7 @@ const FormNewWorkExperience = ({ auth, getId, processing, className, errors, Tra
                                 <textarea
                                     id="description"
                                     name="description"
-                                    className="mt-1 block text-black w-full max-w-7xl"
+                                    className="mt-1 textarea textarea-bordered block text-black w-full max-w-7xl"
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     type="text"

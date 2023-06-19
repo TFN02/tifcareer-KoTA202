@@ -12,6 +12,7 @@ const VideoResumeApplicants = ({auth, errors, getIdJobs}) => {
         const getAcceptedApplications = async () => {
             try {
                 const response = await axios.get(
+                    //ini dirubah nanti status nya
                     `http://localhost:8000/api/applicationsAccepted?status=accepted&job_id=${jobId}`
                 );
                 if (response.data) {

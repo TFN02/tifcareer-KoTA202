@@ -31,7 +31,7 @@ class RedirectIfAuthenticated
                 // return redirect(RouteServiceProvider::HOME);
                 return redirect('/lowonganKerja');
             }else if(Auth::guard($guard)->check() && Auth::user()->roles()->first()->name =='perusahaan'){
-                return redirect('/dashboardPerusahaan');
+                return redirect('/dashboard-perusahaan');
             }
         }
 
