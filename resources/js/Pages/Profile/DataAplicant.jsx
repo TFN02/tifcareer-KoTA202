@@ -46,19 +46,19 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
             setWorkExperience(datas.work_experience || []);
             setEducation(datas.education || []);
             // setIdCategory(datas.skill.skill_category_id);
-            
+
             setInterestArea(datas.interest_area || []);
             setSoftSkill(datas.soft_skill || []);
             setCertificates(datas.certificate || []);
 
         }
 
-        const getHardSkill = async() => {
+        const getHardSkill = async () => {
             const { data } = await axios.get(`http://localhost:8000/api/skills?applicant_id=${aplicant_id}`);
             const datas = data.data.data;
             // const kategori = datas.skill_category;
             setHardSkill(datas);
-            
+
         }
         getAplicants();
         getHardSkill();
@@ -67,7 +67,7 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
     useEffect(() => {
         const id = hardSkill[0] ? hardSkill[0].skill_category_id : '';
         setGetId(id);
-      }, [hardSkill]);
+    }, [hardSkill]);
 
 
 
@@ -137,45 +137,48 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
     return (
         <LayoutPelamar
             auth={auth}
-        // header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Profile</h2>}
+            // header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Profile</h2>}
         >
             <Head title="Profile" />
+            <div className='flex flex-row justify-between px-10 pt-5'>
 
-            <div className='flex flex-row justify-between py-5'>
-                <div className="mx-auto sm:px-6 lg:px-8 space-y-2">
-                    <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                        <DeleteUserForm className="max-w-xl" />
-                    </div>
+                <p className='text-2xl font-bold'>Data Pelamar</p>
+                <div className="text-sm breadcrumbs">
+                    <ul>
+                        <li><a>Profile</a></li>
+                        <li><a>Data Pelamar</a></li>
+                    </ul>
                 </div>
+            </div>
+            <div className='flex flex-col py-5'>
 
-                <div className='sm:px-6 lg:px-8 space-y-5 w-full'>
+                <div className='sm:px-6 lg:px-8 w-full'>
                     <div className="card bg-white shadow sm:rounded-lg">
-                        <figure><h1 className='text-lg text-white bg-violet-700 w-full p-5'>Data Pelamar</h1></figure>
                         <div className="card-body">
                             <div className="card mb-3 bg-white shadow sm:rounded-lg">
                                 <figure>
                                     <h1 className='text-md text-white bg-violet-700 w-full p-3 flex justify-between'>
                                         Data Diri
                                         <Link
-                                        href={route("profile.dataDiri.edit")}
-                                        data={{ id_dataDiri: aplicant_id }}
+                                            href={route("profile.dataDiri.edit")}
+                                            data={{ id_dataDiri: aplicant_id }}
                                         >
-                                        <button className='btn btn-warning btn-sm text-xs'>
-                                            Update Data Diri
-                                        </button>
+                                            <button className='btn btn-warning btn-sm text-xs'>
+                                                Update Data Diri
+                                            </button>
                                         </Link>
                                     </h1>
                                 </figure>
                                 <div className="card-body flex flex-row gap-10">
                                     <div>
 
-                                    <img className='avatar rounded w-24' src={fotoTegar} alt="foto tegar" />
+                                        <img className='avatar rounded w-24' src={fotoTegar} alt="foto tegar" />
                                     </div>
                                     <table className='table '>
                                         <tbody>
-                                        <tr>
-                                            <td className='font-bold'>{name}</td>
-                                        </tr>
+                                            <tr>
+                                                <td className='font-bold'>{name}</td>
+                                            </tr>
                                         </tbody>
                                         <tbody >
 
@@ -281,7 +284,7 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
                                         <tbody>
                                             {hardSkill && hardSkill.length > 0 ? hardSkill.map((skill, i) => (
                                                 <tr key={i} className='flex justify-between'>
-                                                    <td colSpan={2} className='font-bold'>{skill.name}</td>                                                    
+                                                    <td colSpan={2} className='font-bold'>{skill.name}</td>
                                                     <td>{skill.skill_category.name}</td>
                                                     <td>
                                                         <Link
@@ -366,38 +369,38 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
                                     <h1 className='text-md text-white bg-violet-700 w-full p-3 flex justify-between'>
                                         Sertifikat
                                         <Link
-                                        href={route('profile.certificate.new')}
+                                            href={route('profile.certificate.new')}
                                         >
-                                        <button className='btn btn-primary'>
-                                            Create New
-                                        </button>
+                                            <button className='btn btn-primary'>
+                                                Create New
+                                            </button>
                                         </Link>
                                     </h1>
                                 </figure>
                                 <div className="card-body">
                                     <table className='table flex-wrap'>
                                         <tbody className='flex-wrap'>
-                                                {certificates && certificates.length > 0 ? certificates.map((sertif, i) => (
-                                        
-    
-                                            <tr key={i} >
-                                                <td className='w-full max-w-xs'><p className=' flex flex-wrap font-bold text-left'>{sertif.title}</p></td>
-                                                <td>{sertif.description}</td>
-                                                <td >{sertif.no_certificate}</td>
-                                                <td>
-                                                    <Link
-                                                    href={route('profile.certificate.edit')}
-                                                    data={{ certificate_id: sertif.id }}
-                                                    >
-                                                    <button className='btn btn-warning btn-sm text-xs'>Edit</button>
-                                                    </Link>
-                                                    &nbsp; | &nbsp;
-                                                    <button className="btn btn-danger btn-sm text-xs" onClick={() => handleDeleteCertificates(sertif.id)}>Delete</button>
-                                                </td>
+                                            {certificates && certificates.length > 0 ? certificates.map((sertif, i) => (
 
-                                            </tr>
-                                            
-                                                )): <p>Data Masih Kosong</p>}
+
+                                                <tr key={i} >
+                                                    <td className='w-full max-w-xs'><p className=' flex flex-wrap font-bold text-left'>{sertif.title}</p></td>
+                                                    <td>{sertif.description}</td>
+                                                    <td >{sertif.no_certificate}</td>
+                                                    <td>
+                                                        <Link
+                                                            href={route('profile.certificate.edit')}
+                                                            data={{ certificate_id: sertif.id }}
+                                                        >
+                                                            <button className='btn btn-warning btn-sm text-xs'>Edit</button>
+                                                        </Link>
+                                                        &nbsp; | &nbsp;
+                                                        <button className="btn btn-danger btn-sm text-xs" onClick={() => handleDeleteCertificates(sertif.id)}>Delete</button>
+                                                    </td>
+
+                                                </tr>
+
+                                            )) : <p>Data Masih Kosong</p>}
                                         </tbody>
                                     </table>
 
@@ -409,7 +412,11 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
                         <UpdatePasswordForm className="max-w-xl" />
                     </div> */}
                 </div>
-
+                <div className="mx-auto sm:px-6 lg:px-8 w-full pt-3">
+                    <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                        <DeleteUserForm className="max-w-xl" />
+                    </div>
+                </div>
             </div>
         </LayoutPelamar>
     );

@@ -40,6 +40,8 @@ class AuthenticatedSessionController extends Controller
             return redirect('/lowonganKerja');
         }else if ($request->role=="perusahaan"){
             return redirect('/dashboard-perusahaan');
+        }else if ($request->role=="admin"){
+            return redirect('Admin/Dashboard');
         }
     }
 

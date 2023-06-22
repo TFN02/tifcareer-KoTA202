@@ -31,7 +31,7 @@ class RegisteredUserController extends Controller
             $request->validate([
                 'name' => 'required|string|max:100',
                 'email' => 'required|string|email|max:100|unique:'.User::class,
-                'password' => ['required', Rules\Password::defaults()],
+                'password' => ['required', 'confirmed',Rules\Password::defaults()],
                 'role' => ['required', 'in:pelamar,admin'],
             ]);
 
@@ -40,7 +40,7 @@ class RegisteredUserController extends Controller
                 'name' => 'required|string|max:100',
                 'email' => 'required|string|email|max:100|unique:'.User::class,
                 'npwp' => 'required|digits:15',
-                'password' => ['required', Rules\Password::defaults()],
+                'password' => ['required', 'confirmed',Rules\Password::defaults()],
                 'role' => ['required', 'in:perusahaan'],
             ]);
         }

@@ -25,6 +25,21 @@ Route::get('/', function () {
     return Inertia::render('Auth/Login');
 })->middleware(['auth', 'verified'])->name('login');
 
+// Rooute Admin
+Route::get('/dashboardAdmin', function () {
+    return Inertia::render('Admin/Dashboard');
+})->middleware(['auth'])->name('dashboardAdmin');
+
+Route::get('/companyPermission', function () {
+    return Inertia::render('Admin/CompanyPermission');
+})->middleware(['auth'])->name('companyPermission');
+
+Route::get('/applicantPermission', function () {
+    return Inertia::render('Admin/ApplicantPermission');
+})->middleware(['auth'])->name('applicantPermission');
+
+
+
 
 // Route Pelamar
 Route::middleware(['auth', 'verified',])->group(function () {
