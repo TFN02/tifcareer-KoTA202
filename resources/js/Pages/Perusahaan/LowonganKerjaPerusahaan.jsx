@@ -179,7 +179,8 @@ const LowonganKerjaPerusahaan = ({ auth, processing }) => {
                                     >
                                         <Link>Delete</Link>
                                     </DangerButton> */}
-                                    <DangerButton onClick={confirmUserDeletion}>Delete</DangerButton>
+                                    <DangerButton onClick={confirmUserDeletion}
+                                    disabled={new Date(job.end_date) < new Date()}>Delete</DangerButton>
                                     <Modal show={confirmingUserDeletion} onClose={closeModal}>
                                         <div className="p-6">
                                             <h2 className="text-lg font-medium text-gray-900">
@@ -197,7 +198,9 @@ const LowonganKerjaPerusahaan = ({ auth, processing }) => {
                                             </div>
                                         </div>
                                     </Modal>
-                                    <WarningButton className="rounded-full">
+                                    <WarningButton 
+                                    disabled={applicantCounts[job.id]>0}
+                                    className="rounded-full">
                                         <Link
                                             href={route(
                                                 "LowonganKerjaPerusahaan.edit"
