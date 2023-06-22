@@ -55,9 +55,22 @@ class JobController extends Controller
             $jobs = $jobs->orderBy('created_at', 'desc');
         }
 
+        $jobs->get();
+        $currentDate = date("Y-m-d");
+        
+        foreach ($jobs as $job){
+            if($job->end_date >= $currentDate){
+                $job->is_active = false;
+                $job->save();
+            }else if($job->end_date < $currentDate){
+                $job->is_active = true;
+                $job->save(); 
+            }
+        }
+
         return response()->json([
             'success' => true,
-            'data' => $jobs->paginate(9),
+            'data' => $jobs,
         ]);
     }
 
