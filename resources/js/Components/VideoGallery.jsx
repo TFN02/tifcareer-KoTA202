@@ -11,7 +11,7 @@ const VideoGallery = ({ idVideo }) => {
     const getSourceVideo = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/segmentVideoResumes?video_resume_id=${idVideo}`
+          `/api/segmentVideoResumes?video_resume_id=${idVideo}`
         );
         const datas = res.data.data.data
         setVideos(datas)

@@ -16,7 +16,7 @@ const FormWorkExperience = (props, errors) => {
     const [description, setDescription] = useState('');
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/applicants/${aplicant.id}`)
+        axios.get(`/api/applicants/${aplicant.id}`)
             .then(res => {
                 const work_experience = res.data.data.work_experience;
                 console.log('pengalaman', work_experience);

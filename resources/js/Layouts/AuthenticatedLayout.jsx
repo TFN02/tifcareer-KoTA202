@@ -8,20 +8,6 @@ import { Link } from '@inertiajs/react';
 export default function LayoutPelamar({ auth, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
-    // const id = auth.user.applicant_id;
-    // const [notification, setNotification] = useState([]);
-
-    // useEffect(() => {
-    //     const getNotification = async () => {
-    //         const { data } = await axios.get(`http://localhost:8000/api/notifications?applicant_id=${id}`);
-    //         const datas = data.data.data;
-
-    //         setNotification(datas);
-    //         console.log("apa aja", datas);
-    //     }
-    //     getNotification();
-    // }, [id])
-
     return (
         <div className="min-h-screen bg-indigo-50">
             <nav className="bg-violet-800 border-b border-gray-100">

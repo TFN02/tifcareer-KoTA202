@@ -5,17 +5,18 @@ import { useEffect, useState } from "react";
 
 const VideoResumeApplicants = ({ auth, errors, getIdJobs }) => {
     const jobId = getIdJobs.id;
+    const companyId = getIdJobs.company_id;
 
     const [acceptedApplications, setAcceptedApplications] = useState([]);
     const [message, setMessage] = useState('');
-    console.log(acceptedApplications);
+    console.log("company",getIdJobs);
 
     useEffect(() => {
         const getAcceptedApplications = async () => {
             try {
                 const response = await axios.get(
                     //ini dirubah nanti status nya
-                    // `http://localhost:8000/api/applicationsAccepted?status=accepted&job_id=${jobId}`
+                    // `http://localhost:8000/api/applicationsAccepted?is_pass_selection_1=1&job_id=${jobId}`
                     `http://localhost:8000/api/applications?job_id=${jobId}`
                 );
                 // if (response.data) {
@@ -23,6 +24,7 @@ const VideoResumeApplicants = ({ auth, errors, getIdJobs }) => {
                 //         (a, b) => a.rank - b.rank
                 //     );
                 // }
+                console.log("ada ga",response)
                 setAcceptedApplications(response.data.data);
             } catch (error) {
                 console.error(
@@ -49,24 +51,35 @@ const VideoResumeApplicants = ({ auth, errors, getIdJobs }) => {
             console.error(error);
         }
     };
-    // handleSendMessage = async () => {
+    const handleSendMessage = async () => {
         
-    //     const requestData = {
-    //       company_id: company_id,
-    //       job_id: jobId,
-    //       message: message,
-    //       applicant: applicant_accepted,
-    //     };
-      
-    //     try {
-    //       const response = await axios.post('http://localhost:8000/api/notifications', requestData);
-    //       console.log('Message sent successfully');
-    //       // Handle the response or perform any additional tasks here
-    //     } catch (error) {
-    //       console.error('Error sending message:', error);
-    //       // Handle the error or display an error message
-    //     }
-    //   };
+        try {      
+            const applicant_accepted = acceptedApplications
+            .filter(
+                (application) =>
+                    application.is_pass_selection_2 ===
+                    1
+            )
+            .map((application) => ({
+                applicant_id: application.applicant_id,
+                is_pass_selection_2: application.is_pass_selection_2,
+            }));
+
+            const requestData = {
+                company_id: companyId,
+                job_id: jobId,
+                message: message,
+                applicant: applicant_accepted,
+              };
+
+          const response = await axios.post('http://localhost:8000/api/notifications', requestData);
+          console.log('Message sent successfully');
+          // Handle the response or perform any additional tasks here
+        } catch (error) {
+          console.error('Error sending message:', error);
+          // Handle the error or display an error message
+        }
+      };
       
 
 
@@ -96,7 +109,7 @@ const VideoResumeApplicants = ({ auth, errors, getIdJobs }) => {
 
                                     <th className="text-center">Nama</th>
                                     <th className="text-center">Rata Rata</th>
-                                    <th className="text-center">Rank</th>
+                                    <th className="text-center">Total Score</th>
                                     <th className="text-center">Terima &nbsp;- &nbsp; Tolak</th>
                                     <th className="text-center">Aksi</th>
                                 </tr>
@@ -150,16 +163,16 @@ const VideoResumeApplicants = ({ auth, errors, getIdJobs }) => {
                         </p>
                     </figure>
                     <div className="card-body p-5">
-                        <label className="mt-1">Pesan Notifikasi Kepada Pelamar:</label>
+                        <label className="mt-1">Pesan Kepada Pelamar:</label>
                         <input
                             id="message"
                             type="text"
-                            // value={message}
-                            // onChange={(e) => setMessage(e.target.value)}
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
                             placeholder="Selamat Anda lolos ke tahap video resume"
                             className="mt-1 block p-3 w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
-                        <PrimaryButton className="flex justify-center">Submit</PrimaryButton>
+                        <PrimaryButton onClick={handleSendMessage} className="flex justify-center">Submit</PrimaryButton>
                         {/* {isDataSent && (
                             <div className="alert bg-violet-500 flex justify-center items-center w-full p-2 text-white">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-5 w-5" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>

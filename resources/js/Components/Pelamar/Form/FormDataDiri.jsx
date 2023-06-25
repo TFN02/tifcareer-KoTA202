@@ -18,7 +18,7 @@ const FormDataDiri = (props, errors) => {
     const [gender, setGender] = useState('');
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/applicants/${aplicant.id}`)
+        axios.get(`/api/applicants/${aplicant.id}`)
             .then(res => {
                 const datas = res.data.data;
                 console.log('datas:', datas);

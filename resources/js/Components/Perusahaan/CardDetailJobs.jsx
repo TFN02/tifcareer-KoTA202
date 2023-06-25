@@ -24,7 +24,7 @@ const CardDetailJobs = ({ getIdJobs, auth }) => {
     const checkIfAlreadyApplied = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:8000/api/applicationsApply?applicant_id=${auth.user.applicant_id}&job_id=${id}`
+                `/api/applicationsApply?applicant_id=${auth.user.applicant_id}&job_id=${id}`
             );
 
             console.log("Ini Chcek", response.data);
@@ -48,7 +48,7 @@ const CardDetailJobs = ({ getIdJobs, auth }) => {
             };
 
             axios
-                .post("http://localhost:8000/api/applications", applicationData)
+                .post("/api/applications", applicationData)
                 .then((response) => {
                     console.log(response.data);
                     setIsApplied(true);
@@ -64,7 +64,7 @@ const CardDetailJobs = ({ getIdJobs, auth }) => {
     useEffect(() => {
         const getDataDetailJobs = async () => {
             const { data } = await axios.get(
-                `http://localhost:8000/api/jobs/${id}`
+                `/api/jobs/${id}`
             );
             const datas = data.data;
 
@@ -97,7 +97,7 @@ const CardDetailJobs = ({ getIdJobs, auth }) => {
         const getCurrentApplicantData = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:8000/api/applicants/${auth.user.applicant_id}`
+                    `/api/applicants/${auth.user.applicant_id}`
                 );
 
                 const currentApplicantData = response.data.data;

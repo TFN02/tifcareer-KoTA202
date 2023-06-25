@@ -907,7 +907,7 @@ const DashboardPerusahaan = ({ auth }) => {
                             <div className="flex flex-row gap-3">
 
                                 <PrimaryButton 
-                                disabled={weighting_criteria.length===0 || weighting_variable.length===0}
+                                disabled={weighting_criteria.length===0 && weighting_variable.length===0}
                                 type="submit" className="btn-md w-full max-w-2lg flex justify-center">Submit</PrimaryButton>
                                 {isDataSent && (
                                     <div className="alert bg-violet-500 flex justify-center items-center w-full p-2 text-white">
