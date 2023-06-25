@@ -37,7 +37,7 @@ export default function UpdateProfileInformationForm(className, errors, processi
 
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/applicants/${aplicant}`)
+        axios.get(`/api/applicants/${aplicant}`)
             .then(res => {
                 const applicant_id = res.data.data.user.applicant_id;
                 const datas = res.data.data;
@@ -92,7 +92,7 @@ export default function UpdateProfileInformationForm(className, errors, processi
         console.log('item:',item.position);
 
         patch(route('profile.update'));
-        axios.put(`http://localhost:8000/api/applicants/${aplicant}`, {
+        axios.put(`/api/applicants/${aplicant}`, {
             name: data.name,
             phone_no: phone_no,
             aplicantDescription: aplicantDescription,

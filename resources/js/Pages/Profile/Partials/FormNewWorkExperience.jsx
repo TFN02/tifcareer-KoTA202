@@ -26,7 +26,7 @@ const FormNewWorkExperience = ({ auth, getId, processing, className, errors, Tra
     const submit = async (e) => {
         e.preventDefault();
        
-        axios.put(`http://localhost:8000/api/applicants/${auth.user.applicant_id}`, {
+        axios.put(`/api/applicants/${auth.user.applicant_id}`, {
             work_experience: [
                 {
                     // id:workId.id,

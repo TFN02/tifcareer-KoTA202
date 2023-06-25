@@ -40,7 +40,7 @@ export default function RankApplicants({ getIdJobs, application }) {
     useEffect(() => {
         const getDataDetailJobs = async () => {
             const { data } = await axios.get(
-                `http://localhost:8000/api/jobs/${jobId}`
+                `/api/jobs/${jobId}`
             );
             const datas = data.data;
 
@@ -58,7 +58,7 @@ export default function RankApplicants({ getIdJobs, application }) {
             // setJobCategoryId(datas.job_category);
 
             const response = await axios.get(
-                `http://localhost:8000/api/jobs/${jobId}/applicants`
+                `/api/jobs/${jobId}/applicants`
             );
             
             setAllApplications(response.data.data);
@@ -86,7 +86,7 @@ export default function RankApplicants({ getIdJobs, application }) {
         const getAcceptedApplications = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:8000/api/applicationsAccepted?is_pass_selection_1=1&job_id=${jobId}`
+                    `/api/applicationsAccepted?is_pass_selection_1=1&job_id=${jobId}`
                 );
                 
                 if (response.data) {
@@ -109,7 +109,7 @@ export default function RankApplicants({ getIdJobs, application }) {
     const handleRankSaw = async () => {
             try {
                 const response = await axios.post(
-                    `http://localhost:8000/api/saw/${jobId}`
+                    `/api/saw/${jobId}`
                 );
                 setApplications(response.data);
                 setAllApplications(response.data);
@@ -142,7 +142,7 @@ export default function RankApplicants({ getIdJobs, application }) {
             const updateStatusPromises = updatedApplications.map(
                 (application) =>
                     axios.put(
-                        `http://localhost:8000/api/applications/${application.id}`,
+                        `/api/applications/${application.id}`,
                         { is_pass_selection_1: application.is_pass_selection_1 }
                     )
             );
@@ -234,17 +234,17 @@ export default function RankApplicants({ getIdJobs, application }) {
             console.log("req_reject: ", applicant_rejected)
 
             const response_acc = await axios.post(
-                "http://localhost:8000/api/notifications",
+                "/api/notifications",
                 requestData_1
             );
 
             const response_reject = await axios.post(
-                "http://localhost:8000/api/notifications",
+                "/api/notifications",
                 requestData_2
             );
 
             const response2 = await axios.post(
-                'http://localhost:8000/api/assignmentVideoResumes',{
+                '/api/assignmentVideoResumes',{
                 application: applicationAcc,
                 job_id: jobId,
                 start_date: start_date,

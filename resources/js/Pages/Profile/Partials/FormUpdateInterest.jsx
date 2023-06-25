@@ -21,7 +21,7 @@ const FormUpdateInterest = ({ auth, getIdInterest, processing, className, errors
     const submit = async (e) => {
         e.preventDefault();
 
-        axios.put(`http://localhost:8000/api/interestAreas/${interestId}`, {
+        axios.put(`/api/interestAreas/${interestId}`, {
             
             applicant_id: auth.user.applicant_id,
             name_of_field: name_of_field,

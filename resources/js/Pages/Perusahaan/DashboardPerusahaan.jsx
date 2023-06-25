@@ -314,7 +314,7 @@ const DashboardPerusahaan = ({ auth }) => {
 
             try {
                 const response = await axios.post(
-                    `http://localhost:8000/api/jobs`,
+                    `/api/jobs`,
                     jobData
                 );
 
@@ -332,7 +332,7 @@ const DashboardPerusahaan = ({ auth }) => {
                 setWeightingVariable([]);
 
                 // router.replace(
-                //     `http://localhost:8000/api/jobs/${response.data.job_id}`
+                //     `/api/jobs/${response.data.job_id}`
                 // );
             } catch (error) {
                 console.log(error);
@@ -362,7 +362,7 @@ const DashboardPerusahaan = ({ auth }) => {
     useEffect(() => {
         const getJobCategory = async () => {
             const { data } = await axios.get(
-                `http://localhost:8000/api/jobCategories`
+                `/api/jobCategories`
             );
             const datas = data.data.data;
             setJobCategories(datas);

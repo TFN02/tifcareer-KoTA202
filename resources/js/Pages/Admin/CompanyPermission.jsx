@@ -13,7 +13,7 @@ export default function companyPermission({ auth, errors }) {
 
     useEffect(() => {
         const getDataCompany = async () => {
-            const { data } = await axios.get(`http://localhost:8000/api/users?role=perusahaan`);
+            const { data } = await axios.get(`/api/users?role=perusahaan`);
             const datas = data.data;
             
             setDataCompany(datas);
@@ -22,7 +22,7 @@ export default function companyPermission({ auth, errors }) {
             console.log("data res", datas);
         }
         const getDataValidation = async () => {
-            const { data } = await axios.get(`http://localhost:8000/api/companies`);
+            const { data } = await axios.get(`/api/companies`);
             const datas = data.data.data;
             
             setDataValidation(datas);
@@ -37,7 +37,7 @@ export default function companyPermission({ auth, errors }) {
     const handleApprove = async(companyID, index) => {
         console.log("ada id ga",companyID);
         try {
-            const response = await axios.put(`http://localhost:8000/api/users/updateStatus/${companyID}`,{
+            const response = await axios.put(`/api/users/updateStatus/${companyID}`,{
                 is_active: true,
             });
             setDisabledButtons((prevDisabledButtons) => {

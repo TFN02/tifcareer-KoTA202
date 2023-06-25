@@ -20,7 +20,7 @@ const FormNewInterest = ({ auth, processing, errors, Transition }) => {
     const submit = async (e) => {
         e.preventDefault();
 
-        axios.post(`http://localhost:8000/api/interestAreas`, {
+        axios.post(`/api/interestAreas`, {
             applicant_id: auth.user.applicant_id,
             name_of_field: name_of_field,
             reason_of_interest: reason_of_interest,

@@ -19,7 +19,7 @@ const FormNewSoftSkill = ({ auth, processing, errors, Transition }) => {
     const submit = async (e) => {
         e.preventDefault();
 
-        axios.post(`http://localhost:8000/api/softSkills`, {
+        axios.post(`/api/softSkills`, {
             applicant_id: auth.user.applicant_id,
             name: name,
         }).then(res => console.log('data res-2', res))

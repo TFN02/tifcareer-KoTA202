@@ -31,7 +31,7 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
 
     useEffect(() => {
         const getAplicants = async () => {
-            const { data } = await axios.get(`http://localhost:8000/api/applicants/${aplicant_id}`);
+            const { data } = await axios.get(`/api/applicants/${aplicant_id}`);
             const datas = data.data;
 
             console.log('cek data', datas);
@@ -54,7 +54,7 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
         }
 
         const getHardSkill = async () => {
-            const { data } = await axios.get(`http://localhost:8000/api/skills?applicant_id=${aplicant_id}`);
+            const { data } = await axios.get(`/api/skills?applicant_id=${aplicant_id}`);
             const datas = data.data.data;
             // const kategori = datas.skill_category;
             setHardSkill(datas);
@@ -80,7 +80,7 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
 
         try {
             setWorkExperience(workExperience.filter((p) => p.id !== id));
-            await axios.delete(`http://localhost:8000/api/workExperiences/${id}`);
+            await axios.delete(`/api/workExperiences/${id}`);
 
         } catch (err) {
             console.log(err);
@@ -91,7 +91,7 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
     const handleDeleteEdu = async (id) => {
         try {
             setEducation(education.filter((p) => p.id !== id));
-            await axios.delete(`http://localhost:8000/api/educations/${id}`);
+            await axios.delete(`/api/educations/${id}`);
         } catch (err) {
             console.log(err);
         }
@@ -100,7 +100,7 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
     const handleDeleteSkill = async (id) => {
         try {
             setHardSkill(hardSkill.filter((p) => p.id !== id));
-            await axios.delete(`http://localhost:8000/api/skills/${id}`);
+            await axios.delete(`/api/skills/${id}`);
         } catch (err) {
             console.log(err);
         }
@@ -109,7 +109,7 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
     const handleDeleteInterest = async (id) => {
         try {
             setInterestArea(interest_area.filter((p) => p.id !== id));
-            await axios.delete(`http://localhost:8000/api/interestAreas/${id}`);
+            await axios.delete(`/api/interestAreas/${id}`);
         } catch (err) {
             console.log(err);
         }
@@ -118,7 +118,7 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
     const handleDeleteSoftSkill = async (id) => {
         try {
             setSoftSkill(softSkill.filter((p) => p.id !== id));
-            await axios.delete(`http://localhost:8000/api/softSkills/${id}`);
+            await axios.delete(`/api/softSkills/${id}`);
         } catch (err) {
             console.log(err);
         }
@@ -127,7 +127,7 @@ export default function DataAplicant({ auth, mustVerifyEmail, status }) {
     const handleDeleteCertificates = async (id) => {
         try {
             setCertificates(certificates.filter((p) => p.id !== id));
-            await axios.delete(`http://localhost:8000/api/certificates/${id}`);
+            await axios.delete(`/api/certificates/${id}`);
         } catch (err) {
             console.log(err);
         }

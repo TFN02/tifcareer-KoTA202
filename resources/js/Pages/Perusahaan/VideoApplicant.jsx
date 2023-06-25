@@ -16,7 +16,7 @@ const VideoApplicant = ({ auth, errors, getIdApplication }) => {
     useEffect(() => {
         const getName = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:8000/api/applicants/${idApplicant}`)
+                const { data } = await axios.get(`/api/applicants/${idApplicant}`)
 
                 setApplicantName(data.data.name);
             } catch (err) {
@@ -24,7 +24,7 @@ const VideoApplicant = ({ auth, errors, getIdApplication }) => {
             }
         }
         const getDataAssigment = () => {
-            axios.get(`http://localhost:8000/api/assignmentVideoResumes?job_id=${jobId}`)
+            axios.get(`/api/assignmentVideoResumes?job_id=${jobId}`)
                 .then(response => {
                     const datas = response.data.data;
                     const dataQuestions = datas[0].question;
@@ -51,7 +51,7 @@ const VideoApplicant = ({ auth, errors, getIdApplication }) => {
         const scoreData = questionValue.map((value) => ({ question: value?.score || 0 }));
       console.log(scoreData);
         // Mengirim data ke API menggunakan axios
-        axios.post(`http://localhost:8000/api/scoringVideoResume/${idVideo}`, {
+        axios.post(`/api/scoringVideoResume/${idVideo}`, {
           score: scoreData
         })
           .then(response => {

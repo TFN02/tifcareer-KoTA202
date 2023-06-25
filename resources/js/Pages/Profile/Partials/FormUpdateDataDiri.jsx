@@ -30,7 +30,7 @@ const FormUpdateDataDiri = ({ auth, processing, className, errors, Transition}) 
         e.preventDefault();
 
         patch(route('profile.dataDiri.update'));
-        axios.put(`http://localhost:8000/api/applicants/${userId}`, {
+        axios.put(`/api/applicants/${userId}`, {
 
             user_id: auth.user.id,
             name: data.name,

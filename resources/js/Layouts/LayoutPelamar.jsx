@@ -13,7 +13,7 @@ export default function LayoutPelamar({ auth, header, children }) {
 
     useEffect(() => {
         const getNotification = async () => {
-            const { data } = await axios.get(`http://localhost:8000/api/notifications?applicant_id=${id}`);
+            const { data } = await axios.get(`/api/notifications?applicant_id=${id}`);
             const datas = data.data.data;
 
             setNotification(datas);

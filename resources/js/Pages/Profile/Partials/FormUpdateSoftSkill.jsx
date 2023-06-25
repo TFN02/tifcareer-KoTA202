@@ -20,7 +20,7 @@ const FormUpdateSoftSkill = ({ auth, getIdSoftSkill, processing, className, erro
     const submit = async (e) => {
         e.preventDefault();
 
-        axios.put(`http://localhost:8000/api/softSkills/${softSkillId}`, {
+        axios.put(`/api/softSkills/${softSkillId}`, {
             
             applicant_id: auth.user.applicant_id,
             name: name,

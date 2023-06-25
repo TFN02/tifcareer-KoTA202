@@ -41,7 +41,7 @@ export default function EditLoker({ myJobs, applicant }) {
     useEffect(() => {
         const getDataDetailJobs = async () => {
             const { data } = await axios.get(
-                `http://localhost:8000/api/jobs/${id}`
+                `/api/jobs/${id}`
             );
             const datas = data.data;
 
@@ -61,7 +61,7 @@ export default function EditLoker({ myJobs, applicant }) {
             setWeightingVariable(datas.weighting_variable);
 
             const response = await axios.get(
-                `http://localhost:8000/api/jobs/${id}/applicants`
+                `/api/jobs/${id}/applicants`
             );
             setAllApplications(response.data.data);
         };
@@ -80,7 +80,7 @@ export default function EditLoker({ myJobs, applicant }) {
                 end_date: end_date
             };
 
-            const response = await axios.put(`http://localhost:8000/api/jobs/${id}`, data);
+            const response = await axios.put(`/api/jobs/${id}`, data);
             console.log("Response:", response.data); // Tampilkan respons dari server
         } catch (error) {
             console.error(error);

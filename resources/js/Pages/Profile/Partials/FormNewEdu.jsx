@@ -21,7 +21,7 @@ const FormNewEdu = ({ auth, processing, errors, Transition }) => {
     const [eduList, setEduList] = useState(['']);
     console.log(level);
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/educations`)
+        axios.get(`/api/educations`)
             .then(res => {
                 const datas = res.data.data.data;
                 console.log('datas:', datas);
@@ -38,7 +38,7 @@ const FormNewEdu = ({ auth, processing, errors, Transition }) => {
     const submit = async (e) => {
         e.preventDefault();
 
-        axios.post(`http://localhost:8000/api/educations`, {
+        axios.post(`/api/educations`, {
             applicant_id: auth.user.applicant_id,
             level: level,
             major: major,

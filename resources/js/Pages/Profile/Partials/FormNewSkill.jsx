@@ -21,7 +21,7 @@ const FormNewSkill = ({ auth, getIdCategory, processing, className, errors, Tran
 
     useEffect(() => {
         const getCategory = async () => {
-            const { data } = await axios.get(`http://localhost:8000/api/skillCategories`);
+            const { data } = await axios.get(`/api/skillCategories`);
             const datas = data.data.data;
             setNameCategory(datas);
         }
@@ -42,12 +42,12 @@ const FormNewSkill = ({ auth, getIdCategory, processing, className, errors, Tran
     const submit = async (e) => {
         e.preventDefault();
 
-        // axios.post(`http://localhost:8000/api/skillCategories`, {
+        // axios.post(`/api/skillCategories`, {
         //     name: nameCategory,
         // }).then(res => console.log('data category', res))
         //     .catch(err => console.log(err));
 
-        axios.post(`http://localhost:8000/api/skills`, {
+        axios.post(`/api/skills`, {
             applicant_id: auth.user.applicant_id,
             skill_category_id: selectedOption,
             name: name,

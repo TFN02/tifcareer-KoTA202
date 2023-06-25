@@ -21,7 +21,7 @@ export default function DetailApplicant({getApplicantId}) {
     useEffect(() => {
         const getDataDetailApplicant = async () => {
             const { data } = await axios.get(
-                `http://localhost:8000/api/applicants/${applicantId}`
+                `/api/applicants/${applicantId}`
             );
             const datas = data.data;
 

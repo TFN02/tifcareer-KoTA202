@@ -20,7 +20,7 @@ const FormUpdateSkill = ({ auth, getIdSkill, processing, className, errors, Tran
     const submit = async (e) => {
         e.preventDefault();
 
-        axios.put(`http://localhost:8000/api/skills/${skillId}`, {
+        axios.put(`/api/skills/${skillId}`, {
             applicant_id: auth.user.applicant_id,
             // skill_category_id: ,
             name: name,

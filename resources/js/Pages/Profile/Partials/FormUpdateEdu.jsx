@@ -23,7 +23,7 @@ const FormUpdateEdu = ({ auth, getIdEdu, processing, className, errors, Transiti
     const submit = async (e) => {
         e.preventDefault();
 
-        axios.put(`http://localhost:8000/api/educations/${eduId}`, {
+        axios.put(`/api/educations/${eduId}`, {
             applicant_id: auth.user.applicant_id,
             level: level,
             major: major,

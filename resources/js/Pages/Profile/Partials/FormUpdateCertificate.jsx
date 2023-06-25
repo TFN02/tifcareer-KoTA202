@@ -22,7 +22,7 @@ const FormUpdateCertificate = ({ auth, getIdCertificate, processing, className, 
     const submit = async (e) => {
         e.preventDefault();
 
-        axios.put(`http://localhost:8000/api/certificates/${certificateId}`, {
+        axios.put(`/api/certificates/${certificateId}`, {
 
             applicant_id: auth.user.applicant_id,
             title: title,

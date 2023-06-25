@@ -21,7 +21,7 @@ const FormNewCertificate = ({ auth, processing, errors, Transition }) => {
     const submit = async (e) => {
         e.preventDefault();
 
-        axios.post(`http://localhost:8000/api/certificates`, {
+        axios.post(`/api/certificates`, {
             applicant_id: auth.user.applicant_id,
             title: title,
             description: description,

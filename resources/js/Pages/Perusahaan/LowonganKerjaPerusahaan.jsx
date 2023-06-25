@@ -30,7 +30,7 @@ const LowonganKerjaPerusahaan = ({ auth, processing }) => {
         const getMyJobs = async () => {
             try {
                 const { data } = await axios.get(
-                    `http://localhost:8000/api/myJobs/${company_id}`
+                    `/api/myJobs/${company_id}`
                 );
                 const datas = data;
 
@@ -58,7 +58,7 @@ const LowonganKerjaPerusahaan = ({ auth, processing }) => {
                     filteredJobs.map(async (job) => {
                         try {
                             const response = await axios.get(
-                                `http://localhost:8000/api/jobs/${job.id}/applicants/count`
+                                `/api/jobs/${job.id}/applicants/count`
                             );
                             return {
                                 jobId: job.id,
@@ -85,7 +85,7 @@ const LowonganKerjaPerusahaan = ({ auth, processing }) => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:8000/api/jobs/${id}`);
+            await axios.delete(`/api/jobs/${id}`);
             setMyJobs(myJobs.filter((job) => job.id !== id));
             closeModal();
         } catch (error) {
@@ -96,7 +96,7 @@ const LowonganKerjaPerusahaan = ({ auth, processing }) => {
     const handleEdit = async (id) => {
         try {
             const { data } = await axios.get(
-                `http://localhost:8000/api/jobs/${id}`
+                `/api/jobs/${id}`
             );
             // Lakukan sesuatu dengan data job yang diambil
             console.log(data);

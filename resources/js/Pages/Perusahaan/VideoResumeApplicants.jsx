@@ -16,8 +16,8 @@ const VideoResumeApplicants = ({ auth, errors, getIdJobs }) => {
             try {
                 const response = await axios.get(
                     //ini dirubah nanti status nya
-                    // `http://localhost:8000/api/applicationsAccepted?is_pass_selection_1=1&job_id=${jobId}`
-                    `http://localhost:8000/api/applications?job_id=${jobId}`
+                    // `/api/applicationsAccepted?is_pass_selection_1=1&job_id=${jobId}`
+                    `/api/applications?job_id=${jobId}`
                 );
                 // if (response.data) {
                 //     const sortedData = response.data.sort(
@@ -41,7 +41,7 @@ const VideoResumeApplicants = ({ auth, errors, getIdJobs }) => {
         console.log(applicationId);
 
         try {
-            const response = await axios.put(`http://localhost:8000/api/applications/passVideoResume/${applicationId}`, {
+            const response = await axios.put(`/api/applications/passVideoResume/${applicationId}`, {
 
                 is_pass_selection_2: true,
             });
@@ -72,7 +72,7 @@ const VideoResumeApplicants = ({ auth, errors, getIdJobs }) => {
                 applicant: applicant_accepted,
               };
 
-          const response = await axios.post('http://localhost:8000/api/notifications', requestData);
+          const response = await axios.post('/api/notifications', requestData);
           console.log('Message sent successfully');
           // Handle the response or perform any additional tasks here
         } catch (error) {
@@ -85,7 +85,7 @@ const VideoResumeApplicants = ({ auth, errors, getIdJobs }) => {
 
     const handleReject = async (applicationId) => {
         console.log(applicationId);
-        // await axios.post(`http://localhost:8000/api/applications/${applicationId}`,{
+        // await axios.post(`/api/applications/${applicationId}`,{
         //     is_pass_selection_2: true,
 
         // })

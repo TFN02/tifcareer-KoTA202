@@ -24,7 +24,7 @@ console.log("isi props", props)
 
     useEffect(() => {
         const getApplicationId = () => {
-            axios.get(`http://localhost:8000/api/application/${applicantId}/${jobId}`)
+            axios.get(`/api/application/${applicantId}/${jobId}`)
                 .then(response => {
                     setApplicationId(response.data.application_id);
                     console.log("application id", applicationId);
@@ -35,7 +35,7 @@ console.log("isi props", props)
                 });
         }
         const getDataAssigment = () => {
-            axios.get(`http://localhost:8000/api/assignmentVideoResumes?job_id=${jobId}`)
+            axios.get(`/api/assignmentVideoResumes?job_id=${jobId}`)
                 .then(response => {
                     const datas = response.data.data;
                     const deadlineAssignment = datas[0].end_date; 
@@ -108,7 +108,7 @@ console.log("isi props", props)
         formData.append('segment_video', JSON.stringify(dataToSend));
 
         try {
-            const response = await axios.get('http://localhost:8000/api/auth/youtube', formData, {
+            const response = await axios.get('/api/auth/youtube', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     //'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ console.log("isi props", props)
             });
 
 
-            const response2 = await axios.post('http://localhost:8000/api/youtube/session', formData, {
+            const response2 = await axios.post('/api/youtube/session', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     //'Content-Type': 'application/json',
