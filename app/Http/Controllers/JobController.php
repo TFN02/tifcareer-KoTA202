@@ -15,12 +15,27 @@ class JobController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->keyword;
-        $jobs = Job::with('company', 'assignmentVideoResume', 'jobCategory')->where('job_position', 'LIKE', '%' . $keyword . '%')->OrderByDesc('updated_at')->paginate(9);
+        $jobs = Job::with('company', 'assignmentVideoResume', 'jobCategory')->where('job_position', 'LIKE', '%' . $keyword . '%')->OrderByDesc('updated_at')->get();
 
-        $jobs = new JobsCollection($jobs);
+        $currentDate = date("Y-m-d");
+        foreach ($jobs as $job){
+            if($job->end_date >= $currentDate){
+                $job->is_active = false;
+                $job->save();
+            }else if($job->end_date < $currentDate){
+                $job->is_active = true;
+                $job->save(); 
+            }
+        }
+
+        $jobss = Job::with('company', 'assignmentVideoResume', 'jobCategory')->where('job_position', 'LIKE', '%' . $keyword . '%')
+        ->where('is_active',0)->OrderByDesc('updated_at')->paginate(9);
+
+        $jobss = new JobsCollection($jobss);
+        
 
         return inertia::render('Pelamar/LowonganKerja', [
-            'jobs' => $jobs,
+            'jobs' => $jobss,
         ]);
     }
 

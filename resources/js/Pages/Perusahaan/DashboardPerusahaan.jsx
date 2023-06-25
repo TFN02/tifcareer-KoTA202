@@ -14,10 +14,8 @@ const DashboardPerusahaan = ({ auth }) => {
     const [title, setTitle] = useState("");
     const [job_position, setJobPosition] = useState("");
     const [job_desc, setJobDescription] = useState("");
-    const [qualification, setQualification] = useState("");
     const [location, setLocation] = useState("");
     const [salary, setSalary] = useState("");
-    const [status, setStatus] = useState("");
     const [start_date, setStartDate] = useState("");
     const [end_date, setEndDate] = useState("");
     const [job_category, setJobCategoryId] = useState("");
@@ -31,44 +29,150 @@ const DashboardPerusahaan = ({ auth }) => {
         { value: "work_experience", label: "Work Experience" },
         { value: "interest_area", label: "Interest Area" },
     ]);
+    const [totalWeight, setTotalWeight] = useState(0);
+
 
     const handleAddCriteria = () => {
-        setWeightingCriteria([
-            ...weighting_criteria,
-            { name: "", weight: 0, weighting_variable: [] },
-        ]);
+        const updatedCriteria = [...weighting_criteria];
+
+        let totalWeight = 0;
+        updatedCriteria.forEach((criteria) => {
+            totalWeight += criteria.weight;
+        });
+
+        if (totalWeight > 1) {
+            console.warn("Total bobot kriteria melebihi 100%!");
+            return;
+        }
+
+        updatedCriteria.push({
+            name: "",
+            weight: 0,
+            weighting_variable: [],
+        });
+
+        setWeightingCriteria(updatedCriteria);
+
+        totalWeight += 0;
+
+        setTotalWeight(totalWeight);
+    };
+
+    const handleCriteriaChange = (criteriaIndex, name, weight) => {
+        const updatedCriteria = [...weighting_criteria];
+        updatedCriteria[criteriaIndex].name = name;
+        updatedCriteria[criteriaIndex].weight = weight;
+
+        let totalWeight = 0;
+        updatedCriteria.forEach((criteria) => {
+            totalWeight += criteria.weight;
+        });
+
+        setWeightingCriteria(updatedCriteria);
+        setTotalWeight(totalWeight);
     };
 
     const handleRemoveCriteria = (index) => {
         const updatedCriteria = [...weighting_criteria];
         updatedCriteria.splice(index, 1);
+
+        let totalWeight = 0;
+        updatedCriteria.forEach((criteria) => {
+            totalWeight += criteria.weight;
+        });
+
+        setWeightingCriteria(updatedCriteria);
+        setTotalWeight(totalWeight);
+
         setWeightingCriteria(updatedCriteria);
     };
-
-
 
     const handleAddVariable = (criteriaIndex) => {
         const updatedCriteria = [...weighting_criteria];
         if (updatedCriteria[criteriaIndex].name === "education") {
-            updatedCriteria[criteriaIndex].weighting_variable.push({
+            const newWeightingVariable = {
                 name: { level: "", major: "" },
                 weight: 0,
-            });
+            };
+
+            updatedCriteria[criteriaIndex].weighting_variable.push(newWeightingVariable);
+
+            const totalWeight = updatedCriteria[criteriaIndex].weighting_variable.reduce(
+                (sum, variable) => sum + variable.weight,
+                0
+            );
+
+            if (totalWeight > 1) {
+                console.warn("Warning: Total weight exceeds 1");
+                return;
+            }
+            // updatedCriteria[criteriaIndex].weighting_variable.push({
+            //     name: { level: "", major: "" },
+            //     weight: 0,
+            // });
         } else if (updatedCriteria[criteriaIndex].name === "skill") {
-            updatedCriteria[criteriaIndex].weighting_variable.push({
+            const newWeightingVariable = {
                 name: { nameSkill: "" },
                 weight: 0,
-            });
+            };
+
+            updatedCriteria[criteriaIndex].weighting_variable.push(newWeightingVariable);
+
+            const totalWeight = updatedCriteria[criteriaIndex].weighting_variable.reduce(
+                (sum, variable) => sum + variable.weight,
+                0
+            );
+
+            if (totalWeight > 1) {
+                console.warn("Warning: Total weight exceeds 1");
+                return;
+            }
+            // updatedCriteria[criteriaIndex].weighting_variable.push({
+            //     name: { nameSkill: "" },
+            //     weight: 0,
+            // });
         } else if (updatedCriteria[criteriaIndex].name === "work_experience") {
-            updatedCriteria[criteriaIndex].weighting_variable.push({
+            const newWeightingVariable = {
                 name: { position: "", year: "" },
                 weight: 0,
-            });
+            };
+
+            updatedCriteria[criteriaIndex].weighting_variable.push(newWeightingVariable);
+
+            const totalWeight = updatedCriteria[criteriaIndex].weighting_variable.reduce(
+                (sum, variable) => sum + variable.weight,
+                0
+            );
+
+            if (totalWeight > 1) {
+                console.warn("Warning: Total weight exceeds 1");
+                return;
+            }
+            // updatedCriteria[criteriaIndex].weighting_variable.push({
+            //     name: { position: "", year: "" },
+            //     weight: 0,
+            // });
         } else if (updatedCriteria[criteriaIndex].name === "interest_area") {
-            updatedCriteria[criteriaIndex].weighting_variable.push({
-                name: { nameOfInterest: "" },
+            const newWeightingVariable = {
+                name: {  nameOfInterest: "" },
                 weight: 0,
-            });
+            };
+
+            updatedCriteria[criteriaIndex].weighting_variable.push(newWeightingVariable);
+
+            const totalWeight = updatedCriteria[criteriaIndex].weighting_variable.reduce(
+                (sum, variable) => sum + variable.weight,
+                0
+            );
+
+            if (totalWeight > 1) {
+                console.warn("Warning: Total weight exceeds 1");
+                return;
+            }
+            // updatedCriteria[criteriaIndex].weighting_variable.push({
+            //     name: { nameOfInterest: "" },
+            //     weight: 0,
+            // });
         }
         setWeightingCriteria(updatedCriteria);
     };
@@ -80,19 +184,6 @@ const DashboardPerusahaan = ({ auth }) => {
             1
         );
         setWeightingCriteria(updatedCriteria);
-    };
-
-    const handleCriteriaChange = (criteriaIndex, selectedValue) => {
-        const updatedCriteria = [...weighting_criteria];
-        updatedCriteria[criteriaIndex].name = selectedValue;
-
-        // Remove the selected option from the available options
-        const updatedAvailableOptions = availableCriteriaOptions.filter(
-            (option) => option.value !== selectedValue
-        );
-
-        setWeightingCriteria(updatedCriteria);
-        setAvailableCriteriaOptions(updatedAvailableOptions);
     };
 
     const handleStartDateChange = (e) => {
@@ -155,6 +246,52 @@ const DashboardPerusahaan = ({ auth }) => {
                 })
             );
 
+            const totalCriteriaWeight = updatedWeightingCriteria.reduce((sum, criteria) => sum + criteria.weight, 0);
+
+            if (totalCriteriaWeight > 1) {
+              console.warn("Total weight exceeds 1 CRITERIA WEIGHT");
+              return;
+            } else if (totalCriteriaWeight < 1) {
+              const remainingCriteriaWeight = 1 - totalCriteriaWeight;
+            
+              const nonZeroCriteriaCount = updatedWeightingCriteria.filter((criteria) => criteria.weight !== 0).length;
+            
+              const distributedCriteriaWeight = remainingCriteriaWeight / nonZeroCriteriaCount;
+            
+              updatedWeightingCriteria.forEach((criteria) => {
+                if (criteria.weight !== 0) {
+                  criteria.weight += distributedCriteriaWeight;
+                }
+              });
+            
+              console.log(distributedCriteriaWeight);
+            }
+            
+            updatedWeightingCriteria.forEach((criteria) => {
+              const totalVariableWeight = criteria.weighting_variable.reduce((sum, variable) => sum + variable.weight, 0);
+            
+              if (totalVariableWeight > 1) {
+                console.warn("Total weight in a criteria exceeds 100");
+                return;
+              } else if (totalVariableWeight < 1) {
+                const remainingVariableWeight = 1 - totalVariableWeight;
+            
+                const nonZeroVariableCount = criteria.weighting_variable.filter((variable) => variable.weight !== 0).length;
+            
+                const distributedVariableWeight = remainingVariableWeight / nonZeroVariableCount;
+            
+                criteria.weighting_variable.forEach((variable) => {
+                  if (variable.weight !== 0) {
+                    variable.weight += distributedVariableWeight;
+                  }
+                });
+            
+                console.log(distributedVariableWeight);
+              }
+            });
+            
+            
+
             const updatedWeightingVariable = [];
 
             updatedWeightingCriteria.forEach((criteria) => {
@@ -190,7 +327,6 @@ const DashboardPerusahaan = ({ auth }) => {
                 setSalary("");
                 setStartDate("");
                 setEndDate("");
-                setQualification("");
                 setJobCategoryId("");
                 setWeightingCriteria([]);
                 setWeightingVariable([]);
@@ -373,26 +509,6 @@ const DashboardPerusahaan = ({ auth }) => {
                                     />
                                 </div>
 
-                                <div>
-                                    <label
-                                        className="label"
-                                        htmlFor={qualification}
-                                    >
-                                        <span className="label-text">
-                                            Job Qualification
-                                        </span>
-                                    </label>
-                                    <input
-                                        className="m-0 input input-info w-full mb-3  text-black"
-                                        type="text"
-                                        id="salary"
-                                        value={qualification}
-                                        onChange={(e) =>
-                                            setQualification(e.target.value)
-                                        }
-                                    />
-                                </div>
-
                                 <div className="flex space-x-4">
                                     <div className="w-1/2">
                                         <label
@@ -439,6 +555,7 @@ const DashboardPerusahaan = ({ auth }) => {
                                 <h2 className="text-lg font-medium mb-2 mt-3">
                                     Weighting Criteria
                                 </h2>
+                                <div>Total Weight: {totalWeight}</div>
                                 {weighting_criteria.map(
                                     (criteria, criteriaIndex) => (
                                         <div
@@ -450,7 +567,8 @@ const DashboardPerusahaan = ({ auth }) => {
                                                 onChange={(e) =>
                                                     handleCriteriaChange(
                                                         criteriaIndex,
-                                                        e.target.value
+                                                        e.target.value,
+                                                        criteria.weight
                                                     )
                                                 }
                                                 className="block w-full border border-gray-300 rounded py-2 px-3 mb-2"
@@ -487,7 +605,7 @@ const DashboardPerusahaan = ({ auth }) => {
                                                                 </option>
                                                             );
                                                         }
-                                                        return null; 
+                                                        return null;
                                                     }
                                                 )}
                                             </select>
@@ -499,14 +617,10 @@ const DashboardPerusahaan = ({ auth }) => {
                                                         parseFloat(
                                                             e.target.value
                                                         ) / 100;
-                                                    const updatedCriteria = [
-                                                        ...weighting_criteria,
-                                                    ];
-                                                    updatedCriteria[
-                                                        criteriaIndex
-                                                    ].weight = updatedValue;
-                                                    setWeightingCriteria(
-                                                        updatedCriteria
+                                                    handleCriteriaChange(
+                                                        criteriaIndex,
+                                                        criteria.name,
+                                                        updatedValue
                                                     );
                                                 }}
                                                 placeholder="Criteria Weight"
@@ -792,7 +906,9 @@ const DashboardPerusahaan = ({ auth }) => {
 
                             <div className="flex flex-row gap-3">
 
-                                <PrimaryButton type="submit" className="btn-md w-full max-w-2lg flex justify-center">Submit</PrimaryButton>
+                                <PrimaryButton 
+                                disabled={weighting_criteria.length===0 || weighting_variable.length===0}
+                                type="submit" className="btn-md w-full max-w-2lg flex justify-center">Submit</PrimaryButton>
                                 {isDataSent && (
                                     <div className="alert bg-violet-500 flex justify-center items-center w-full p-2 text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-5 w-5" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
