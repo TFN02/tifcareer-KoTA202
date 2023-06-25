@@ -1,11 +1,11 @@
 import PrimaryButton from '@/Components/PrimaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 // import { useState } from 'react';
 // import { MdSwitchAccount } from 'react-icons/md'
-import {VscAccount} from 'react-icons/vsc';
-import {BsBuildings} from 'react-icons/bs';
-import {FaUserTie} from 'react-icons/fa';
+import { VscAccount } from 'react-icons/vsc';
+import { BsBuildings } from 'react-icons/bs';
+import { FaUserTie } from 'react-icons/fa';
 
 export default function Dashboard({ auth, errors }) {
 
@@ -41,7 +41,7 @@ export default function Dashboard({ auth, errors }) {
 
                             <div className="stat">
                                 <div className="stat-figure text-secondary">
-                                <FaUserTie size={30} />
+                                    <FaUserTie size={30} />
                                 </div>
                                 <div className="stat-title">Total Applicant Accounts</div>
                                 <div className="stat-value">4,200</div>
@@ -66,17 +66,21 @@ export default function Dashboard({ auth, errors }) {
                                     <h2 className="card-title">Manage Company Accounts!</h2>
                                     <p>Atur hak akses Perusahaan !</p>
                                     <div className="card-actions justify-end">
-                                        <PrimaryButton className="btn btn-primary w-full">Go to Company Permission</PrimaryButton>
+                                        <Link href={'/companyPermission'}>
+                                            <PrimaryButton className="btn btn-primary w-full">Go to Company Permission</PrimaryButton>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
                             <div className="card card-compact w-full bg-base-100 shadow-xl">
-                                <figure><img src="/img/assets/applicant.svg" width={400}className='m-10' alt="Applicant" /></figure>
+                                <figure><img src="/img/assets/applicant.svg" width={400} className='m-10' alt="Applicant" /></figure>
                                 <div className="card-body">
                                     <h2 className="card-title">Manage Applicants Accounts !</h2>
                                     <p>Atur hak akses pelamar !</p>
                                     <div className="card-actions justify-end">
-                                        <PrimaryButton className="btn btn-primary w-full">Go to Applicant Permission</PrimaryButton>
+                                    <Link href={'/companyPermission'}>
+                                            <PrimaryButton className="btn btn-primary w-full">Go to Applicant Permission</PrimaryButton>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>

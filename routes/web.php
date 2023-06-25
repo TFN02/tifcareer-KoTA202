@@ -5,6 +5,7 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\YoutubeController;
 use App\Http\Controllers\Api\ApplicantController;
+use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,6 +25,11 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Auth/Login');
 })->middleware(['auth', 'verified'])->name('login');
+
+Route::get('/modalVerification', function () {
+    return Inertia::render('Perusahaan/ModalVerification');
+})->middleware(['auth'])->name('modalVerification');
+
 
 // Rooute Admin
 Route::get('/dashboardAdmin', function () {

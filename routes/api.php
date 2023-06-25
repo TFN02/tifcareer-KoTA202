@@ -94,8 +94,8 @@ Route::post('/youtube/session', [YoutubeController::class, 'sessionCreate']);
 Route::get('/youtube/upload', [YoutubeController::class, 'uploadVideo']);
 
 Route::post('/scoringVideoResume/{id}', [VideoResumeController::class, 'scoringVideoResume']);
-Route::put('/users/updateStatus/{id}/{status}', [UserController::class, 'updateStatus']);
-Route::put('/applications/passVideoResume/{id}/{status}', [ApplicationController::class, 'passSelectionVideoResume']);
+Route::put('/users/updateStatus/{id}', [UserController::class, 'updateStatus']);
+Route::put('/applications/passVideoResume/{id}', [ApplicationController::class, 'passSelectionVideoResume']);
 
 
 // Route::post('/notification/sendNotifSaw', [NotificationController::class, 'sendNotifSAW']);

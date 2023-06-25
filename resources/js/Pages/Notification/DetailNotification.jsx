@@ -20,7 +20,7 @@ const DetailNotification = (props) => {
     const [technicalRequirement, setTechnicalRequirement] = useState(['']);
     const [question, setQuestion] = useState(['']);
     const [isDataSent, setIsDataSent] = useState(false);
-
+console.log("isi props", props)
 
     useEffect(() => {
         const getApplicationId = () => {
@@ -37,14 +37,14 @@ const DetailNotification = (props) => {
         const getDataAssigment = () => {
             axios.get(`http://localhost:8000/api/assignmentVideoResumes?job_id=${jobId}`)
                 .then(response => {
-                    const datas = response.data.data.data;
+                    const datas = response.data.data;
                     const deadlineAssignment = datas[0].end_date; 
                     const requirement = datas[0].technical_requirement;
                     const dataQuestions = datas[0].question;
                     setDeadline(deadlineAssignment);
                     setTechnicalRequirement(requirement);
                     setQuestion(dataQuestions);
-                    console.log("data response", datas)
+                    console.log("data response detail", datas)
                 })
         }
         getApplicationId();

@@ -33,7 +33,7 @@ class AssignmentVideoResumeController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $asr->paginate(20),
+            'data' => $asr->get(),
         ]);
     }
 
@@ -74,7 +74,7 @@ class AssignmentVideoResumeController extends Controller
         if($request->application){
             $applications = $request->application;
             foreach($applications as $appl){
-                $application = Application::find($appl['id']);
+                $application = Application::find($appl['application_id']);
                 $application->assignment_video_resume_id = $asr->id;
                 $application->save();
             }
@@ -89,7 +89,7 @@ class AssignmentVideoResumeController extends Controller
 
     public function show($id)
     {
-        $asr = AssignmentVideoResume::with('job', 'question')->findOrFail($id);
+        $asr = AssignmentVideoResume::with('job', 'question', 'application')->findOrFail($id);
         
         return response()->json([
             'success' => true,

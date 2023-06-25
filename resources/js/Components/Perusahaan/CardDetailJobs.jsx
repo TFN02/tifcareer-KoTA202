@@ -160,10 +160,10 @@ const CardDetailJobs = ({ getIdJobs, auth }) => {
                                     {jobDesc}
                                 </td>
                             </tr>
-                            <tr>
+                            {/* <tr>
                                 <td>Tanggung Jawab</td>
                                 <td>{qualification}</td>
-                            </tr>
+                            </tr> */}
                         </tbody>
                     </table>
                 </div>

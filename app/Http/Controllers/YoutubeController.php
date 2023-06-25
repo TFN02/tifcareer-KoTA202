@@ -218,10 +218,7 @@ class YoutubeController extends Controller
                 Sessions::destroy($sessions->all());
             } 
             
-            return response()->json([
-                'success' => true,
-                'data' => $video_resume,
-            ]);  
+            return redirect('lowonganKerja');
 
         }else{
 

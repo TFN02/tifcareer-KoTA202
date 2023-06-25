@@ -290,11 +290,11 @@ class ApplicationController extends Controller
         ]);
     }
 
-    public function passSelectionVideoResume($id, $status)
+    public function passSelectionVideoResume($id, Request $request)
     {
         $application = Application::find($id);
-        if($application!=null){
-            $application->is_pass_selection_2 = 1;
+        if($request->is_pass_selection_2 != null){
+            $application->is_pass_selection_2 = $request->is_pass_selection_2;
             $application->save();
         }
        

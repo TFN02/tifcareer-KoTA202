@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Applicant;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -39,10 +40,14 @@ class RegisteredUserController extends Controller
             $request->validate([
                 'name' => 'required|string|max:100',
                 'email' => 'required|string|email|max:100|unique:'.User::class,
+                'pic' => 'required|string|max:50',
                 'npwp' => 'required|digits:15',
+                'no_kk' => 'required|digits:16',
+                'no_ktp' => 'required|digits:16',
                 'password' => ['required', 'confirmed',Rules\Password::defaults()],
                 'role' => ['required', 'in:perusahaan'],
             ]);
+
         }
 
         
@@ -81,7 +86,10 @@ class RegisteredUserController extends Controller
                 $company = $user->company()->create([
                     'name' => $request->name,
                     'user_id' => $user->id,
+                    'pic' => $request->pic,
                     'npwp' => $request->npwp,
+                    'no_kk' => $request->no_kk,
+                    'no_ktp' => $request->no_ktp,
                 ]);
             } else {
                 $company = $existingCompany;
@@ -101,7 +109,9 @@ class RegisteredUserController extends Controller
     
         if ($request->role == "pelamar") {
             return redirect('/lowonganKerja');
-        } else if ($request->role == "perusahaan") {
+        } else if ($request->role == "perusahaan" && $user->is_active == 0) {
+            return redirect('/modalVerification');
+        }else{
             return redirect('/dashboard-perusahaan');
         }
     }

@@ -1,14 +1,56 @@
 import PrimaryButton from '@/Components/PrimaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import axios from 'axios';
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { MdSwitchAccount } from 'react-icons/md'
 
 export default function companyPermission({ auth, errors }) {
+    const [dataCompany, setDataCompany] = useState(['']);
+    const [disabledButtons, setDisabledButtons] = useState([]);
+    const [dataValidation, setDataValidation] = useState([]);
 
-    // handleApprove = () => {
+    useEffect(() => {
+        const getDataCompany = async () => {
+            const { data } = await axios.get(`http://localhost:8000/api/users?role=perusahaan`);
+            const datas = data.data;
+            
+            setDataCompany(datas);
+            
+            setDisabledButtons(new Array(datas.length).fill(false));
+            console.log("data res", datas);
+        }
+        const getDataValidation = async () => {
+            const { data } = await axios.get(`http://localhost:8000/api/companies`);
+            const datas = data.data.data;
+            
+            setDataValidation(datas);
+            
+           
+            console.log("data companies", datas);
+        }
+        getDataCompany();
+        getDataValidation();
+    }, [])
 
-    // }
+    const handleApprove = async(companyID, index) => {
+        console.log("ada id ga",companyID);
+        try {
+            const response = await axios.put(`http://localhost:8000/api/users/updateStatus/${companyID}`,{
+                is_active: true,
+            });
+            setDisabledButtons((prevDisabledButtons) => {
+                const newDisabledButtons = [...prevDisabledButtons];
+                newDisabledButtons[index] = true;
+                return newDisabledButtons;
+              });
+            console.log("sukses",response);
+          } catch (error) {
+            console.error(error);
+          }
+
+    }
 
     // handleReject = () => {
 
@@ -23,13 +65,13 @@ export default function companyPermission({ auth, errors }) {
             <Head title="Dashboard" />
             <div className='flex flex-row justify-between'>
 
-            <p className='font-bold text-xl pt-6 px-7'>User Permission</p>
-            <div className="text-sm breadcrumbs pt-6 px-7">
-                <ul>
-                    <li>Dashboard</li>
-                    <li>Company Permission</li>
-                </ul>
-            </div>
+                <p className='font-bold text-xl pt-6 px-7'>User Permission</p>
+                <div className="text-sm breadcrumbs pt-6 px-7">
+                    <ul>
+                        <li>Dashboard</li>
+                        <li>Company Permission</li>
+                    </ul>
+                </div>
             </div>
             <div className='card bg-white m-5 pb-20'>
                 <div className='card-body'>
@@ -53,46 +95,35 @@ export default function companyPermission({ auth, errors }) {
                             </thead>
                             <tbody className='border'>
                                 {/* row 1 */}
-                                <tr className='hover'>
-                                    <th>1</th>
-                                    <td>PT Tujuh Sembilan</td>
-                                    <td>Rizky Febian</td>
-                                    <td className='text-center'>456456565</td>
-                                    <td className='text-center'>958536353</td>
-                                    <td>Pending</td>
-                                    <td className='text-center'>
-                                        {/* <button onClick={() => handleApprove(id)} className='btn btn-xs btn-primary'>Approve</button> &nbsp;| &nbsp;
-                                        <button onClick={() => handleReject(id)} className='btn btn-xs btn-danger'>Reject</button> */}
-                                        <button className='btn btn-xs btn-primary'>Approve</button> &nbsp;| &nbsp;
-                                        <button className='btn btn-xs btn-danger'>Reject</button>
-                                    </td>
-                                </tr>
-                                {/* row 2 */}
-                                <tr className="hover">
-                                    <th>2</th>
-                                    <td>PT Freeport</td>
-                                    <td>Febian</td>
-                                    <td className='text-center'>456456565</td>
-                                    <td className='text-center'>958536353</td>
-                                    <td>Pending</td>
-                                    <td className='text-center'>
-                                        <button className='btn btn-xs btn-primary'>Approve</button> &nbsp;| &nbsp;
-                                        <button className='btn btn-xs btn-danger'>Reject</button>
-                                    </td>
-                                </tr>
-                                {/* row 3 */}
-                                <tr className='hover'>
-                                    <th>3</th>
-                                    <td>PT Unilever</td>
-                                    <td>Rizky</td>
-                                    <td className='text-center'>456456565</td>
-                                    <td className='text-center'>958536353</td>
-                                    <td>Pending</td>
-                                    <td className='text-center'>
-                                        <button className='btn btn-xs btn-primary'>Approve</button> &nbsp;| &nbsp;
-                                        <button className='btn btn-xs btn-danger'>Reject</button>
-                                    </td>
-                                </tr>
+                                {dataCompany.length > 0 ? dataCompany.map((company, index) => (
+
+                                    <tr key={index} className='hover'>
+                                        <th>{index + 1}</th>
+                                        <td>{company.name}</td>
+                                        
+
+                                            <td>{dataValidation[index]?.pic}</td>
+                                        <td className='text-center'>{dataValidation[index]?.no_kk}</td>
+                                        <td className='text-center'>{dataValidation[index]?.no_ktp}</td>
+                                        
+                                        <td>{company.is_active == 1 ? 'Validated' : 'Pending'}</td>
+                                        <td className='text-center'>
+                                            {company.is_active == 1 ?
+                                                <div className='flex flex-row gap-x-2'>
+                                                    <button disabled className='btn btn-xs btn-primary'>Validate</button>
+                                                    {/* <button disabled className='btn btn-xs btn-danger'>Denied</button> */}
+                                                </div>
+                                                :
+                                                <div className='flex flex-row gap-x-2'>
+
+                                                    <button disabled={disabledButtons[index]} onClick={(e) => handleApprove(company.id, index)} className='btn btn-xs btn-primary'>Validate</button>
+                                                    {/* <button disabled={disabledButtons[index]} onClick={(e) => handleReject(company.id, index)} className='btn btn-xs btn-danger'>Reject</button> */}
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                )) : <p>Data Masih Kosong</p>}
+
                             </tbody>
                         </table>
                     </div>

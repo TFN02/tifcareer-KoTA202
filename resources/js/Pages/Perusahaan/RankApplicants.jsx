@@ -184,6 +184,16 @@ export default function RankApplicants({ getIdJobs, application }) {
     const handleSendMessage = async () => {
         try {
             console.log("req_appl: ", applications)
+            const applicationAcc = applications
+            .filter(
+                (application) =>
+                    application.is_pass_selection_1 ===
+                    1
+            )
+            .map((application) => ({
+                application_id: application.id,
+                
+            }));
             const applicant_accepted = applications
             .filter(
                 (application) =>
@@ -235,6 +245,7 @@ export default function RankApplicants({ getIdJobs, application }) {
 
             const response2 = await axios.post(
                 'http://localhost:8000/api/assignmentVideoResumes',{
+                application: applicationAcc,
                 job_id: jobId,
                 start_date: start_date,
                 end_date: end_date,

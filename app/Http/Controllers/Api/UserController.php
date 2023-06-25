@@ -24,7 +24,7 @@ class UserController extends Controller
 
         if($request->role){
             $role = Role::all();
-            $role = $role->where('name',$request->role);
+            $role = $role->where('name',$request->role)->first();
             $this->role_id = $role->id;
 
             $user = $user->whereHas('roles', function($query){
@@ -40,7 +40,7 @@ class UserController extends Controller
         
         return response()->json([
             'success' => true,
-            'data' => $user->paginate(20),
+            'data' => $user->get(),
         ]);
 
     }
@@ -246,12 +246,12 @@ class UserController extends Controller
         ]);
     }
 
-    public function updateStatus($id,$status)
+    public function updateStatus($id, Request $request)
     {
         $user = User::find($id);
-        if($user != null){
-            $user->is_active = $status;
-            $user->save;
+        if($request->is_active != null){
+            $user->is_active = $request->is_active;
+            $user->save();
         }
 
         return response()->json([

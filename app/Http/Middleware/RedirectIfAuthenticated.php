@@ -22,16 +22,28 @@ class RedirectIfAuthenticated
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check() && Auth::user()->roles()->first()->name =='admin') {
+            if (Auth::guard($guard)->check() && Auth::user()->roles()->first()->name == 'admin') {
 
                 // return redirect(RouteServiceProvider::HOME);
                 return redirect('/dashboardAdmin');
-            }else if(Auth::guard($guard)->check() && Auth::user()->roles()->first()->name =='pelamar') {
+            } else if (Auth::guard($guard)->check() && Auth::user()->roles()->first()->name == 'pelamar') {
 
                 // return redirect(RouteServiceProvider::HOME);
                 return redirect('/lowonganKerja');
-            }else if(Auth::guard($guard)->check() && Auth::user()->roles()->first()->name =='perusahaan'){
-                return redirect('/dashboard-perusahaan');
+            } else if (Auth::guard($guard)->check() && Auth::user()->roles()->first()->name == 'perusahaan') {
+                if (Auth::user()->is_active == 1) {
+
+                    return redirect('/dashboard-perusahaan');
+                } else {
+                    return redirect('/modalVerification');
+                    Auth::guard('web')->logout();
+
+                    $request->session()->invalidate();
+            
+                    $request->session()->regenerateToken();
+            
+                    return redirect('/login');
+                }
             }
         }
 

@@ -8,9 +8,10 @@ const VideoApplicant = ({ auth, errors, getIdApplication }) => {
     const idVideo = getIdApplication.video_resume_id;
     const idApplicant = getIdApplication.applicant_id;
     const jobId = getIdApplication.job_id;
-    console.log("id Video", jobId)
+    console.log("data video",idVideo)
     const [applicantName, setApplicantName] = useState('');
     const [question, setQuestion] = useState(['']);
+    const [questionValue, setQuestionValue] = useState(['']);
 
     useEffect(() => {
         const getName = async () => {
@@ -25,16 +26,46 @@ const VideoApplicant = ({ auth, errors, getIdApplication }) => {
         const getDataAssigment = () => {
             axios.get(`http://localhost:8000/api/assignmentVideoResumes?job_id=${jobId}`)
                 .then(response => {
-                    const datas = response.data.data.data;
+                    const datas = response.data.data;
                     const dataQuestions = datas[0].question;
+
                     setQuestion(dataQuestions);
-                    console.log("data response", datas)
+
+                    console.log("data response", dataQuestions)
                 })
         }
         getDataAssigment();
         getName();
     }, [])
-    console.log(question);
+    console.log("score",questionValue);
+
+    const handleChange = (index, score) => {
+        const updatedValue = [...questionValue];
+        updatedValue[index] = { ...updatedValue[index], score };
+
+        setQuestionValue(updatedValue);
+      };
+
+      const handleSubmit = () => {
+        // Membuat array untuk menyimpan data yang akan dikirim
+        const scoreData = questionValue.map((value) => ({ question: value?.score || 0 }));
+      console.log(scoreData);
+        // Mengirim data ke API menggunakan axios
+        axios.post(`http://localhost:8000/api/scoringVideoResume/${idVideo}`, {
+          score: scoreData
+        })
+          .then(response => {
+            // Menghandle respons dari API jika diperlukan
+            console.log("berhasil", response.data);
+          })
+          .catch(error => {
+            // Menghandle error jika terjadi kesalahan pada pengiriman data
+            console.error(error);
+          });
+      };
+      
+      
+      
 
     return (
         <LayoutPerusahaan
@@ -57,6 +88,7 @@ const VideoApplicant = ({ auth, errors, getIdApplication }) => {
                     <p className="text-md font-bold flex justify-end items-end mr-12">Nilai</p>
                         </div>
                         {question.map((ques, index) => (
+                        
                             <div key={index} className="flex flex-row gap-x-2">
 
 
@@ -64,15 +96,19 @@ const VideoApplicant = ({ auth, errors, getIdApplication }) => {
                                     {ques.question}
                                 </div>
                                 <input
+                                    id="question"
                                     type="number"
+                                    value={questionValue[index]?.score || ''}
                                     min={0}
                                     max={100}
                                     className="block input input-info input-md mx-4"
-                                />
+                                    onChange={(e) => handleChange(index, e.target.value)}
+                                    />
                             </div>
                         ))}
                         <hr />
-                        <PrimaryButton className="justify-center">Submit Nilai</PrimaryButton>
+                        <PrimaryButton onClick={handleSubmit} className="justify-center">Submit Nilai</PrimaryButton>
+                        
                     </div>
                 </div>
             </div>
